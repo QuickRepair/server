@@ -1,12 +1,14 @@
 #include <iostream>
 #include <memory>
-#include "entity/order/order.h"
-#include "entity/user/addressinformation.h"
-#include "entity/user/merchantaccount.h"
-#include "entity/order/evaluate.h"
-#include "database/orderfactory.h"
-#include "database/userfactory.hpp"
-#include "entity/user/customeraccount.h"
+#include "Order/Order.h"
+#include "Account/ContactInformation.h"
+#include "Account/MerchantAccount.h"
+#include "Order/OrderStates/OrderEvaluate.h"
+#include "Factories/OrderFactory.h"
+#include "Factories/UserFactory.hpp"
+#include "Account/CustomerAccount.h"
+#include "Managers/AccountManager.hpp"
+#include "Managers/OrderManager.h"
 
 using std::shared_ptr;			using std::make_shared;
 using std::cout;				using std::runtime_error;
@@ -19,11 +21,32 @@ int main()
 		UserFactory<CustomerAccount> customerFactory;
 		UserFactory<MerchantAccount> merchantFactory;
 
-		shared_ptr<MerchantAccount> merchant = merchantFactory.createUser(10, "name", "ps", "email");
+		shared_ptr<CustomerAccount> committer = customerFactory.createUser("a", "b");
+
+		//send verification code
+		std::string verificationDeviceIdentification;
+		AccountManager::getInstance().requestForVerificationCode(verificationDeviceIdentification);
+
+		//check password
+		std::string userName;
+		std::string password;
+		AccountManager::getInstance().accountAuthentication<MerchantAccount>(userName, password);
+
+		//get merchant list
+		for(auto &merchants : AccountManager::getInstance().getMerchantList())
+			merchants.lock()->myConciseInfo();
+
+		//publish Order
+		ContactInformation contact;
+		std::string detail;
+		AcceptableOrderPriceRange range;
+		OrderManager::getInstance().publishOrder(committer, contact, detail, range);
+
+		/*shared_ptr<MerchantAccount> merchant = merchantFactory.createUser(10, "name", "ps", "email");
 		shared_ptr<MerchantAccount> dbMerchant = merchantFactory.readUser("email", "ps");
 		shared_ptr<CustomerAccount> dbCustomer = customerFactory.readUser("email", "ps");
 
-		shared_ptr<Order> newOorder = orderFactory.createOrder(dbCustomer, AddressInformation(), "detail", 123456789, OrderPriceRange(12, 54));
+		shared_ptr<Order> newOorder = orderFactory.createOrder(dbCustomer, ContactInformation(), "detail", 123456789, AcceptableOrderPriceRange(12, 54));
 		shared_ptr<Order> dbOrder = orderFactory.readOrder(dbCustomer, 1234);
 
 		dbCustomer->submitOrder(newOorder);
@@ -37,17 +60,17 @@ int main()
 		dbCustomer->submitOrder(dbOrder);
 		dbCustomer->cancelOrder(dbOrder);
 		Evaluate eva;
-		dbCustomer->evaluateTheOrder(dbOrder, eva);
+		dbCustomer->evaluateTheOrder(dbOrder, eva);*/
 		/*o->receivedBy(make_shared<MerchantAccount>());
 		o->startRepair();
 		o->endRepair(43);
-		Evaluate eva;
+		OrderEvaluate eva;
 		o->setEvaluate(eva);
 		o->orderFinished();
 
-		cout << dbOrder->priceRange().priceLow() << " " << dbOrder->priceRange().priceHigh() << '\n';
+		cout << dbOrder->priceRange().lowerPrice() << " " << dbOrder->priceRange().upperPrice() << '\n';
 		cout << dbOrder->transaction() << '\n';
-		Evaluate eva = dbOrder->evaluate();*/
+		OrderEvaluate eva = dbOrder->evaluate();*/
 	}
 	catch(runtime_error &e)
 	{

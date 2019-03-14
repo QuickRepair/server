@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="HARserver" targetName="HARserver" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" BUILD_OPTIONS="-j8" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="aae37a70-6d39-49a9-9d00-f0926ca8b27c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/Account.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/Account.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/ContactInformation.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/ContactInformation.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/CustomerAccount.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/CustomerAccount.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/MerchantAccount.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/MerchantAccount.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Account/MerchantServiceType.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/DatabaseInternalError.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/DatabaseInternalError.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/NoSuchAnAccount.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/NoSuchAnAccount.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/PasswordNotRight.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/PasswordNotRight.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/ResultEmpty.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/ResultEmpty.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderStateAbstractFactory.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Factories/UserFactory.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Managers/AccountManager.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Managers/AccountManager.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Managers/OrderManager.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Order/OrderStates/AcceptableOrderPriceRange.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Order/OrderStates/AcceptableOrderPriceRange.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Order/OrderStates/OrderEvaluate.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Order/OrderStates/OrderState.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/order/ordermanagesystem.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/order/ordermanagesystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Managers/OrderManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/accountonlinemanager.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/accountonlinemanager.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/accountregistermanager.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/accountregistermanager.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/register.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/register.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/usermanagesystem.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control/user/usermanagesystem.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/databaseconnection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/databaseconnection.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderendrepairstatefactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderEndRepairStateFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderendrepairstatefactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderEndRepairStateFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderfactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderfactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderfinishedstatefactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderFinishedStateFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderfinishedstatefactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderFinishedStateFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderreceivedstatefactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderReceivedStateFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderreceivedstatefactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderReceivedStateFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderstartrepairstatefactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderStartRepairStateFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderstartrepairstatefactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderStartRepairStateFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderstateabstractfactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderStateAbstractFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderstateparameters.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/OrderStateParameters.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderunreceivedstatefactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderUnreceivedStateFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/orderunreceivedstatefactory.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderStateFactories/OrderUnreceivedStateFactory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/queryresult.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/QueryResult.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/queryresult.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/QueryResult.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/userfactory.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/evaluate.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/evaluate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderEvaluate.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/order.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Order/Order.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/order.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/Order.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderendrepairstate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderEndRepairState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderendrepairstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderEndRepairState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderfinishedstate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderFinishedState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderfinishedstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderFinishedState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderpricerange.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderpricerange.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderreceivedstate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderReceivedState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderreceivedstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderReceivedState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderstartrepairstate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderStartRepairState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderstartrepairstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderStartRepairState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderunreceivedstate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderUnreceivedState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/order/orderunreceivedstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Order/OrderStates/OrderUnreceivedState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/addressinformation.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/addressinformation.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/customeraccount.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/customeraccount.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/merchantaccount.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/merchantaccount.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/merchantservertype.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/merchantservertype.h" beforeDir="false" afterPath="$PROJECT_DIR$/Account/MerchantServiceType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/user.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user/user.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/jsonAnalyser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Network/jsonAnalyser.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/jsonAnalyser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Network/jsonAnalyser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/networkconnection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Network/networkconnection.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/networkconnection.h" beforeDir="false" afterPath="$PROJECT_DIR$/Network/networkconnection.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/networkserver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Network/networkserver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network/networkserver.h" beforeDir="false" afterPath="$PROJECT_DIR$/Network/networkserver.h" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.4347298">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Managers/AccountManager.hpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="681">
+                  <caret line="53" lean-forward="true" selection-start-line="53" selection-end-line="53" />
+                  <folding>
+                    <element signature="e#100#115#0" expanded="true" />
+                    <element signature="e#222#241#0" expanded="true" />
+                    <element signature="e#467#489#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/UserFactory.hpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="366">
+                  <caret line="29" column="11" selection-start-line="29" selection-start-column="11" selection-end-line="29" selection-end-column="11" />
+                  <folding>
+                    <element signature="e#53#93#0" expanded="true" />
+                    <element signature="e#215#234#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Errors/PasswordNotRight.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="234">
+                  <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Errors/DatabaseInternalError.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="234">
+                  <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="760">
+                  <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
+                  <folding>
+                    <element signature="e#47#73#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Errors/PasswordNotRight.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="414">
+                  <caret line="23" selection-start-line="23" selection-end-line="23" />
+                  <folding>
+                    <element signature="e#116#136#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Errors/NoSuchAnAccount.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="162">
+                  <caret line="9" selection-start-line="9" selection-end-line="9" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Errors/NoSuchAnAccount.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="288">
+                  <caret line="16" selection-start-line="16" selection-end-line="16" />
+                  <folding>
+                    <element signature="e#114#134#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Errors/ResultEmpty.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="342">
+                  <caret line="20" column="22" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/OrderFactory.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="324">
+                  <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Managers/OrderManager.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="216">
+                  <caret line="12" column="32" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
+                  <folding>
+                    <element signature="e#65#82#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Managers/AccountManager.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="432">
+                  <caret line="24" column="38" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
+                  <folding>
+                    <element signature="e#41#68#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="666">
+                  <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
+                  <folding>
+                    <element signature="e#0#31#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Order/Order.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="36">
+                  <caret line="2" column="70" selection-start-line="2" selection-start-column="70" selection-end-line="2" selection-end-column="70" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Order/Order.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="144">
+                  <caret line="8" column="47" selection-start-line="8" selection-start-column="47" selection-end-line="8" selection-end-column="47" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Managers/OrderManager.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="288">
+                  <caret line="25" column="37" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
+                  <folding>
+                    <element signature="e#0#25#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Order/OrderStates/AcceptableOrderPriceRange.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="342">
+                  <caret line="19" selection-start-line="19" selection-end-line="19" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/main.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="29">
+                  <caret line="28" selection-start-line="28" selection-end-line="28" />
+                  <folding>
+                    <element signature="e#0#19#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderEndRepairStateFactory.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="72">
+                  <caret line="4" selection-start-line="4" selection-end-line="4" />
+                  <folding>
+                    <element signature="e#0#39#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderFinishedStateFactory.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="216">
+                  <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+                  <folding>
+                    <element signature="e#0#38#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>factory</find>
+      <find>m_orderFactory</find>
+      <find>errorHappen</find>
+      <find>make_shared</find>
+      <find>merchantFactory</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/account/customeraccount.h" />
+        <option value="$PROJECT_DIR$/managers/ordermanager.cpp" />
+        <option value="$PROJECT_DIR$/managers/ordermanager.h" />
+        <option value="$PROJECT_DIR$/order/order.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderfactory.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderreceivedstatefactory.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderstartrepairstatefactory.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderunreceivedstatefactory.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderendrepairstatefactory.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderfinishedstatefactory.cpp" />
+        <option value="$PROJECT_DIR$/account/merchantaccount.cpp" />
+        <option value="$PROJECT_DIR$/account/customeraccount.cpp" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderfinishedstatefactory.h" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderendrepairstatefactory.h" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderstartrepairstatefactory.h" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderreceivedstatefactory.h" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderunreceivedstatefactory.h" />
+        <option value="$PROJECT_DIR$/factories/orderstatefactories/orderstateabstractfactory.cpp" />
+        <option value="$PROJECT_DIR$/order/orderstates/orderstate.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/errors/resultempty.h" />
+        <option value="$PROJECT_DIR$/errors/databaseinternalerror.h" />
+        <option value="$PROJECT_DIR$/managers/accountmanager.cpp" />
+        <option value="$PROJECT_DIR$/factories/database/databaseconnection.h" />
+        <option value="$PROJECT_DIR$/account/account.cpp" />
+        <option value="$PROJECT_DIR$/factories/userfactory.hpp" />
+        <option value="$PROJECT_DIR$/account/account.h" />
+        <option value="$PROJECT_DIR$/managers/accountmanager.h" />
+        <option value="$PROJECT_DIR$/account/MerchantServiceType.h" />
+        <option value="$PROJECT_DIR$/Managers/OrderManager.cpp" />
+        <option value="$PROJECT_DIR$/Order/Order.h" />
+        <option value="$PROJECT_DIR$/Order/Order.cpp" />
+        <option value="$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp" />
+        <option value="$PROJECT_DIR$/Factories/OrderStateFactories/OrderReceivedStateFactory.cpp" />
+        <option value="$PROJECT_DIR$/Factories/OrderFactory.cpp" />
+        <option value="$PROJECT_DIR$/Account/CustomerAccount.cpp" />
+        <option value="$PROJECT_DIR$/Factories/Database/OrderStateParameters.h" />
+        <option value="$PROJECT_DIR$/Factories/OrderStateFactories/OrderStartRepairStateFactory.cpp" />
+        <option value="$PROJECT_DIR$/Factories/OrderStateFactories/OrderUnreceivedStateFactory.cpp" />
+        <option value="$PROJECT_DIR$/Account/MerchantAccount.cpp" />
+        <option value="$PROJECT_DIR$/Factories/OrderStateFactories/OrderEndRepairStateFactory.cpp" />
+        <option value="$PROJECT_DIR$/Factories/OrderStateFactories/OrderFinishedStateFactory.cpp" />
+        <option value="$PROJECT_DIR$/Errors/PasswordNotRight.h" />
+        <option value="$PROJECT_DIR$/Errors/PasswordNotRight.cpp" />
+        <option value="$PROJECT_DIR$/Errors/NoSuchAnAccount.h" />
+        <option value="$PROJECT_DIR$/Errors/NoSuchAnAccount.cpp" />
+        <option value="$PROJECT_DIR$/Managers/AccountManager.h" />
+        <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/Factories/UserFactory.hpp" />
+        <option value="$PROJECT_DIR$/Managers/AccountManager.hpp" />
+        <option value="$PROJECT_DIR$/Managers/AccountManager.cpp" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="996" />
+    <option name="y" value="397" />
+    <option name="width" value="1347" />
+    <option name="height" value="753" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+              <item name="Errors" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+              <item name="Factories" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+              <item name="Factories" type="462c0819:PsiDirectoryNode" />
+              <item name="Database" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+              <item name="Managers" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/database/factories/database" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/factories" />
+      <recent name="$PROJECT_DIR$/order/orderstates" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/database/factories/database" />
+      <recent name="$PROJECT_DIR$/" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="HARserver" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="HARserver" TARGET_NAME="HARserver" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="HARserver" RUN_TARGET_NAME="HARserver">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="aae37a70-6d39-49a9-9d00-f0926ca8b27c" name="Default Changelist" comment="" />
+      <created>1551191482741</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1551191482741</updated>
+      <workItem from="1551191484636" duration="3716000" />
+      <workItem from="1551195470290" duration="154000" />
+      <workItem from="1551195643659" duration="1206000" />
+      <workItem from="1551241570795" duration="1206000" />
+      <workItem from="1551608573962" duration="14657000" />
+      <workItem from="1551669002119" duration="2534000" />
+      <workItem from="1551762691270" duration="599000" />
+      <workItem from="1551786097196" duration="19000" />
+      <workItem from="1551795731282" duration="55000" />
+      <workItem from="1551883425206" duration="36000" />
+      <workItem from="1552557908007" duration="14913000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="39095000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="762" y="282" width="1932" height="1064" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12300319" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32939914" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32939914" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32939914" />
+      <window_info anchor="bottom" id="Database Changes" order="7" />
+      <window_info anchor="bottom" id="Messages" order="8" weight="0.28969958" />
+      <window_info anchor="bottom" id="Terminal" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="11" />
+      <window_info anchor="bottom" id="CMake" order="12" />
+      <window_info active="true" anchor="bottom" id="Statistic" order="13" visible="true" weight="0.43133047" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderStartRepairStateFactory.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="54" selection-start-line="7" selection-start-column="54" selection-end-line="7" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderReceivedStateFactory.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="51" selection-start-line="7" selection-start-column="51" selection-end-line="7" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderUnreceivedStateFactory.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="53" selection-start-line="9" selection-start-column="53" selection-end-line="9" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderStartRepairState.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderStartRepairState.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderReceivedState.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderReceivedState.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderUnreceivedState.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderFinishedStateFactory.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="53" selection-start-line="5" selection-start-column="53" selection-end-line="5" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderStateAbstractFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderUnreceivedState.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="15" column="41" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderState.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" column="41" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/OrderState.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" column="40" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/ResultEmpty.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/DatabaseInternalError.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
+          <folding>
+            <element signature="e#168#188#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderStateAbstractFactory.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/Account.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/ContactInformation.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="30" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
+          <folding>
+            <element signature="e#59#76#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/CustomerAccount.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="29" column="10" selection-start-line="29" selection-start-column="10" selection-end-line="29" selection-end-column="10" />
+          <folding>
+            <element signature="e#53#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#53#73#0" expanded="true" />
+            <element signature="e#153#172#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/Database/QueryResult.h">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/Account.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+          <folding>
+            <element signature="e#31#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/OrderManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="32" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
+          <folding>
+            <element signature="e#65#82#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/MerchantServiceType.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderReceivedStateFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/CustomerAccount.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/Database/OrderStateParameters.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+          <folding>
+            <element signature="e#93#155#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderStartRepairStateFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="44" selection-start-line="3" selection-start-column="44" selection-end-line="3" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderUnreceivedStateFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/Order.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="70" selection-start-line="2" selection-start-column="70" selection-end-line="2" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderEndRepairStateFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderFinishedStateFactory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="29" column="24" selection-start-line="29" selection-start-column="24" selection-end-line="29" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/OrderFactory.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/ResultEmpty.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="20" column="22" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/PasswordNotRight.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/DatabaseInternalError.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/NoSuchAnAccount.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="e#114#134#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/NoSuchAnAccount.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Errors/PasswordNotRight.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+          <folding>
+            <element signature="e#116#136#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/Order.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="47" selection-start-line="8" selection-start-column="47" selection-end-line="8" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/UserFactory.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="29" column="11" selection-start-line="29" selection-start-column="11" selection-end-line="29" selection-end-column="11" />
+          <folding>
+            <element signature="e#53#93#0" expanded="true" />
+            <element signature="e#215#234#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="29">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/OrderManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="25" column="37" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Order/OrderStates/AcceptableOrderPriceRange.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="760">
+          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
+          <folding>
+            <element signature="e#47#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="666">
+          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/AccountManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="24" column="38" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
+          <folding>
+            <element signature="e#41#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/AccountManager.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="681">
+          <caret line="53" lean-forward="true" selection-start-line="53" selection-end-line="53" />
+          <folding>
+            <element signature="e#100#115#0" expanded="true" />
+            <element signature="e#222#241#0" expanded="true" />
+            <element signature="e#467#489#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
