@@ -8,7 +8,7 @@
 
 using std::weak_ptr;
 
-CustomerAccount::CustomerAccount(unsigned long id, std::string password, std::string userName)
+CustomerAccount::CustomerAccount(unsigned long id, std::string userName, std::string password)
     :Account{id, std::move(password), std::move(userName)}
 {}
 

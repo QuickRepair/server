@@ -6,7 +6,7 @@
 
 using std::weak_ptr;
 
-MerchantAccount::MerchantAccount(unsigned long id, std::string password, std::string userName)
+MerchantAccount::MerchantAccount(unsigned long id, std::string userName, std::string password)
     :Account{id, std::move(password), std::move(userName)}
 {}
 

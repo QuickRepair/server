@@ -8,10 +8,10 @@
 #include <exception>
 #include <string>
 
-class PasswordNotRight : public std::exception {
+class PasswordNotRightError : public std::exception {
 public:
-    explicit PasswordNotRight(std::string error);
-    ~PasswordNotRight() override = default;
+    explicit PasswordNotRightError(std::string error);
+    ~PasswordNotRightError() override = default;
 
     const char* what() const noexcept override;
 

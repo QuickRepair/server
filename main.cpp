@@ -1,14 +1,10 @@
 #include <iostream>
 #include <memory>
-#include "Order/Order.h"
-#include "Account/ContactInformation.h"
-#include "Account/MerchantAccount.h"
-#include "Order/OrderStates/OrderEvaluate.h"
-#include "Factories/OrderFactory.h"
-#include "Factories/UserFactory.hpp"
-#include "Account/CustomerAccount.h"
 #include "Managers/AccountManager.hpp"
 #include "Managers/OrderManager.h"
+#include "RestServer/RestHandler.h"
+#include "Managers/AuthenticationCarrier/AuthenticationToScreen.h"
+#include "Configuration/Configure.h"
 
 using std::shared_ptr;			using std::make_shared;
 using std::cout;				using std::runtime_error;
@@ -17,11 +13,21 @@ int main()
 {
 	try
 	{
-		OrderFactory orderFactory;
+		Configure configure("./har.json");
+		DatabaseConnection::getInstance().conenct(
+				configure.databaseIp(), configure.databaseName(),
+				configure.databaseUserName(), configure.databasePassword(),
+				configure.databasePort()
+				);
+		AccountManager::getInstance().registerAuthenticationCarrier(make_shared<AuthenticationToScreen>());
+		RestHandler handler(configure.listenOn());
+		while (true)
+			continue;
+		/*OrderFactory orderFactory;
 		UserFactory<CustomerAccount> customerFactory;
 		UserFactory<MerchantAccount> merchantFactory;
 
-		shared_ptr<CustomerAccount> committer = customerFactory.createUser("a", "b");
+		shared_ptr<CustomerAccount> committer = customerFactory.createOrUpdateUser("a", "b");
 
 		//send verification code
 		std::string verificationDeviceIdentification;
@@ -40,9 +46,9 @@ int main()
 		ContactInformation contact;
 		std::string detail;
 		AcceptableOrderPriceRange range;
-		OrderManager::getInstance().publishOrder(committer, contact, detail, range);
+		OrderManager::getInstance().publishOrder(committer, contact, detail, range);*/
 
-		/*shared_ptr<MerchantAccount> merchant = merchantFactory.createUser(10, "name", "ps", "email");
+		/*shared_ptr<MerchantAccount> merchant = merchantFactory.createOrUpdateUser(10, "name", "ps", "email");
 		shared_ptr<MerchantAccount> dbMerchant = merchantFactory.readUser("email", "ps");
 		shared_ptr<CustomerAccount> dbCustomer = customerFactory.readUser("email", "ps");
 

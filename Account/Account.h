@@ -11,7 +11,7 @@ class Order;
 class Account
 {
 public:
-    Account(unsigned long id, std::string password, std::string userName);
+    Account(unsigned long id, std::string userName, std::string password);
     virtual ~Account() = default;
 
 	virtual bool isMyOrder(std::weak_ptr<Order> order) const = 0;

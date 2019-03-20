@@ -2,7 +2,7 @@
 
 using std::string;
 
-Account::Account(unsigned long id, std::string password, std::string userName)
+Account::Account(unsigned long id, std::string userName, std::string password)
     : m_id{id}, m_password{std::move(password)}, m_userName{std::move(userName)}
 {}
 

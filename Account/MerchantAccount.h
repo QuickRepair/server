@@ -14,7 +14,7 @@ class MerchantAccount : public Account, public std::enable_shared_from_this<Merc
 	friend class UserFactory<MerchantAccount>;
 
 public:
-    MerchantAccount(unsigned long id, std::string password, std::string userName);
+    MerchantAccount(unsigned long id, std::string userName, std::string password);
 
     void acceptOrder(std::weak_ptr<Order> order);
     void startRepair(std::weak_ptr<Order> order);

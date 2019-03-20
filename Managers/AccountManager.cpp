@@ -10,9 +10,6 @@
 
 using std::shared_ptr;
 
-AccountManager::AccountManager()
-{}
-
 AccountManager &AccountManager::getInstance()
 {
 	static AccountManager instance;
@@ -27,7 +24,7 @@ std::list<std::weak_ptr<MerchantAccount>> AccountManager::getMerchantList()
 	return ret;
 }
 
-void AccountManager::requestForVerificationCode(std::string codeSendToWhere)
+void AccountManager::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
 {
-	//TODO
+	m_authenticationCarrier = carrier;
 }

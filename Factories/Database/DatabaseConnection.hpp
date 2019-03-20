@@ -6,6 +6,11 @@
 #include <chrono>
 #include <memory>
 #include <vector>
+#include <sstream>
+#include "../../Errors/AccountAlreadyExistError.h"
+#include "QueryResult.h"
+#include "../../Errors/DatabaseInternalError.h"
+#include "../../Account/CustomerAccount.h"
 
 class ContactInformation;
 class OrderStateParameters;
@@ -13,6 +18,8 @@ class OrderStateAbstractFactory;
 
 class DatabaseConnection {
 public:
+	void conenct(std::string databaseIp, std::string databaseName, std::string databaseUser, std::string databasePassword, unsigned databasePort);
+
 	static DatabaseConnection &getInstance();
 
 	//void test();
@@ -38,7 +45,35 @@ public:
 	 * 3 std::string for userName
 	 */
 	std::tuple<unsigned long, std::string, std::string, std::string> checkPasswordAndGetUserInfo(std::string userName, std::string password);
-	std::vector<std::tuple<>> queryUserAddressByUserId(unsigned long userId);
+	std::vector<std::tuple<>> queryContactInfoByUserId(unsigned long userId);
+
+	/*
+	 */
+	template<typename AccountType>
+	void createUserAndGenerageUserId(std::string userName, std::string password)
+	{
+		std::ostringstream ostr;
+		// does the user exist
+		ostr << "SELECT * FROM User WHERE name=''";
+		std::string query = ostr.str();
+		if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+			throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
+		QueryResult findResult = mysql_store_result(m_mysqlConnection);
+		auto isExist = findResult.fetch_a_row();
+		if(!isExist.empty())
+			throw AccountAlreadyExistError("Faild to create, " + userName + " already exist");
+
+		// insert into database
+		std::string type = (typeid(AccountType) == typeid(CustomerAccount)) ? "customer" : "merchant";
+		ostr << "INSERT INTO User (name, password, userType) VALUES ('" << userName << "', '" << password << "', '" << type << "')";
+		query = ostr.str();
+		if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+			throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
+	}
+
+	/*
+	 */
+	void updateUserPassword(std::string userName, std::string password);
 
 private:
 	DatabaseConnection();

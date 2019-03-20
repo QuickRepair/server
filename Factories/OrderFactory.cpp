@@ -1,6 +1,6 @@
 #include "OrderFactory.h"
 #include "OrderStateFactories/OrderStateAbstractFactory.h"
-#include "Database/DatabaseConnection.h"
+#include "Database/DatabaseConnection.hpp"
 #include "Database/OrderStateParameters.h"
 #include "../Order/Order.h"
 #include "../Order/OrderStates/OrderState.h"

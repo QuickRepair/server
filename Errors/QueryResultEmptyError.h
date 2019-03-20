@@ -10,10 +10,10 @@
 #include <exception>
 #include <string>
 
-class QueryResultEmpty : public std::exception {
+class QueryResultEmptyError : public std::exception {
 public:
-	explicit QueryResultEmpty(std::string error);
-	~QueryResultEmpty() override = default;
+	explicit QueryResultEmptyError(std::string error);
+	~QueryResultEmptyError() override = default;
 
 	const char* what() const noexcept override;
 

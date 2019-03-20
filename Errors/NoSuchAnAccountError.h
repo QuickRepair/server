@@ -8,10 +8,10 @@
 #include <exception>
 #include <string>
 
-class NoSuchAnAccount : public std::exception {
+class NoSuchAnAccountError : public std::exception {
 public:
-    explicit NoSuchAnAccount(std::string error);
-    ~NoSuchAnAccount() override = default;
+    explicit NoSuchAnAccountError(std::string error);
+    ~NoSuchAnAccountError() override = default;
 
     const char* what() const noexcept override;
 
