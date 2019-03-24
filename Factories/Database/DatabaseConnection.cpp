@@ -1,4 +1,4 @@
-#include "DatabaseConnection.hpp"
+#include "DatabaseConnection.h"
 #include "QueryResult.h"
 #include "../../Account/ContactInformation.h"
 #include "OrderStateParameters.h"
@@ -16,10 +16,10 @@
 #include <sstream>
 #include <chrono>
 
-using std::string;			using std::runtime_error;
-using std::tuple;			using std::istringstream;
-using std::ostringstream;	using std::shared_ptr;
-using std::make_shared;
+using std::string;						using std::runtime_error;
+using std::tuple;						using std::istringstream;
+using std::ostringstream;				using std::shared_ptr;
+using std::make_shared;					using std::list;
 
 MYSQL * DatabaseConnection::m_mysqlConnection;
 
@@ -58,7 +58,7 @@ std::tuple<ContactInformation, std::string, unsigned long, unsigned long>
 		throw DatabaseInternalError("Query Order by id error, " + string(mysql_error(m_mysqlConnection)));
 
 	QueryResult result = mysql_store_result(m_mysqlConnection);
-	auto res = result.fetch_a_row();
+	auto res = result.fetchRow();
 	if(res.empty())
 		throw QueryResultEmptyError("Query Order by id empty");
 
@@ -81,7 +81,7 @@ std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
 
 	//save result
 	QueryResult result = mysql_store_result(m_mysqlConnection);
-	auto res = result.fetch_a_row();
+	auto res = result.fetchRow();
 	if(res.empty())
 		throw QueryResultEmptyError("Query Order state by id empty, ");
 
@@ -114,7 +114,7 @@ DatabaseConnection::queryOrderStateByOrderIdAndLastStateId(unsigned long orderId
 		throw DatabaseInternalError("Query Order state by id, " + string(mysql_error(m_mysqlConnection)));
 
 	QueryResult result = mysql_store_result(m_mysqlConnection);
-	auto res = result.fetch_a_row();
+	auto res = result.fetchRow();
 	std::shared_ptr<OrderStateAbstractFactory> factory = nullptr;
 	OrderStateParameters parameters;
 	if(res.empty())
@@ -140,33 +140,33 @@ DatabaseConnection::queryOrderStateByOrderIdAndLastStateId(unsigned long orderId
 	return tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>(factory, parameters);
 }
 
-std::tuple<unsigned long, std::string, std::string, std::string> DatabaseConnection::checkPasswordAndGetUserInfo(
-		std::string account, std::string password)
+
+unsigned long DatabaseConnection::checkMerchantPasswordAndGetId(std::string account, std::string password)
+{
+	return checkPasswordAndGetId(std::move(account), std::move(password), "merchant");
+}
+
+unsigned long DatabaseConnection::checkCustomerPasswordAndGetId(std::string account, std::string password)
+{
+	return checkPasswordAndGetId(std::move(account), std::move(password), "customer");
+}
+
+unsigned long DatabaseConnection::checkPasswordAndGetId(std::string account, std::string password, std::string accountType)
 {
 	// query
 	ostringstream ostr;
-	ostr << "SELECT * FROM user WHERE account='" << account << "' AND password='" << password << "'";
+	ostr << "SELECT * FROM " << accountType << " WHERE account='" << account << "' AND password='" << password << "'";
 	string query = ostr.str();
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Check password, " + string(mysql_error(m_mysqlConnection)));
 
 	// get result
 	QueryResult result = mysql_store_result(m_mysqlConnection);
-	auto res = result.fetch_a_row();
-	unsigned long id;
-	std::string name;
-	std::string userPassword;
-	std::string queryAccount;
+	auto res = result.fetchRow();
 	if(res.empty())
-		throw PasswordNotRightError("Check password and get info empty");
-	else
-	{
-		id = toUnsignedLong(res[0]);
-		name = res[1];
-		userPassword = res[2];
-		queryAccount = res[3];
-	}
-	return tuple<unsigned long, std::string, std::string, std::string>(id, name, userPassword, queryAccount);
+		throw PasswordNotRightError("Not right password");
+	unsigned long id = toUnsignedLong(res[0]);
+	return id;
 }
 
 std::vector<std::tuple<>> DatabaseConnection::queryContactInfoByUserId(unsigned long userId)
@@ -175,22 +175,89 @@ std::vector<std::tuple<>> DatabaseConnection::queryContactInfoByUserId(unsigned 
 	return std::vector<std::tuple<>>();
 }
 
-void DatabaseConnection::updateUserPassword(std::string account, std::string password)
+void DatabaseConnection::createMerchantAccount(std::string account, std::string password)
 {
-	//TODO:update user type
-	
-	// update password
+	createAccount(std::move(account), std::move(password), "merchant");
+}
+
+void DatabaseConnection::createCustomerAccount(std::string account, std::string password)
+{
+	createAccount(std::move(account), std::move(password), "customer");
+}
+
+void DatabaseConnection::createAccount(std::string account, std::string password, std::string accountType)
+{
+	// does the user exist
+	std::string query =  "SELECT * FROM " + accountType + " WHERE account='" + account + "'";
+	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+		throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
+	QueryResult findResult = mysql_store_result(m_mysqlConnection);
+	auto isExist = findResult.fetchRow();
+	if(!isExist.empty())
+		throw AccountAlreadyExistError("Faild to create, " + account + " already exist");
+
+	// insert into database
+	query = "INSERT INTO " + accountType + " (account, password) VALUES ('" + account + "', '" + password + "')";
+	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+		throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
+}
+
+void DatabaseConnection::updateMerchantAccountPassword(std::string account, std::string password)
+{
+	updateAccount(std::move(account), std::move(password), "merchant");
+}
+
+void DatabaseConnection::updateCustomerAccountPassword(std::string account, std::string password)
+{
+	updateAccount(std::move(account), std::move(password), "customer");
+}
+
+void DatabaseConnection::updateAccount(std::string account, std::string password, std::string accountType)
+{
 	ostringstream ostr;
-	ostr << "update user set password='" + password + "' where account='" + account + "'";
+	ostr << "UPDATE " << accountType << " SET password='" << password << "' WHERE account='" << account << "'";
 	string query = ostr.str();
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Update password, " + string(mysql_error(m_mysqlConnection)));
+}
+
+std::tuple<std::list<std::string>, int> DatabaseConnection::queryMerchantServiceType(unsigned long id)
+{
+	// query supported types
+	ostringstream ostr;
+	ostr << "SELECT service_max_distance FROM merchant WHERE id=" << id
+		<< " UNION SELECT type FROM merchant_service_type WHERE merchant_id=" << id;
+	string query = ostr.str();
+	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+		throw DatabaseInternalError("Query merchant service type, " + string(mysql_error(m_mysqlConnection)));
+
+	// get result
+	QueryResult result = mysql_store_result(m_mysqlConnection);
+	auto res = result.fetchAllRows();
+
+	list<string> supportedTypes;
+	if(res.empty())
+		throw QueryResultEmptyError("Find empty result for merchant service type");
+
+	int maxDistance = toInt(res[0]);
+	for(unsigned i = 1; i != res.size(); ++i)
+		supportedTypes.push_back(res[i]);
+
+	return tuple<list<string>, int>(supportedTypes, maxDistance);
 }
 
 unsigned long DatabaseConnection::toUnsignedLong(std::string str)
 {
 	istringstream is(str);
 	unsigned long ret{0};
+	is >> ret;
+	return ret;
+}
+
+int DatabaseConnection::toInt(std::string str)
+{
+	istringstream is(str);
+	int ret{0};
 	is >> ret;
 	return ret;
 }

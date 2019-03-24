@@ -44,7 +44,13 @@ std::list<std::weak_ptr<Order>> MerchantAccount::myOrders() const
 
 std::weak_ptr<MerchantServiceType> MerchantAccount::supportedServiceType()
 {
-	return m_serverType;
+	return m_serviceType;
+}
+
+void MerchantAccount::updateSupportedService(std::list<std::string> appliancType, int maxDistance)
+{
+	m_serviceType->setMaxRepairDistance(maxDistance);
+	m_serviceType->setSupportApplianceType(appliancType);
 }
 
 void MerchantAccount::loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info)
@@ -59,4 +65,9 @@ void MerchantAccount::loadOrders(std::list<std::weak_ptr<Order>> orders)
 	m_orders.clear();
 	for(auto &element : orders)
 		m_orders.push_back(element);
+}
+
+void MerchantAccount::loadServiceType(std::shared_ptr<MerchantServiceType> service)
+{
+	m_serviceType = std::move(service);
 }

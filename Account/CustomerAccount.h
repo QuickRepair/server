@@ -10,12 +10,11 @@ class Order;
 class OrderFactory;
 class AcceptableOrderPriceRange;
 class OrderEvaluate;
-template<typename UserType>
-class UserFactory;
 
 class CustomerAccount : public Account
 {
-	friend class UserFactory<CustomerAccount>;
+	friend class CustomerFactory;
+
 public:
     CustomerAccount(unsigned long id, std::string account, std::string password);
 

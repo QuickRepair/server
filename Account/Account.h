@@ -21,8 +21,8 @@ public:
 	void setId(unsigned long id);
 	const std::string &password() const;
 	void setPassword(const std::string &password);
-	const std::string &userName() const;
-	void setUserName(const std::string &userName);
+	const std::string &account() const;
+	void setAccount(const std::string &userName);
 
 protected:
 	virtual void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) = 0;

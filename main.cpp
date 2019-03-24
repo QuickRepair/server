@@ -1,10 +1,11 @@
 #include <iostream>
 #include <memory>
-#include "Managers/AccountManager.hpp"
+#include "Managers/AccountManager.h"
 #include "Managers/OrderManager.h"
 #include "RestServer/RestHandler.h"
 #include "Managers/AuthenticationCarrier/AuthenticationToScreen.h"
 #include "Configuration/Configure.h"
+#include "Factories/Database/DatabaseConnection.h"
 
 using std::shared_ptr;			using std::make_shared;
 using std::cout;				using std::runtime_error;
@@ -24,8 +25,8 @@ int main()
 		while (true)
 			continue;
 		/*OrderFactory orderFactory;
-		UserFactory<CustomerAccount> customerFactory;
-		UserFactory<MerchantAccount> merchantFactory;
+		AccountFactory<CustomerAccount> customerFactory;
+		AccountFactory<MerchantAccount> merchantFactory;
 
 		shared_ptr<CustomerAccount> committer = customerFactory.createOrUpdateUser("a", "b");
 
@@ -36,7 +37,7 @@ int main()
 		//check password
 		std::string userName;
 		std::string password;
-		AccountManager::getInstance().accountAuthentication<MerchantAccount>(userName, password);
+		AccountManager::getInstance().accountAuthentication<MerchantAccount>(account, password);
 
 		//get merchant list
 		for(auto &merchants : AccountManager::getInstance().getMerchantList())

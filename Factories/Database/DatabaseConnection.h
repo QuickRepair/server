@@ -37,48 +37,42 @@ public:
 	std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
 		queryOrderStateByOrderIdAndLastStateId(unsigned long orderId, unsigned long lastState);
 
-	/* in std::tuple<unsigned long, std::string, std::string, std::string>
-	 * 0 unsigned long for id
-	 * 1 std::string for account
-	 * 2 std::string for password
-	 * 3 std::string for userName
+	/* check password, if password is right,
+	 * return id
 	 */
-	std::tuple<unsigned long, std::string, std::string, std::string> checkPasswordAndGetUserInfo(std::string account, std::string password);
+	unsigned long checkMerchantPasswordAndGetId(std::string account, std::string password);
+	unsigned long checkCustomerPasswordAndGetId(std::string account, std::string password);
 	std::vector<std::tuple<>> queryContactInfoByUserId(unsigned long userId);
 
-	/*
+	/* create new account by giving account and password
 	 */
-	template<typename AccountType>
-	void createUserAndGenerageUserId(std::string account, std::string password)
-	{
-		// does the user exist
-		std::string query =  "SELECT * FROM user WHERE account='" + account + "'";
-		if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
-			throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
-		QueryResult findResult = mysql_store_result(m_mysqlConnection);
-		auto isExist = findResult.fetch_a_row();
-		if(!isExist.empty())
-			throw AccountAlreadyExistError("Faild to create, " + account + " already exist");
+	void createMerchantAccount(std::string account, std::string password);
+	void createCustomerAccount(std::string account, std::string password);
 
-		// insert into database
-		std::string type = (typeid(AccountType) == typeid(CustomerAccount)) ? "customer" : "merchant";
-		query = "INSERT INTO user (account, password, user_type) VALUES ('" + account + "', '" + password + "', '" + type + "')";
-		if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
-			throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
-	}
-
-	/*
+	/* update account password
 	 */
-	void updateUserPassword(std::string account, std::string password);
+	void updateMerchantAccountPassword(std::string account, std::string password);
+	void updateCustomerAccountPassword(std::string account, std::string password);
+
+	/* Query merchant service type by merchant id
+	 * return type:
+	 * 0 std::list<std::string>> for supported types
+	 * 1 int for max repair distance
+	 */
+	std::tuple<std::list<std::string>, int> queryMerchantServiceType(unsigned long id);
 
 private:
 	DatabaseConnection();
 	~DatabaseConnection();
 
 	unsigned long toUnsignedLong(std::string str);
+	int toInt(std::string str);
 	double toDouble(std::string str);
 	std::chrono::system_clock::time_point toTimePoint(std::string str);
 	std::shared_ptr<OrderStateAbstractFactory> findFactory(std::string orderType);
+	void createAccount(std::string account, std::string password, std::string accountType);
+	void updateAccount(std::string account, std::string password, std::string accountType);
+	unsigned long checkPasswordAndGetId(std::string account, std::string password, std::string accountType);
 
 	static MYSQL *m_mysqlConnection;
 };

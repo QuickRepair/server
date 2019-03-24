@@ -14,7 +14,8 @@ public:
 	QueryResult(MYSQL_RES *res);
 	~QueryResult();
 
-	std::vector<std::string> fetch_a_row();
+	std::vector<std::string> fetchRow();
+	std::vector<std::string> fetchAllRows();
 
 private:
 	MYSQL_RES *m_result;

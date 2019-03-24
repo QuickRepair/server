@@ -22,10 +22,10 @@ void Account::setPassword(const string &password) {
     m_password = password;
 }
 
-const string &Account::userName() const {
+const string &Account::account() const {
     return m_account;
 }
 
-void Account::setUserName(const string &userName) {
+void Account::setAccount(const string &userName) {
     m_account = userName;
 }

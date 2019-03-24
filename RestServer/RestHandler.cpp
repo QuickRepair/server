@@ -3,7 +3,7 @@
 //
 
 #include "RestHandler.h"
-#include "../Managers/AccountManager.hpp"
+#include "../Managers/AccountManager.h"
 
 using web::http::methods;			using std::bind;
 using web::uri;						using std::map;

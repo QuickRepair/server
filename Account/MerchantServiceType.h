@@ -7,14 +7,17 @@
 class MerchantServiceType
 {
 public:
-    MerchantServiceType() = default;
+    MerchantServiceType(std::list<std::string> supportList, int maxDistance);
 
     std::list<std::string> supportApplianceType() const;
-    void removeSupportApplianceType(std::string type);
-    void addSupportApplianceType(std::string type);
+    void setSupportApplianceType(std::list<std::string> types);
+
+    int maxRepairDistance() const;
+    void setMaxRepairDistance(int distance);
 
 private:
 	std::list<std::string> mSupportApplianceTypes;
+	int mMaxRepairDistance;
 };
 
 #endif // MERCHANTSERVERTYPE_H
