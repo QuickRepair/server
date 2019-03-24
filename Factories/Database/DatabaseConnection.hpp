@@ -22,7 +22,6 @@ public:
 
 	static DatabaseConnection &getInstance();
 
-	//void test();
 	/* 1 std::string for detail
 	 * 2 unsigned long for Order id
 	 * 3 unsigned long for Order state id
@@ -39,41 +38,38 @@ public:
 		queryOrderStateByOrderIdAndLastStateId(unsigned long orderId, unsigned long lastState);
 
 	/* in std::tuple<unsigned long, std::string, std::string, std::string>
-	 * 0 unsigned long for Account id
-	 * 1 std::string for name
+	 * 0 unsigned long for id
+	 * 1 std::string for account
 	 * 2 std::string for password
 	 * 3 std::string for userName
 	 */
-	std::tuple<unsigned long, std::string, std::string, std::string> checkPasswordAndGetUserInfo(std::string userName, std::string password);
+	std::tuple<unsigned long, std::string, std::string, std::string> checkPasswordAndGetUserInfo(std::string account, std::string password);
 	std::vector<std::tuple<>> queryContactInfoByUserId(unsigned long userId);
 
 	/*
 	 */
 	template<typename AccountType>
-	void createUserAndGenerageUserId(std::string userName, std::string password)
+	void createUserAndGenerageUserId(std::string account, std::string password)
 	{
-		std::ostringstream ostr;
 		// does the user exist
-		ostr << "SELECT * FROM User WHERE name=''";
-		std::string query = ostr.str();
+		std::string query =  "SELECT * FROM user WHERE account='" + account + "'";
 		if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 			throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
 		QueryResult findResult = mysql_store_result(m_mysqlConnection);
 		auto isExist = findResult.fetch_a_row();
 		if(!isExist.empty())
-			throw AccountAlreadyExistError("Faild to create, " + userName + " already exist");
+			throw AccountAlreadyExistError("Faild to create, " + account + " already exist");
 
 		// insert into database
 		std::string type = (typeid(AccountType) == typeid(CustomerAccount)) ? "customer" : "merchant";
-		ostr << "INSERT INTO User (name, password, userType) VALUES ('" << userName << "', '" << password << "', '" << type << "')";
-		query = ostr.str();
+		query = "INSERT INTO user (account, password, user_type) VALUES ('" + account + "', '" + password + "', '" + type + "')";
 		if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 			throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
 	}
 
 	/*
 	 */
-	void updateUserPassword(std::string userName, std::string password);
+	void updateUserPassword(std::string account, std::string password);
 
 private:
 	DatabaseConnection();

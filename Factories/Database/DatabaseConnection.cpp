@@ -141,11 +141,11 @@ DatabaseConnection::queryOrderStateByOrderIdAndLastStateId(unsigned long orderId
 }
 
 std::tuple<unsigned long, std::string, std::string, std::string> DatabaseConnection::checkPasswordAndGetUserInfo(
-		std::string userName, std::string password)
+		std::string account, std::string password)
 {
 	// query
 	ostringstream ostr;
-	ostr << "SELECT * FROM Account WHERE userName='" << userName << "' AND password='" << password << "'";
+	ostr << "SELECT * FROM user WHERE account='" << account << "' AND password='" << password << "'";
 	string query = ostr.str();
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Check password, " + string(mysql_error(m_mysqlConnection)));
@@ -156,7 +156,7 @@ std::tuple<unsigned long, std::string, std::string, std::string> DatabaseConnect
 	unsigned long id;
 	std::string name;
 	std::string userPassword;
-	std::string queryUserName;
+	std::string queryAccount;
 	if(res.empty())
 		throw PasswordNotRightError("Check password and get info empty");
 	else
@@ -164,9 +164,9 @@ std::tuple<unsigned long, std::string, std::string, std::string> DatabaseConnect
 		id = toUnsignedLong(res[0]);
 		name = res[1];
 		userPassword = res[2];
-		queryUserName = res[3];
+		queryAccount = res[3];
 	}
-	return tuple<unsigned long, std::string, std::string, std::string>(id, name, userPassword, queryUserName);
+	return tuple<unsigned long, std::string, std::string, std::string>(id, name, userPassword, queryAccount);
 }
 
 std::vector<std::tuple<>> DatabaseConnection::queryContactInfoByUserId(unsigned long userId)
@@ -175,11 +175,13 @@ std::vector<std::tuple<>> DatabaseConnection::queryContactInfoByUserId(unsigned 
 	return std::vector<std::tuple<>>();
 }
 
-void DatabaseConnection::updateUserPassword(std::string userName, std::string password)
+void DatabaseConnection::updateUserPassword(std::string account, std::string password)
 {
+	//TODO:update user type
+	
 	// update password
 	ostringstream ostr;
-	ostr << "update User set password='" + password + "' where name='" + userName + "'";
+	ostr << "update user set password='" + password + "' where account='" + account + "'";
 	string query = ostr.str();
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Update password, " + string(mysql_error(m_mysqlConnection)));

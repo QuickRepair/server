@@ -13,10 +13,10 @@
 template<typename UserType>
 class UserFactory {
 public:
-	static std::shared_ptr<UserType> readUser(std::string userName, std::string password)
+	static std::shared_ptr<UserType> readUser(std::string account, std::string password)
 	{
-		auto info = DatabaseConnection::getInstance().checkPasswordAndGetUserInfo(userName, password);
-		std::shared_ptr<UserType> loginUser = std::make_shared<UserType>(std::get<0>(info), userName, password);
+		auto info = DatabaseConnection::getInstance().checkPasswordAndGetUserInfo(account, password);
+		std::shared_ptr<UserType> loginUser = std::make_shared<UserType>(std::get<0>(info), account, password);
 
 		auto contactInformation = DatabaseConnection::getInstance().queryContactInfoByUserId(loginUser->id());
 		std::list<std::shared_ptr<ContactInformation>> contact;
@@ -25,17 +25,17 @@ public:
 		return loginUser;
 	}
 
-	static std::shared_ptr<UserType> createOrUpdateUser(std::string userName, std::string password)
+	static std::shared_ptr<UserType> createOrUpdateUser(std::string account, std::string password)
 	{
 		// create or update
 		try {
-			DatabaseConnection::getInstance().createUserAndGenerageUserId<UserType>(userName, password);
+			DatabaseConnection::getInstance().createUserAndGenerageUserId<UserType>(account, password);
 		} catch (AccountAlreadyExistError &e) {
-			DatabaseConnection::getInstance().updateUserPassword(userName, password);
+			DatabaseConnection::getInstance().updateUserPassword(account, password);
 		}
 
 		// load user
-		return readUser(userName, password);
+		return readUser(account, password);
 	}
 };
 

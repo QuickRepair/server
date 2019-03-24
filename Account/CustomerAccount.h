@@ -17,7 +17,7 @@ class CustomerAccount : public Account
 {
 	friend class UserFactory<CustomerAccount>;
 public:
-    CustomerAccount(unsigned long id, std::string userName, std::string password);
+    CustomerAccount(unsigned long id, std::string account, std::string password);
 
 	void iAmPublishAnOrder(std::weak_ptr<Order> order);
     void cancelOrder(std::weak_ptr<Order> order);

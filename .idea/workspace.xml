@@ -12,18 +12,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aae37a70-6d39-49a9-9d00-f0926ca8b27c" name="Default Changelist" comment="账户管理中创建账户实例的基本逻辑完成，在数据库中以异常为判断依据确定查询情况，重构代码结构及命名">
-      <change afterPath="$PROJECT_DIR$/Configuration/Configure.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Configuration/Configure.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Errors/AccountAlreadyExistError.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Errors/AccountAlreadyExistError.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Managers/AuthenticationCarrier/AuthenticationCarrier.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Managers/AuthenticationCarrier/AuthenticationCarrier.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Managers/AuthenticationCarrier/AuthenticationToScreen.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Managers/AuthenticationCarrier/AuthenticationToScreen.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Managers/InstructionsAnalyser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RestServer/RestHandler.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RestServer/RestHandler.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Account/Account.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Account/Account.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Account/Account.h" beforeDir="false" afterPath="$PROJECT_DIR$/Account/Account.h" afterDir="false" />
@@ -31,27 +19,15 @@
       <change beforePath="$PROJECT_DIR$/Account/CustomerAccount.h" beforeDir="false" afterPath="$PROJECT_DIR$/Account/CustomerAccount.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Account/MerchantAccount.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Account/MerchantAccount.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Account/MerchantAccount.h" beforeDir="false" afterPath="$PROJECT_DIR$/Account/MerchantAccount.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/NoSuchAnAccount.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/NoSuchAnAccountError.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/NoSuchAnAccount.h" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/NoSuchAnAccountError.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/PasswordNotRight.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/PasswordNotRightError.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/PasswordNotRight.h" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/PasswordNotRightError.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/ResultEmpty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/QueryResultEmptyError.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/ResultEmpty.h" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/QueryResultEmptyError.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Account/MerchantServiceType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Account/MerchantServiceType.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Account/MerchantServiceType.h" beforeDir="false" afterPath="$PROJECT_DIR$/Account/MerchantServiceType.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.h" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Factories/OrderFactory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/OrderFactory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Factories/UserFactory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Factories/UserFactory.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Managers/AccountManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Managers/AccountManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Managers/AccountManager.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Managers/AccountManager.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Network/jsonAnalyser.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Network/jsonAnalyser.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Network/networkconnection.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Network/networkconnection.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Network/networkserver.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Network/networkserver.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Managers/InstructionsAnalyser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Managers/InstructionsAnalyser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RestServer/RestHandler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/RestServer/RestHandler.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -62,41 +38,14 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.42777434">
+    <splitter split-orientation="horizontal" split-proportion="0.41737032">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/RestServer/RestHandler.cpp">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="972">
-                  <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
-                  <folding>
-                    <element signature="e#41#65#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Managers/AccountManager.hpp">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="576">
-                  <caret line="32" column="9" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
-                  <folding>
-                    <element signature="e#100#115#0" expanded="true" />
-                    <element signature="e#756#778#0" expanded="true" />
-                    <element signature="e#820#842#0" expanded="true" />
-                    <element signature="e#2707#2729#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="360">
-                  <caret line="20" selection-start-line="20" selection-end-line="20" />
+                <state relative-caret-position="1746">
+                  <caret line="97" column="32" selection-start-line="97" selection-start-column="32" selection-end-line="97" selection-end-column="32" />
                   <folding>
                     <element signature="e#41#74#0" expanded="true" />
                   </folding>
@@ -105,34 +54,13 @@
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Configuration/Configure.h">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="450">
-                  <caret line="25" column="19" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/RestServer/RestHandler.h">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="252">
-                  <caret line="14" selection-start-line="14" selection-end-line="14" />
-                  <folding>
-                    <element signature="e#106#140#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="396">
-                  <caret line="22" column="45" selection-start-line="22" selection-start-column="45" selection-end-line="22" selection-end-column="45" />
+                <state relative-caret-position="864">
+                  <caret line="48" column="6" selection-start-line="48" selection-start-column="6" selection-end-line="48" selection-end-column="6" />
                   <folding>
                     <element signature="e#47#73#0" expanded="true" />
-                    <element signature="e#1499#1521#0" expanded="true" />
+                    <element signature="e#1811#1833#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -141,8 +69,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Factories/UserFactory.hpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="198">
-                  <caret line="11" selection-start-line="11" selection-end-line="11" />
+                <state relative-caret-position="756">
+                  <caret line="42" selection-start-line="42" selection-end-line="42" />
                   <folding>
                     <element signature="e#53#95#0" expanded="true" />
                     <element signature="e#306#325#0" expanded="true" />
@@ -151,13 +79,25 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/main.cpp">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Account/MerchantServiceType.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="810">
-                  <caret line="45" column="35" lean-forward="true" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
+                <state relative-caret-position="180">
+                  <caret line="10" selection-start-line="10" selection-end-line="10" />
                   <folding>
-                    <element signature="e#0#19#0" expanded="true" />
+                    <element signature="e#59#74#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="648">
+                  <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+                  <folding>
+                    <element signature="e#53#73#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -167,20 +107,56 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/Configuration/Configure.cpp">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="558">
-                  <caret line="31" column="1" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
+                <state relative-caret-position="3114">
+                  <caret line="173" column="19" selection-start-line="173" selection-start-column="19" selection-end-line="173" selection-end-column="19" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="450">
+                  <caret line="43" selection-start-line="43" selection-end-line="43" />
+                  <folding>
+                    <element signature="e#0#28#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp">
+            <entry file="file://$PROJECT_DIR$/Account/Account.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="936">
-                  <caret line="52" column="1" selection-start-line="52" selection-start-column="1" selection-end-line="52" selection-end-column="1" />
+                <state relative-caret-position="558">
+                  <caret line="31" column="26" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
+                  <folding>
+                    <element signature="e#31#48#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Account/Account.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="216">
+                  <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Account/MerchantServiceType.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="324">
+                  <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
+                  <folding>
+                    <element signature="e#0#32#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -206,6 +182,9 @@
       <find>make_shared</find>
       <find>data</find>
       <find>passwordnot</find>
+      <find>json</find>
+      <find>doGetList</find>
+      <find>userName</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -219,9 +198,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/factories/database/databaseconnection.h" />
-        <option value="$PROJECT_DIR$/account/account.cpp" />
-        <option value="$PROJECT_DIR$/factories/userfactory.hpp" />
         <option value="$PROJECT_DIR$/account/account.h" />
         <option value="$PROJECT_DIR$/managers/accountmanager.h" />
         <option value="$PROJECT_DIR$/account/MerchantServiceType.h" />
@@ -241,7 +217,6 @@
         <option value="$PROJECT_DIR$/Errors/NoSuchAnAccount.cpp" />
         <option value="$PROJECT_DIR$/Managers/AccountManager.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/Managers/InstructionsAnalyser.h" />
         <option value="$PROJECT_DIR$/Errors/QueryResultEmptyError.h" />
         <option value="$PROJECT_DIR$/Errors/UnacceptableInstructionError.h" />
         <option value="$PROJECT_DIR$/Errors/UnacceptableInstructionError.cpp" />
@@ -250,26 +225,30 @@
         <option value="$PROJECT_DIR$/Managers/AuthenticationCarrier/AuthenticationToScreen.h" />
         <option value="$PROJECT_DIR$/Managers/AuthenticationCarrier/AuthenticationCarrier.h" />
         <option value="$PROJECT_DIR$/Managers/AccountManager.cpp" />
-        <option value="$PROJECT_DIR$/Account/Account.h" />
-        <option value="$PROJECT_DIR$/Account/Account.cpp" />
-        <option value="$PROJECT_DIR$/Account/CustomerAccount.h" />
-        <option value="$PROJECT_DIR$/Account/MerchantAccount.cpp" />
-        <option value="$PROJECT_DIR$/Account/CustomerAccount.cpp" />
-        <option value="$PROJECT_DIR$/Account/MerchantAccount.h" />
-        <option value="$PROJECT_DIR$/Managers/AccountManager.hpp" />
         <option value="$PROJECT_DIR$/Errors/AccountAlreadyExistError.h" />
         <option value="$PROJECT_DIR$/Errors/AccountAlreadyExistError.cpp" />
         <option value="$PROJECT_DIR$/Factories/Database/DatabaseConnection.h" />
-        <option value="$PROJECT_DIR$/Factories/UserFactory.hpp" />
-        <option value="$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp" />
         <option value="$PROJECT_DIR$/Network/RestHandler.cpp" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp" />
-        <option value="$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp" />
         <option value="$PROJECT_DIR$/Configuration/Configure.h" />
         <option value="$PROJECT_DIR$/Configuration/Configure.cpp" />
         <option value="$PROJECT_DIR$/Network/RestHandler.h" />
         <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/Managers/AccountManager.hpp" />
+        <option value="$PROJECT_DIR$/Managers/InstructionsAnalyser.h" />
+        <option value="$PROJECT_DIR$/RestServer/RestHandler.cpp" />
+        <option value="$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp" />
+        <option value="$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp" />
+        <option value="$PROJECT_DIR$/Account/CustomerAccount.h" />
+        <option value="$PROJECT_DIR$/Account/CustomerAccount.cpp" />
+        <option value="$PROJECT_DIR$/Account/Account.cpp" />
+        <option value="$PROJECT_DIR$/Account/Account.h" />
+        <option value="$PROJECT_DIR$/Account/MerchantServiceType.h" />
+        <option value="$PROJECT_DIR$/Account/MerchantServiceType.cpp" />
+        <option value="$PROJECT_DIR$/Account/MerchantAccount.h" />
+        <option value="$PROJECT_DIR$/Account/MerchantAccount.cpp" />
+        <option value="$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp" />
+        <option value="$PROJECT_DIR$/Factories/UserFactory.hpp" />
       </list>
     </option>
   </component>
@@ -291,6 +270,11 @@
             <path>
               <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
               <item name="server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+              <item name="Account" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HARserver" type="b2602c69:ProjectViewProjectNode" />
@@ -394,11 +378,16 @@
       <workItem from="1552993832468" duration="8383000" />
       <workItem from="1553049197875" duration="16873000" />
       <workItem from="1553103312419" duration="317000" />
+      <workItem from="1553139348661" duration="1353000" />
+      <workItem from="1553228657333" duration="8488000" />
+      <workItem from="1553307498008" duration="14433000" />
+      <workItem from="1553353481805" duration="1766000" />
+      <workItem from="1553398514355" duration="262000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="80802000" />
+    <option name="totallyTimeSpent" value="107104000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -410,25 +399,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="762" y="282" width="1932" height="1064" extended-state="6" />
+    <frame x="768" y="286" width="1920" height="1050" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14217253" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1171459" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32939914" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.38948497" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39914164" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.33583692" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.30364805" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32939914" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Messages" order="8" weight="0.28540772" />
+      <window_info anchor="bottom" id="Messages" order="8" weight="0.37017167" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.32939914" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" weight="0.32939914" />
       <window_info anchor="bottom" id="CMake" order="12" weight="0.32939914" />
-      <window_info anchor="bottom" id="Statistic" order="13" weight="0.38197425" />
+      <window_info anchor="bottom" id="Statistic" order="13" weight="0.38733906" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -438,56 +428,18 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Factories/OrderStateFactories/OrderUnreceivedStateFactory.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Factories/OrderFactory.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://JavaScript-modules-diagram//home/gaojian/data/QuickRepair/server">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>JavaScript-modules-diagram</ID>
-          <OriginalElement>$PROJECT_DIR$</OriginalElement>
-          <nodes />
-          <notes />
-          <edges />
-          <settings layout="Hierarchic Group" zoom="1.0" x="358.0" y="440.0" />
-          <SelectedNodes />
-          <Categories>
-            <Category>All</Category>
-          </Categories>
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>Details</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Errors/NoSuchAnAccountError.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Managers/OrderManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="32" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
-          <folding>
-            <element signature="e#65#82#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Order/Order.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
@@ -603,27 +555,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Managers/AccountManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-          <folding>
-            <element signature="e#41#70#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LICENSE">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="199">
           <caret line="296" column="5" selection-start-line="296" selection-start-column="5" selection-end-line="296" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Account/Account.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
@@ -633,56 +568,6 @@
           <caret line="16" column="30" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
           <folding>
             <element signature="e#59#76#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Account/CustomerAccount.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Account/Account.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-          <folding>
-            <element signature="e#31#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="e#53#73#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Account/CustomerAccount.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="e#53#73#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -724,16 +609,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Managers/InstructionsAnalyser.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
-          <folding>
-            <element signature="e#124#138#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Errors/PasswordNotRightError.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -758,35 +633,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RestServer/RestHandler.cpp">
+    <entry file="file://$PROJECT_DIR$/Configuration/Configure.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="972">
-          <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
-          <folding>
-            <element signature="e#41#65#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="45">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Managers/AccountManager.hpp">
+    <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="32" column="9" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+        <state relative-caret-position="324">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
           <folding>
-            <element signature="e#100#115#0" expanded="true" />
-            <element signature="e#756#778#0" expanded="true" />
-            <element signature="e#820#842#0" expanded="true" />
-            <element signature="e#2707#2729#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="e#41#74#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -800,29 +659,120 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/RestServer/RestHandler.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        <state relative-caret-position="306">
+          <caret line="17" column="28" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
           <folding>
             <element signature="e#106#140#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/include/c++/8.2.1/bits/invoke.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1296">
+          <caret line="72" selection-start-line="72" selection-end-line="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/8.2.1/bits/basic_string.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="2313" selection-start-line="2313" selection-end-line="2313" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/AccountManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+          <folding>
+            <element signature="e#41#70#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RestServer/RestHandler.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="18" column="25" lean-forward="true" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+          <folding>
+            <element signature="e#41#65#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/AccountManager.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
+          <folding>
+            <element signature="e#100#115#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/InstructionsAnalyser.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="2" lean-forward="true" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
+          <folding>
+            <element signature="e#124#138#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/CustomerAccount.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="13" selection-start-line="13" selection-end-line="13" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/CustomerAccount.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="e#53#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/8.2.1/bits/stl_list.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="962" selection-start-line="962" selection-end-line="962" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Managers/InstructionsAnalyser.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1746">
+          <caret line="97" column="32" selection-start-line="97" selection-start-column="32" selection-end-line="97" selection-end-column="32" />
+          <folding>
+            <element signature="e#41#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="22" column="45" selection-start-line="22" selection-start-column="45" selection-end-line="22" selection-end-column="45" />
+        <state relative-caret-position="864">
+          <caret line="48" column="6" selection-start-line="48" selection-start-column="6" selection-end-line="48" selection-end-column="6" />
           <folding>
             <element signature="e#47#73#0" expanded="true" />
-            <element signature="e#1499#1521#0" expanded="true" />
+            <element signature="e#1811#1833#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Factories/UserFactory.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="756">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
           <folding>
             <element signature="e#53#95#0" expanded="true" />
             <element signature="e#306#325#0" expanded="true" />
@@ -830,26 +780,66 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Configuration/Configure.cpp">
+    <entry file="file://$PROJECT_DIR$/Account/MerchantServiceType.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="31" column="1" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
+        <state relative-caret-position="180">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#59#74#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Factories/Database/DatabaseConnection.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="936">
-          <caret line="52" column="1" selection-start-line="52" selection-start-column="1" selection-end-line="52" selection-end-column="1" />
+        <state relative-caret-position="3114">
+          <caret line="173" column="19" selection-start-line="173" selection-start-column="19" selection-end-line="173" selection-end-column="19" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
+    <entry file="file://$PROJECT_DIR$/Account/Account.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="810">
-          <caret line="45" column="35" lean-forward="true" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
+        <state relative-caret-position="558">
+          <caret line="31" column="26" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#31#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/Account.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/MerchantServiceType.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="43" selection-start-line="43" selection-end-line="43" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Account/MerchantAccount.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+          <folding>
+            <element signature="e#53#73#0" expanded="true" />
           </folding>
         </state>
       </provider>

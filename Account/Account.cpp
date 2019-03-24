@@ -2,8 +2,8 @@
 
 using std::string;
 
-Account::Account(unsigned long id, std::string userName, std::string password)
-    : m_id{id}, m_password{std::move(password)}, m_userName{std::move(userName)}
+Account::Account(unsigned long id, std::string account, std::string password)
+    : m_id{id}, m_account{std::move(account)}, m_password{std::move(password)}
 {}
 
 unsigned long Account::id() const {
@@ -23,9 +23,9 @@ void Account::setPassword(const string &password) {
 }
 
 const string &Account::userName() const {
-    return m_userName;
+    return m_account;
 }
 
 void Account::setUserName(const string &userName) {
-    m_userName = userName;
+    m_account = userName;
 }

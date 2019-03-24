@@ -7,11 +7,17 @@
 
 #include <map>
 #include <cpprest/details/basic_types.h>
+#include <cpprest/json.h>
 
 class InstructionsAnalyser {
 public:
-	void instructionFromMap(std::map<utility::string_t, utility::string_t> instruction);
-	void instructionFromJson();
+	std::string instructionFromMap(std::map<utility::string_t, utility::string_t> instruction);
+	std::string instructionFromJson(web::json::value json);
+
+private:
+	std::string doGetVerification(std::map<utility::string_t, utility::string_t> &instruction);
+	std::string doLogin(web::json::object &object);
+	std::string doGetList(std::map<utility::string_t, utility::string_t> &instruction);
 };
 
 

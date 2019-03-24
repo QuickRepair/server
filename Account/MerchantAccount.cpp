@@ -6,8 +6,8 @@
 
 using std::weak_ptr;
 
-MerchantAccount::MerchantAccount(unsigned long id, std::string userName, std::string password)
-    :Account{id, std::move(password), std::move(userName)}
+MerchantAccount::MerchantAccount(unsigned long id, std::string account, std::string password)
+    :Account{id, std::move(account), std::move(password)}
 {}
 
 void MerchantAccount::acceptOrder(std::weak_ptr<Order> order)
@@ -31,11 +31,6 @@ void MerchantAccount::endRepair(std::weak_ptr<Order> order, double transaction)
 		order.lock()->endRepair(transaction);
 }
 
-std::weak_ptr<MerchantAccount> MerchantAccount::myConciseInfo()
-{
-	return shared_from_this();
-}
-
 bool MerchantAccount::isMyOrder(std::weak_ptr<Order> order) const
 {
 	return m_orders.end() != std::find_if(m_orders.begin(), m_orders.end(),
@@ -45,6 +40,11 @@ bool MerchantAccount::isMyOrder(std::weak_ptr<Order> order) const
 std::list<std::weak_ptr<Order>> MerchantAccount::myOrders() const
 {
 	return m_orders;
+}
+
+std::weak_ptr<MerchantServiceType> MerchantAccount::supportedServiceType()
+{
+	return m_serverType;
 }
 
 void MerchantAccount::loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info)

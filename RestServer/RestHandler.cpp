@@ -8,6 +8,7 @@
 using web::http::methods;			using std::bind;
 using web::uri;						using std::map;
 using std::make_shared;				using web::http::status_codes;
+using std::string;
 
 RestHandler::RestHandler(utility::string_t url)
     : m_listener{url}
@@ -30,14 +31,16 @@ RestHandler::~RestHandler()
 
 void RestHandler::handleGet(web::http::http_request msg)
 {
-	std::cout << msg.to_string() << std::endl;
+	//std::cout << msg.to_string() << std::endl;
 	// find get's parameters
 	std::map<utility::string_t, utility::string_t> query = uri::split_query(msg.relative_uri().query());
+	std::cout << "get:" << std::endl;
 	for(auto &s : query)
 		std::cout << s.first << " " << s.second << std::endl;
 	
-	m_analyser->instructionFromMap(query);
-	msg.reply(status_codes::OK);
+	string replyMsg = m_analyser->instructionFromMap(query);
+	std::cout << replyMsg << std::endl;
+	msg.reply(status_codes::OK, replyMsg);
 }
 
 void RestHandler::handlePut(web::http::http_request msg)
@@ -48,12 +51,15 @@ void RestHandler::handlePut(web::http::http_request msg)
 
 void RestHandler::handlePost(web::http::http_request msg)
 {
-	//TODO
-	std::cout << msg.to_string() << std::endl;
+	//std::cout << msg.to_string() << std::endl;
 	pplx::task<web::json::value> aTask = msg.extract_json();
 	web::json::value json = aTask.get();
+
+	std::cout << "post:" << std::endl;
 	std::cout << json.serialize() << std::endl;
-	msg.reply(status_codes::OK);
+
+	string replyMsg = m_analyser->instructionFromJson(json);
+	msg.reply(status_codes::OK, replyMsg);
 }
 
 void RestHandler::handleDelete(web::http::http_request msg)

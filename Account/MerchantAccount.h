@@ -14,15 +14,16 @@ class MerchantAccount : public Account, public std::enable_shared_from_this<Merc
 	friend class UserFactory<MerchantAccount>;
 
 public:
-    MerchantAccount(unsigned long id, std::string userName, std::string password);
+    MerchantAccount(unsigned long id, std::string account, std::string password);
 
     void acceptOrder(std::weak_ptr<Order> order);
     void startRepair(std::weak_ptr<Order> order);
     void endRepair(std::weak_ptr<Order> order, double transaction);
-	std::weak_ptr<MerchantAccount> myConciseInfo();
 
     bool isMyOrder(std::weak_ptr<Order> order) const override;
 	std::list<std::weak_ptr<Order>> myOrders() const override;
+
+	std::weak_ptr<MerchantServiceType> supportedServiceType();
 
 protected:
 	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;

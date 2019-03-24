@@ -46,15 +46,7 @@ public:
 		//TODO: find account in list
 
 		// try to read from database
-        std::shared_ptr<AccountType> account;
-        try {
-            account = UserFactory<AccountType>::readUser(userName, password);
-        } catch (NoSuchAnAccountError &e) {
-            return false;
-        } catch (PasswordNotRightError &e) {
-            return false;
-        }
-
+        std::shared_ptr<AccountType> account = UserFactory<AccountType>::readUser(userName, password);
 	    saveToList(account);
 
 	    return true;

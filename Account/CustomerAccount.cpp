@@ -8,8 +8,8 @@
 
 using std::weak_ptr;
 
-CustomerAccount::CustomerAccount(unsigned long id, std::string userName, std::string password)
-    :Account{id, std::move(password), std::move(userName)}
+CustomerAccount::CustomerAccount(unsigned long id, std::string account, std::string password)
+    :Account{id, std::move(account), std::move(password)}
 {}
 
 void CustomerAccount::iAmPublishAnOrder(std::weak_ptr<Order> order)
