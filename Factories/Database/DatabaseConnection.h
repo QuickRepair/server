@@ -18,15 +18,22 @@ class OrderStateAbstractFactory;
 
 class DatabaseConnection {
 public:
-	void conenct(std::string databaseIp, std::string databaseName, std::string databaseUser, std::string databasePassword, unsigned databasePort);
+	void connect(std::string databaseIp, std::string databaseName, std::string databaseUser,
+				 std::string databasePassword, unsigned databasePort);
 
 	static DatabaseConnection &getInstance();
 
-	/* 1 std::string for detail
-	 * 2 unsigned long for Order id
-	 * 3 unsigned long for Order state id
+	/* unsigned long for order id
 	 */
-	std::tuple<ContactInformation, std::string, unsigned long, unsigned long> queryOrderById(unsigned long orderId);
+	unsigned long createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail);
+
+	/* 1 unsigned long for order id
+	 * 2 unsigned long for committer id
+	 * 3 unsigned long for receiver id
+	 * 4 string for appliance type
+	 * 5 string for detail
+	 */
+	std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>> queryOrderByAccountId(unsigned long id);
 
 	/* in std::tuple<std::string, bool>
 	 * 0 std::shared_ptr<OrderStateAbstractFactory> for state factory

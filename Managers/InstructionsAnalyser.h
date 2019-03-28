@@ -19,6 +19,7 @@ private:
 	std::string doLogin(web::json::object &object);
 	std::string doGetList(std::map<utility::string_t, utility::string_t> &instruction);
 	std::string doUpdateServiceType(web::json::object &object);
+	std::string doSubmitOrder(web::json::object &object);
 };
 
 

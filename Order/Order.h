@@ -26,7 +26,8 @@ class Order : public std::enable_shared_from_this<Order> {
 	friend class OrderEndRepairStateFactory;
 	friend class OrderFinishedStateFactory;
 public:
-	Order(std::weak_ptr<CustomerAccount> commiter, ContactInformation contactWay, std::string detail, unsigned long int id);
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+		  std::string applianceType, ContactInformation contactWay, std::string detail);
 
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver);
 	void startRepair();
@@ -54,6 +55,7 @@ private:
 	std::shared_ptr<OrderState> m_endRepairState;
 	std::shared_ptr<OrderState> m_finishedState;
 
+	std::string m_applianceType;
 	ContactInformation m_contactWay;
 	std::string m_detail;
 	unsigned long int m_id;

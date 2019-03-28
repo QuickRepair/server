@@ -15,11 +15,11 @@ int main()
 	try
 	{
 		Configure configure("./har.json");
-		DatabaseConnection::getInstance().conenct(
+		DatabaseConnection::getInstance().connect(
 				configure.databaseIp(), configure.databaseName(),
 				configure.databaseUserName(), configure.databasePassword(),
 				configure.databasePort()
-				);
+		);
 		AccountManager::getInstance().registerAuthenticationCarrier(make_shared<AuthenticationToScreen>());
 		RestHandler handler(configure.listenOn());
 		while (true)

@@ -20,6 +20,7 @@ using std::string;						using std::runtime_error;
 using std::tuple;						using std::istringstream;
 using std::ostringstream;				using std::shared_ptr;
 using std::make_shared;					using std::list;
+using std::vector;
 
 MYSQL * DatabaseConnection::m_mysqlConnection;
 
@@ -33,7 +34,7 @@ DatabaseConnection::~DatabaseConnection()
 	mysql_close(m_mysqlConnection);
 }
 
-void DatabaseConnection::conenct(std::string databaseIp, std::string databaseName, std::string databaseUser,
+void DatabaseConnection::connect(std::string databaseIp, std::string databaseName, std::string databaseUser,
 								 std::string databasePassword, unsigned databasePort)
 {
 	if (!mysql_real_connect(m_mysqlConnection, databaseIp.data(),
@@ -48,24 +49,51 @@ DatabaseConnection &DatabaseConnection::getInstance()
 	return m_instance;
 }
 
-std::tuple<ContactInformation, std::string, unsigned long, unsigned long>
-	DatabaseConnection::queryOrderById(unsigned long orderId)
+unsigned long DatabaseConnection::createOrder(unsigned long committerId, unsigned long acceptorId,
+											  std::string applianceType, std::string detail)
 {
 	ostringstream ostr;
-	ostr << "SELECT * FROM HAROrder WHERE id='" << orderId << "'";
+	ostr << "INSERT INTO orders (committer, acceptor, appliance_type, detail) VALUES ('" << committerId << "', '" << acceptorId << "', '" << applianceType << "', '" << detail << "')";
+	string query = ostr.str();
+	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+		throw DatabaseInternalError("Create order error, " + string(mysql_error(m_mysqlConnection)));
+
+	query = "SELECT id FROM orders where id=@@IDENTITY";
+	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
+		throw DatabaseInternalError("Get created order id, " + string(mysql_error(m_mysqlConnection)));
+	QueryResult result = mysql_store_result(m_mysqlConnection);
+	auto res = result.fetchRow();
+	if(res.empty())
+		throw QueryResultEmptyError("Get empty order id");
+	unsigned long id = toUnsignedLong(res[0]);
+	return id;
+}
+
+std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>>
+	DatabaseConnection::queryOrderByAccountId(unsigned long id)
+{
+	ostringstream ostr;
+	ostr << "SELECT * FROM order WHERE committer='" << id << "' or acceptor='" << id << "'";
 	string query = ostr.str();
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Query Order by id error, " + string(mysql_error(m_mysqlConnection)));
 
 	QueryResult result = mysql_store_result(m_mysqlConnection);
-	auto res = result.fetchRow();
+	auto res = result.fetchAllRows();
 	if(res.empty())
 		throw QueryResultEmptyError("Query Order by id empty");
 
-	unsigned long id = toUnsignedLong(res[0]);
-	string detail = res[1];
-	unsigned long currentState = toUnsignedLong(res[2]);
-	return tuple<ContactInformation, std::string, unsigned long, unsigned long>{ContactInformation(), detail, id, currentState};
+	vector<tuple<unsigned long, unsigned long, unsigned long, string, string>> ret;
+	for(int i = 0; i < res.size(); /*empty*/)
+	{
+		unsigned long orderId = toUnsignedLong(res[i++]);
+		unsigned long committer = toUnsignedLong(res[i++]);
+		unsigned long acceptor = toUnsignedLong(res[i++]);
+		string applianceType = res[i++];
+		string detail = res[i++];
+		ret.emplace_back(tuple<unsigned long, unsigned long, unsigned long, string, string>(orderId, committer, acceptor, applianceType, detail));
+	}
+	return ret;
 }
 
 std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>

@@ -19,11 +19,13 @@ OrderManager::OrderManager()
 	m_factory = make_shared<OrderFactory>();
 }
 
-void OrderManager::publishOrder(std::weak_ptr<CustomerAccount> commiter, ContactInformation contact, std::string detail, AcceptableOrderPriceRange range)
+void OrderManager::publishOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+								std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
 {
-	shared_ptr<Order> newOrder = m_factory->createOrder(commiter, contact, detail, range);
+	shared_ptr<Order> newOrder = m_factory->createOrder(committer, acceptor, applianceType, contactWay, detail, range);
 	m_orders.push_back(newOrder);
-	commiter.lock()->iAmPublishAnOrder(newOrder);
+	committer.lock()->iAmPublishAnOrder(newOrder);
+	acceptor.lock()->acceptOrder(newOrder);
 }
 
 void OrderManager::requestStartRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order)

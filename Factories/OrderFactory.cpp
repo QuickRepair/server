@@ -5,27 +5,38 @@
 #include "../Order/Order.h"
 #include "../Order/OrderStates/OrderState.h"
 #include "../Account/ContactInformation.h"
+#include "../Account/MerchantAccount.h"
+#include "../Account/CustomerAccount.h"
 #include "../Order/OrderStates/AcceptableOrderPriceRange.h"
+#include "../Managers/AccountManager.h"
 #include <tuple>
 
 using std::make_shared;			using std::get;
 using std::shared_ptr;
 
-std::shared_ptr<Order> OrderFactory::readOrder(std::weak_ptr<CustomerAccount> commiter, unsigned long orderId)
+void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 {
-	auto orderInfo = DatabaseConnection::getInstance().queryOrderById(orderId);
-	shared_ptr<Order> newOrder = make_shared<Order>(commiter, get<0>(orderInfo), get<1>(orderInfo), get<2>(orderInfo));
+	//TODO
+	auto orderInfo = DatabaseConnection::getInstance().queryOrderByAccountId(account.lock()->id());
+	for(auto &ret : orderInfo)
+	{
+		auto committer = AccountManager::getInstance().getCustomer(get<1>(ret));
+		auto acceptor = AccountManager::getInstance().getMerchant(get<2>(ret));
+		if(committer.lock() == nullptr)
+			AccountManager::getInstance().loadCustomer(get<1>(ret));
+		if (acceptor.lock() == nullptr)
+			AccountManager::getInstance().loadMerchant(get<2>(ret));
+		shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, acceptor, get<3>(ret), ContactInformation(), get<4>(ret));
+	}
 
-	newOrder->m_currentState = getStates(newOrder, get<3>(orderInfo));
-
-	return newOrder;
+	//newOrder->m_currentState = getStates(newOrder, get<3>(orderInfo));
 }
 
-std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> commiter, ContactInformation address, std::string detail, AcceptableOrderPriceRange range)
+std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+												 std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
 {
-	//TODO get id from Database
-	unsigned long id;
-	shared_ptr<Order> newOrder = make_shared<Order>(commiter, address, detail, id);
+	unsigned long id = DatabaseConnection::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
+	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, acceptor, applianceType, contactWay, detail);
 	newOrder->orderInitState(range);
 	return newOrder;
 }

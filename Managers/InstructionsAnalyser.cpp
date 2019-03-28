@@ -4,11 +4,15 @@
 
 #include "InstructionsAnalyser.h"
 #include "AccountManager.h"
+#include "OrderManager.h"
 #include "../Account/MerchantServiceType.h"
 #include "../Account/MerchantAccount.h"
+#include "../Account/CustomerAccount.h"
+#include "../Account/ContactInformation.h"
 #include "../Errors/DatabaseInternalError.h"
 #include "../Errors/NoSuchAnAccountError.h"
 #include "../Errors/PasswordNotRightError.h"
+#include "../Order/OrderStates/AcceptableOrderPriceRange.h"
 
 using std::string;					using std::cerr;
 using std::endl;					using std::list;
@@ -38,14 +42,14 @@ std::string InstructionsAnalyser::instructionFromJson(web::json::value json)
 		replyMsg = doLogin(object);
 	else if(type == "submit_service_type")
 		replyMsg = doUpdateServiceType(object);
+	else if(type == "submit_order")
+		replyMsg = doSubmitOrder(object);
 
 	return replyMsg;
 }
 
 std::string InstructionsAnalyser::doGetVerification(std::map<utility::string_t, utility::string_t> &instruction)
 {
-	string replyMsg;
-
 	try
 	{
 		if (instruction["account_type"] == "merchant")
@@ -58,7 +62,7 @@ std::string InstructionsAnalyser::doGetVerification(std::map<utility::string_t, 
 		cerr << e.what() << endl;
 	}
 
-	return replyMsg;
+	return "";
 }
 
 std::string InstructionsAnalyser::doLogin(web::json::object &object)
@@ -99,14 +103,19 @@ std::string InstructionsAnalyser::doGetList(std::map<utility::string_t, utility:
 	if(instruction["get_list"] == "origin_service_type")	// get origin service types
 	{
 		weak_ptr<MerchantAccount> account = AccountManager::getInstance().getMerchant(instruction["account"]);
-		weak_ptr<MerchantServiceType> serviceType = account.lock()->supportedServiceType();
-		web::json::value array;
-		list<string> supportList = serviceType.lock()->supportApplianceType();
-		auto it = supportList.begin();
-		for(unsigned i = 0; it != supportList.end(); ++i, ++it)
-			array[i] = web::json::value(*it);
-		retJson["support_appliance_type"] = array;
-		retJson["max_distance"] = web::json::value(serviceType.lock()->maxRepairDistance());
+		if(account.lock() != nullptr)
+		{
+			weak_ptr<MerchantServiceType> serviceType = account.lock()->supportedServiceType();
+			web::json::value array;
+			list<string> supportList = serviceType.lock()->supportApplianceType();
+			auto it = supportList.begin();
+			for (unsigned i = 0; it != supportList.end(); ++i, ++it)
+				array[i] = web::json::value(*it);
+			retJson["support_appliance_type"] = array;
+			retJson["max_distance"] = web::json::value(serviceType.lock()->maxRepairDistance());
+		}
+		else
+			retJson["result"] = web::json::value("empty");
 	}
 	else if(instruction["get_list"] == "merchant_list")		//get merchant list
 	{
@@ -136,6 +145,8 @@ std::string InstructionsAnalyser::doGetList(std::map<utility::string_t, utility:
 
 std::string InstructionsAnalyser::doUpdateServiceType(web::json::object &object)
 {
+	web::json::value retJson;
+
 	string account = object["account"].as_string();
 	int maxDistance = object["max_distance"].as_integer();
 	web::json::array supportAppliances = object["support_appliance"].as_array();
@@ -143,7 +154,42 @@ std::string InstructionsAnalyser::doUpdateServiceType(web::json::object &object)
 	for(auto &s : supportAppliances)
 		supportAppliancesList.push_back(s.as_string());
 
-	AccountManager::getInstance().updateSupportedServiceFor(account, supportAppliancesList, maxDistance);
+	auto merchant = AccountManager::getInstance().getMerchant(account);
+	if(merchant.lock() != nullptr)
+		merchant.lock()->updateSupportedService(supportAppliancesList, maxDistance);
+	else
+		retJson["result"] = web::json::value("empty");
 
-	return "";
+	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::doSubmitOrder(web::json::object &object)
+{
+	web::json::value retJson;
+
+	try
+	{
+		string appliance = object["appliance"].as_string();
+		string merchantAccount = object["merchant"].as_string();
+		string customerAccount = object["account"].as_string();
+		string detailDescription = object["detail"].as_string();
+		string address = object["address"].as_string();
+
+		auto customer = AccountManager::getInstance().getCustomer(customerAccount);
+		auto merchant = AccountManager::getInstance().getMerchant(merchantAccount);
+		if (customer.lock() != nullptr && merchant.lock() != nullptr)
+		{
+			OrderManager::getInstance().publishOrder(customer, merchant,
+													 appliance, ContactInformation(address), detailDescription,
+													 AcceptableOrderPriceRange()
+			);
+		} else
+			retJson["result"] = web::json::value("empty");
+	}
+	catch (DatabaseInternalError &e)
+	{
+		cerr << e.what() << endl;
+	}
+
+	return retJson.serialize();
 }

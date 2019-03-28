@@ -31,7 +31,7 @@ AccountManager &AccountManager::getInstance()
 
 void AccountManager::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
 {
-	m_authenticationCarrier = carrier;
+	m_authenticationCarrier = std::move(carrier);
 }
 
 std::list<std::weak_ptr<MerchantAccount>> AccountManager::getMerchantList()
@@ -42,11 +42,32 @@ std::list<std::weak_ptr<MerchantAccount>> AccountManager::getMerchantList()
 	return ret;
 }
 
+std::weak_ptr<MerchantAccount> AccountManager::getMerchant(unsigned long id)
+{
+	auto it = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
+					  [&id](shared_ptr<MerchantAccount> merchant) { return merchant->id() == id; });
+	return it == m_merchantAccountList.end() ? nullptr : *it;
+}
+
 std::weak_ptr<MerchantAccount> AccountManager::getMerchant(std::string account)
 {
 	auto it = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
 			[&account](shared_ptr<MerchantAccount> merchant) { return merchant->account() == account; });
-	return *it;
+	return it == m_merchantAccountList.end() ? nullptr : *it;
+}
+
+std::weak_ptr<CustomerAccount> AccountManager::getCustomer(unsigned long id)
+{
+	auto it = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
+			[&id](shared_ptr<CustomerAccount> customer) { return customer->id() == id; });
+	return it == m_customerAccountList.end() ? nullptr : *it;
+}
+
+std::weak_ptr<CustomerAccount> AccountManager::getCustomer(std::string account)
+{
+	auto it = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
+			[&account](shared_ptr<CustomerAccount> customer) { return customer->account() == account; });
+	return it == m_customerAccountList.end() ? nullptr : *it;
 }
 
 void AccountManager::merchantRequestForVerificationCode(std::string codeSendToWhere)
@@ -101,8 +122,12 @@ bool AccountManager::customerAuthentication(std::string account, std::string pas
 	return true;
 }
 
-void AccountManager::updateSupportedServiceFor(std::string account, std::list<std::string> appliancType,
-											   int maxDistance)
+void AccountManager::loadMerchant(unsigned long id)
 {
-	getMerchant(account).lock()->updateSupportedService(appliancType, maxDistance);
+	//TODO
+}
+
+void AccountManager::loadCustomer(unsigned long id)
+{
+	//TODO
 }

@@ -21,15 +21,18 @@ public:
 	void registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier);
 
 	std::list<std::weak_ptr<MerchantAccount>> getMerchantList();
+	std::weak_ptr<MerchantAccount> getMerchant(unsigned long id);
 	std::weak_ptr<MerchantAccount> getMerchant(std::string account);
+	std::weak_ptr<CustomerAccount> getCustomer(unsigned long id);
+	std::weak_ptr<CustomerAccount> getCustomer(std::string account);
 
 	void merchantRequestForVerificationCode(std::string codeSendToWhere);
 	void customerRequestForVerificationCode(std::string codeSendToWhere);
 
 	bool merchantAuthentication(std::string account, std::string password);
 	bool customerAuthentication(std::string account, std::string password);
-
-	void updateSupportedServiceFor(std::string account, std::list<std::string> appliancType, int maxDistance);
+	void loadMerchant(unsigned long id);
+	void loadCustomer(unsigned long id);
 
 private:
 	AccountManager();

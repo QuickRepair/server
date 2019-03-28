@@ -16,7 +16,8 @@ class OrderManager {
 public:
 	static OrderManager &getInstance();
 
-	void publishOrder(std::weak_ptr<CustomerAccount> commiter, ContactInformation contact, std::string detail, AcceptableOrderPriceRange range);
+	void publishOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+			std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range);
 	void requestAcceptOrder(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order);
 	void requestStartRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order);
 	void requestEndRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order, double transaction);
