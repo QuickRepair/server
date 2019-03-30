@@ -13,10 +13,12 @@
 #include "../Errors/NoSuchAnAccountError.h"
 #include "../Errors/PasswordNotRightError.h"
 #include "../Order/OrderStates/AcceptableOrderPriceRange.h"
+#include "../Order/Order.h"
+#include "../Errors/OrderNotAtRightState.h"
 
 using std::string;					using std::cerr;
 using std::endl;					using std::list;
-using std::weak_ptr;
+using std::weak_ptr;				using std::istringstream;
 
 std::string InstructionsAnalyser::instructionFromMap(std::map<utility::string_t, utility::string_t> instruction)
 {
@@ -24,8 +26,12 @@ std::string InstructionsAnalyser::instructionFromMap(std::map<utility::string_t,
 
 	if(instruction["type"] == "get_verification")				// get verification
 		replyMsg = doGetVerification(instruction);
-	else if(instruction.find("get_list") != instruction.end())	//get merchant/appliance type list
+	else if(instruction.find("get_list") != instruction.end())	// get merchant/appliance type list
 		replyMsg = doGetList(instruction);
+	else if(instruction["type"] == "update_order")
+		replyMsg = doUpdateOrderState(instruction);
+	else if(instruction["type"] == "get_order_detail")
+		replyMsg = doGetOrderDetail(instruction);
 	else
 		std::cerr << "No such an instruction" << std::endl;
 
@@ -98,47 +104,86 @@ std::string InstructionsAnalyser::doLogin(web::json::object &object)
 
 std::string InstructionsAnalyser::doGetList(std::map<utility::string_t, utility::string_t> &instruction)
 {
-	web::json::value retJson;
+	string ret;
 
-	if(instruction["get_list"] == "origin_service_type")	// get origin service types
+	string getListType = instruction["get_list"];
+	if(getListType == "origin_service_type")	// get origin service types
 	{
 		weak_ptr<MerchantAccount> account = AccountManager::getInstance().getMerchant(instruction["account"]);
-		if(account.lock() != nullptr)
-		{
-			weak_ptr<MerchantServiceType> serviceType = account.lock()->supportedServiceType();
-			web::json::value array;
-			list<string> supportList = serviceType.lock()->supportApplianceType();
-			auto it = supportList.begin();
-			for (unsigned i = 0; it != supportList.end(); ++i, ++it)
-				array[i] = web::json::value(*it);
-			retJson["support_appliance_type"] = array;
-			retJson["max_distance"] = web::json::value(serviceType.lock()->maxRepairDistance());
-		}
+		ret = getServiceTypeList(account);
+	}
+	else if(getListType == "merchant_list")		// get merchant list
+		ret = getMerchantList();
+	else if(getListType == "appliance_type")	// get appliance type list
+		ret = getApplianceTypeList();
+	else if(getListType == "order_list")		// get order list
+	{
+		weak_ptr<Account> account;
+		if(instruction["account_type"] == "customer")
+			account = AccountManager::getInstance().getCustomer(instruction["account"]);
 		else
-			retJson["result"] = web::json::value("empty");
+			account = AccountManager::getInstance().getMerchant(instruction["account"]);
+		if(account.lock())
+			ret = getOrderList(account);
 	}
-	else if(instruction["get_list"] == "merchant_list")		//get merchant list
+	else if(getListType == "unreceived_order")	// get unreceived order list
 	{
-		list<weak_ptr<MerchantAccount>> merchants = AccountManager::getInstance().getMerchantList();
-		web::json::value array;
-		auto it = merchants.begin();
-		for(unsigned i = 0; it != merchants.end(); ++i, ++it)
-			array[i] = web::json::value(it->lock()->account());
-		retJson["merchant_list"] = array;
+		weak_ptr<MerchantAccount> account = AccountManager::getInstance().getMerchant(instruction["account"]);
+		ret = getUnreceivedOrderForCustomer(account);
 	}
-	else if(instruction["get_list"] == "appliance_type")	//get appliance type list
+
+	return ret;
+}
+
+std::string InstructionsAnalyser::getServiceTypeList(std::weak_ptr<MerchantAccount> account)
+{
+	web::json::value retJson;
+
+	if(account.lock() != nullptr)
 	{
-		list<weak_ptr<MerchantAccount>> merchantList = AccountManager::getInstance().getMerchantList();
+		weak_ptr<MerchantServiceType> serviceType = account.lock()->supportedServiceType();
 		web::json::value array;
-		for(auto &merchant : merchantList)
-		{
-			list<string> typeList = merchant.lock()->supportedServiceType().lock()->supportApplianceType();
-			auto it = typeList.begin();
-			for(unsigned i = 0; it != typeList.end(); ++i, ++it)
-				array[i] = web::json::value(*it);
-		}
-		retJson["appliance_list"] = array;
+		list<string> supportList = serviceType.lock()->supportApplianceType();
+		auto it = supportList.begin();
+		for (unsigned i = 0; it != supportList.end(); ++i, ++it)
+			array[i] = web::json::value(*it);
+		retJson["support_appliance_type"] = array;
+		retJson["max_distance"] = web::json::value(serviceType.lock()->maxRepairDistance());
 	}
+	else
+		retJson["result"] = web::json::value("empty");
+
+	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::getMerchantList()
+{
+	web::json::value retJson;
+
+	list<weak_ptr<MerchantAccount>> merchants = AccountManager::getInstance().getMerchantList();
+	web::json::value array;
+	auto it = merchants.begin();
+	for(unsigned i = 0; it != merchants.end(); ++i, ++it)
+		array[i] = web::json::value(it->lock()->account());
+	retJson["merchant_list"] = array;
+
+	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::getApplianceTypeList()
+{
+	web::json::value retJson;
+
+	list<weak_ptr<MerchantAccount>> merchantList = AccountManager::getInstance().getMerchantList();
+	web::json::value array;
+	for(auto &merchant : merchantList)
+	{
+		list<string> typeList = merchant.lock()->supportedServiceType().lock()->supportApplianceType();
+		auto it = typeList.begin();
+		for(unsigned i = 0; it != typeList.end(); ++i, ++it)
+			array[i] = web::json::value(*it);
+	}
+	retJson["appliance_list"] = array;
 
 	return retJson.serialize();
 }
@@ -159,6 +204,55 @@ std::string InstructionsAnalyser::doUpdateServiceType(web::json::object &object)
 		merchant.lock()->updateSupportedService(supportAppliancesList, maxDistance);
 	else
 		retJson["result"] = web::json::value("empty");
+
+	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::getOrderList(std::weak_ptr<Account> account)
+{
+	web::json::value retJson;
+
+	web::json::value array;
+	auto list = account.lock()->myOrdersList();
+	auto it = list.begin();
+	for(unsigned i = 0; it != list.end(); ++it, ++i)
+	{
+		web::json::value orderDetail;
+		std::time_t t = std::chrono::system_clock::to_time_t((*it).lock()->createDate());
+		string date = ctime(&t);
+		string type = (*it).lock()->applianceType();
+		string detail = (*it).lock()->detail();
+		unsigned long id = (*it).lock()->id();
+		orderDetail["create_date"] = web::json::value(date);
+		orderDetail["appliance_type"] = web::json::value(type);
+		orderDetail["id"] = web::json::value(id);
+		array[i] = orderDetail;
+	}
+	retJson["order_list"] = array;
+
+	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> account)
+{
+	web::json::value retJson;
+
+	web::json::value array;
+	auto list = account.lock()->myUnreceivedOrderList();
+	auto it = list.begin();
+	for(unsigned i = 0; it != list.end(); ++it, ++i)
+	{
+		web::json::value orderDetail;
+		std::time_t t = std::chrono::system_clock::to_time_t((*it).lock()->createDate());
+		string date = ctime(&t);
+		string type = (*it).lock()->applianceType();
+		string detail = (*it).lock()->detail();
+		orderDetail["create_date"] = web::json::value(date);
+		orderDetail["appliance_type"] = web::json::value(type);
+		orderDetail["detail"] = web::json::value(detail);
+		array[i] = orderDetail;
+	}
+	retJson["order_list"] = array;
 
 	return retJson.serialize();
 }
@@ -192,4 +286,101 @@ std::string InstructionsAnalyser::doSubmitOrder(web::json::object &object)
 	}
 
 	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::doUpdateOrderState(std::map<utility::string_t, utility::string_t> instruction)
+{
+	string ret;
+
+	weak_ptr<MerchantAccount> merchant = AccountManager::getInstance().getMerchant(instruction["account"]);
+	unsigned long id = toUnsignedLong(instruction["order_id"]);
+	weak_ptr<Order> order = OrderManager::getInstance().getOrder(id);
+
+	if(instruction["order_operate"] == "accept")
+		OrderManager::getInstance().orderAccepted(merchant, order);
+	else if(instruction["order_operate"] == "reject")
+		OrderManager::getInstance().orderRejected(merchant, order);
+	else if(instruction["order_operate"] == "start_repair")
+		OrderManager::getInstance().orderStartRepair(merchant, order);
+	else if(instruction["order_operate"] == "end_repair")
+	{
+		double transaction = toDouble(instruction["transaction"]);
+		OrderManager::getInstance().orderEndRepair(merchant, order, transaction);
+	}
+
+	return ret;
+}
+
+std::string InstructionsAnalyser::doGetOrderDetail(std::map<utility::string_t, utility::string_t> instruction)
+{
+	web::json::value retJson;
+
+	unsigned long id = toUnsignedLong(instruction["order_id"]);
+	auto order = OrderManager::getInstance().getOrder(id);
+
+	try
+	{
+		if (order.lock() != nullptr)
+		{
+			retJson["id"] = web::json::value(order.lock()->id());
+			retJson["appliance_type"] = web::json::value(order.lock()->applianceType());
+			retJson["detail"] = web::json::value(order.lock()->detail());
+			OrderState::States currentState = order.lock()->currentState();
+			switch (currentState)
+			{
+				case OrderState::States::unreceivedState:
+					retJson["state"] = web::json::value("unreceived");
+					break;
+				case OrderState::States::receivedState:
+					retJson["state"] = web::json::value("received");
+					break;
+				case OrderState::States::startRepairState:
+					retJson["state"] = web::json::value("repairing");
+					break;
+				case OrderState::States::endRepairState:
+					retJson["state"] = web::json::value("paying");
+					break;
+				case OrderState::States::finishedState:
+					retJson["state"] = web::json::value("finished");
+					break;
+				case OrderState::States::rejectState:
+					retJson["state"] = web::json::value("reject");
+					break;
+			}
+			std::time_t time = std::chrono::system_clock::to_time_t(order.lock()->createDate());
+			retJson["create_date"] = web::json::value(ctime(&time));
+			time = std::chrono::system_clock::to_time_t(order.lock()->receiveDate());
+			retJson["received_date"] = web::json::value(ctime(&time));
+			time = std::chrono::system_clock::to_time_t(order.lock()->startRepairDate());
+			retJson["start_repair_date"] = web::json::value(ctime(&time));
+			time = std::chrono::system_clock::to_time_t(order.lock()->endRepairDate());
+			retJson["end_repair_date"] = web::json::value(ctime(&time));
+			time = std::chrono::system_clock::to_time_t(order.lock()->finishDate());
+			retJson["finish_date"] = web::json::value(ctime(&time));
+			time = std::chrono::system_clock::to_time_t(order.lock()->rejectDate());
+			retJson["reject_date"] = web::json::value(ctime(&time));
+		}
+	}
+	catch (OrderNotAtRightState &e)
+	{
+		cerr << e.what() << endl;
+	}
+
+	return retJson.serialize();
+}
+
+unsigned long InstructionsAnalyser::toUnsignedLong(std::string s)
+{
+	istringstream istr(s);
+	unsigned long num;
+	istr >> num;
+	return num;
+}
+
+double InstructionsAnalyser::toDouble(std::string s)
+{
+	istringstream istr(s);
+	double num;
+	istr >> num;
+	return num;
 }

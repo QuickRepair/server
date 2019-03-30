@@ -7,8 +7,8 @@
 #include <chrono>
 #include "../Account/ContactInformation.h"
 #include "OrderStates/AcceptableOrderPriceRange.h"
+#include "OrderStates/OrderState.h"
 
-class OrderState;
 class MerchantAccount;
 class CustomerAccount;
 class OrderEvaluate;
@@ -29,31 +29,32 @@ public:
 	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 		  std::string applianceType, ContactInformation contactWay, std::string detail);
 
+	void reject();
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver);
 	void startRepair();
 	void endRepair(double transactionPrice);
-	void orderFinished();
+	void finished();
+
 	AcceptableOrderPriceRange priceRange();
 	double transaction();
 	void setEvaluate(OrderEvaluate &evaluate);
 	OrderEvaluate evaluate();
-	std::chrono::system_clock::time_point createDate();
-	std::chrono::system_clock::time_point receiveDate();
-	std::chrono::system_clock::time_point startRepairDate();
-	std::chrono::system_clock::time_point endRepairDate();
+	std::chrono::system_clock::time_point rejectDate() const;
+	std::chrono::system_clock::time_point createDate() const;
+	std::chrono::system_clock::time_point receiveDate() const;
+	std::chrono::system_clock::time_point startRepairDate() const;
+	std::chrono::system_clock::time_point endRepairDate() const;
+	std::chrono::system_clock::time_point finishDate() const;
 
+	std::string applianceType() const;
+	std::string detail() const;
 	unsigned long int id() const;
+	OrderState::States currentState() const;
 	bool isNotReceived() const;
 
 private:
 	void orderInitState(AcceptableOrderPriceRange range);
 	void setState(std::shared_ptr<OrderState> state);
-
-	std::shared_ptr<OrderState> m_unreceivedState;
-	std::shared_ptr<OrderState> m_receivedState;
-	std::shared_ptr<OrderState> m_startRepairState;
-	std::shared_ptr<OrderState> m_endRepairState;
-	std::shared_ptr<OrderState> m_finishedState;
 
 	std::string m_applianceType;
 	ContactInformation m_contactWay;

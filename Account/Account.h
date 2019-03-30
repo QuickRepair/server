@@ -15,7 +15,7 @@ public:
     virtual ~Account() = default;
 
 	virtual bool isMyOrder(std::weak_ptr<Order> order) const = 0;
-	virtual std::list<std::weak_ptr<Order>> myOrders() const = 0;
+	virtual std::list<std::weak_ptr<Order>> myOrdersList() const = 0;
 
 	unsigned long id() const;
 	void setId(unsigned long id);
@@ -26,7 +26,7 @@ public:
 
 protected:
 	virtual void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) = 0;
-	virtual void loadOrders(std::list<std::weak_ptr<Order>> orders) = 0;
+	virtual void loadOrders(std::list<std::shared_ptr<Order>> orders) = 0;
 
     unsigned long int m_id;
 	std::string m_account;

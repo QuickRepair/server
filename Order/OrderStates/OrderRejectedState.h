@@ -1,16 +1,17 @@
-#ifndef HAR_ENDREPAIRORDERSTATE_H
-#define HAR_ENDREPAIRORDERSTATE_H
+//
+// Created by gaojian on 19-3-30.
+//
+
+#ifndef HARSERVER_ORDERREJECTEDSTATE_H
+#define HARSERVER_ORDERREJECTEDSTATE_H
 
 #include "OrderState.h"
-#include "OrderEvaluate.h"
 
-class Order;
-
-class OrderEndRepairState : public OrderState, public std::enable_shared_from_this<OrderEndRepairState> {
+class OrderRejectedState : public OrderState {
 public:
-	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice);
-	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, OrderEvaluate evaluate, std::chrono::system_clock::time_point date);
-	~OrderEndRepairState() override = default;
+	OrderRejectedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState);
+	OrderRejectedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, std::chrono::system_clock::time_point date);
+	~OrderRejectedState() override = default;
 
 	void reject() override;
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver) override;
@@ -32,8 +33,7 @@ public:
 
 private:
 	std::shared_ptr<OrderState> m_lastState;
-	OrderEvaluate m_evaluate;
-	double m_transaction;
 };
 
-#endif //HAR_ENDREPAIRORDERSTATE_H
+
+#endif //HARSERVER_ORDERREJECTEDSTATE_H

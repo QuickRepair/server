@@ -24,15 +24,15 @@ public:
     void payTheOrder(std::weak_ptr<Order> order);
 
     bool isMyOrder(std::weak_ptr<Order> order) const override;
-	std::list<std::weak_ptr<Order>> myOrders() const override;
+	std::list<std::weak_ptr<Order>> myOrdersList() const override;
 
 protected:
 	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
-	void loadOrders(std::list<std::weak_ptr<Order>> orders) override;
+	void loadOrders(std::list<std::shared_ptr<Order>> orders) override;
 
 private:
     std::list<std::shared_ptr<ContactInformation>> m_contactInfo;
-    std::list<std::weak_ptr<Order>> m_orders;
+    std::list<std::shared_ptr<Order>> m_orders;
 };
 
 #endif // CUSTOMERACCOUNT_H

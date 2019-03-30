@@ -15,9 +15,13 @@ Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> commiter, std:
 
 void Order::orderInitState(AcceptableOrderPriceRange range)
 {
-	if(m_unreceivedState)
-		throw runtime_error("Can not init an Order state twice");
-	m_unreceivedState = m_currentState = make_shared<OrderUnreceivedState>(weak_from_this(), range);
+	if(!m_currentState)
+		m_currentState = make_shared<OrderUnreceivedState>(weak_from_this(), range);
+}
+
+void Order::reject()
+{
+	m_currentState->reject();
 }
 
 void Order::receivedBy(std::weak_ptr<MerchantAccount> receiver)
@@ -35,7 +39,7 @@ void Order::endRepair(double transactionPrice)
 	m_currentState->endRepair(transactionPrice);
 }
 
-void Order::orderFinished()
+void Order::finished()
 {
 	m_currentState->orderFinished();
 }
@@ -60,32 +64,44 @@ OrderEvaluate Order::evaluate()
 	return m_currentState->evaluate();
 }
 
-std::chrono::system_clock::time_point Order::createDate()
+std::chrono::system_clock::time_point Order::rejectDate() const
 {
-	if(!m_unreceivedState)
-		throw runtime_error("The Order not passing unreceived state");
-	return m_unreceivedState->date();
+	return m_currentState->rejectDate();
 }
 
-std::chrono::system_clock::time_point Order::receiveDate()
+std::chrono::system_clock::time_point Order::createDate() const
 {
-	if(!m_receivedState)
-		throw runtime_error("The Order not passing received state");
-	return m_receivedState->date();
+	return m_currentState->createDate();
 }
 
-std::chrono::system_clock::time_point Order::startRepairDate()
+std::chrono::system_clock::time_point Order::receiveDate() const
 {
-	if(!m_startRepairState)
-		throw runtime_error("The Order not passing start repair state");
-	return m_startRepairState->date();
+	return m_currentState->receiveDate();
 }
 
-std::chrono::system_clock::time_point Order::endRepairDate()
+std::chrono::system_clock::time_point Order::startRepairDate() const
 {
-	if(!m_endRepairState)
-		throw runtime_error("The Order not passing end repair state");
-	return m_endRepairState->date();
+	return m_currentState->startRepairDate();
+}
+
+std::chrono::system_clock::time_point Order::endRepairDate() const
+{
+	return m_currentState->endRepairDate();
+}
+
+std::chrono::system_clock::time_point Order::finishDate() const
+{
+	return m_currentState->finishDate();
+}
+
+std::string Order::applianceType() const
+{
+	return m_applianceType;
+}
+
+std::string Order::detail() const
+{
+	return m_detail;
 }
 
 unsigned long int Order::id() const
@@ -93,9 +109,14 @@ unsigned long int Order::id() const
 	return m_id;
 }
 
+OrderState::States Order::currentState() const
+{
+	return m_currentState->atState();
+}
+
 bool Order::isNotReceived() const
 {
-	return static_cast<bool>(m_acceptor.lock());
+	return m_acceptor.lock() == nullptr;
 }
 
 void Order::setState(std::shared_ptr<OrderState> state)

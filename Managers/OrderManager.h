@@ -18,16 +18,18 @@ public:
 
 	void publishOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 			std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range);
-	void requestAcceptOrder(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order);
-	void requestStartRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order);
-	void requestEndRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order, double transaction);
-	void requestPayOrder(std::weak_ptr<CustomerAccount> &commiter, std::weak_ptr<Order> &order);
-	std::list<std::weak_ptr<Order>> requestQueryOrder(std::weak_ptr<Account> user);
+	void orderAccepted(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order);
+	void orderRejected(std::weak_ptr<MerchantAccount> &account, std::weak_ptr<Order> &order);
+	void orderStartRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order);
+	void orderEndRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order, double transaction);
+	void orderPayed(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<Order> &order);
+	std::list<std::weak_ptr<Order>> getOrderList(std::weak_ptr<Account> account);
+	std::weak_ptr<Order> getOrder(unsigned long id);
 
 private:
 	OrderManager();
 
-	std::list<std::shared_ptr<Order>> m_orders;
+	std::list<std::shared_ptr<Order>> m_orderList;
 	std::shared_ptr<OrderFactory> m_factory;
 };
 

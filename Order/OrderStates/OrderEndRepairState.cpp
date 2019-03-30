@@ -1,44 +1,46 @@
 #include "OrderEndRepairState.h"
 #include "OrderFinishedState.h"
 #include "../Order.h"
+#include "../../Errors/OrderNotAtRightState.h"
 
-using std::chrono::system_clock;		using std::runtime_error;
-using std::make_shared;
+using std::chrono::system_clock;					using std::make_shared;
 
-OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::weak_ptr<OrderState> lastState, double transactionPrice)
-		: m_order{std::move(order)}, m_transaction{transactionPrice}, m_lastState{std::move(lastState)}
-{
-	m_stateChangeDate = system_clock::now();
-}
-
-OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::weak_ptr<OrderState> lastState, double transactionPrice, OrderEvaluate evaluate, std::chrono::system_clock::time_point date)
-	: m_order{std::move(order)}, m_transaction{transactionPrice}, m_lastState{std::move(lastState)}, m_evaluate{evaluate}, m_stateChangeDate{date}
+OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice)
+		: OrderState(std::move(order), system_clock::now()), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}
 {}
+
+OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, OrderEvaluate evaluate, std::chrono::system_clock::time_point date)
+	: OrderState(std::move(order), date), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}, m_evaluate{evaluate}
+{}
+
+void OrderEndRepairState::reject()
+{
+	throw OrderNotAtRightState("At end repair state, can not reject");
+}
 
 void OrderEndRepairState::receivedBy(std::weak_ptr<MerchantAccount> receiver)
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At end repair state, can not receive");
 }
 
 void OrderEndRepairState::startRepair()
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At end repair state, can not receive");
 }
 
 void OrderEndRepairState::endRepair(double transactionPrice)
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At end repair state, can not end repair");
 }
 
 void OrderEndRepairState::orderFinished()
 {
-	m_order.lock()->m_endRepairState = shared_from_this();
-	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, weak_from_this()));
+	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
 }
 
 AcceptableOrderPriceRange OrderEndRepairState::priceRange() const
 {
-	return m_lastState.lock()->priceRange();
+	return m_lastState->priceRange();
 }
 
 double OrderEndRepairState::transaction() const
@@ -56,7 +58,37 @@ OrderEvaluate OrderEndRepairState::evaluate() const
 	return m_evaluate;
 }
 
-std::chrono::system_clock::time_point OrderEndRepairState::date() const
+OrderState::States OrderEndRepairState::atState() const
+{
+	return OrderState::States::endRepairState;
+}
+
+std::chrono::system_clock::time_point OrderEndRepairState::createDate() const
+{
+	return m_lastState->createDate();
+}
+
+std::chrono::system_clock::time_point OrderEndRepairState::rejectDate() const
+{
+	throw OrderNotAtRightState("At end repair state, no reject date");
+}
+
+std::chrono::system_clock::time_point OrderEndRepairState::receiveDate() const
+{
+	return m_lastState->receiveDate();
+}
+
+std::chrono::system_clock::time_point OrderEndRepairState::startRepairDate() const
+{
+	return m_lastState->startRepairDate();
+}
+
+std::chrono::system_clock::time_point OrderEndRepairState::endRepairDate() const
 {
 	return m_stateChangeDate;
+}
+
+std::chrono::system_clock::time_point OrderEndRepairState::finishDate() const
+{
+	throw OrderNotAtRightState("At end repair state, no finish date");
 }

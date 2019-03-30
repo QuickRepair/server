@@ -73,7 +73,7 @@ int main()
 		o->endRepair(43);
 		OrderEvaluate eva;
 		o->setEvaluate(eva);
-		o->orderFinished();
+		o->finished();
 
 		cout << dbOrder->priceRange().lowerPrice() << " " << dbOrder->priceRange().upperPrice() << '\n';
 		cout << dbOrder->transaction() << '\n';

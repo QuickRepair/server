@@ -11,6 +11,7 @@ public:
 	OrderUnreceivedState(std::weak_ptr<Order> order, AcceptableOrderPriceRange &range, std::chrono::system_clock::time_point date);
 	~OrderUnreceivedState() override = default;
 
+	void reject() override;
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver) override;
 	void startRepair() override;
 	void endRepair(double transactionPrice) override;
@@ -20,12 +21,16 @@ public:
 	double transaction() const override;
 	void setEvaluate(OrderEvaluate &evaluate) override;
 	OrderEvaluate evaluate() const override;
-	std::chrono::system_clock::time_point date() const override;
+	States atState() const override;
+	std::chrono::system_clock::time_point createDate() const override;
+	std::chrono::system_clock::time_point rejectDate() const override;
+	std::chrono::system_clock::time_point receiveDate() const override;
+	std::chrono::system_clock::time_point startRepairDate() const override;
+	std::chrono::system_clock::time_point endRepairDate() const override;
+	std::chrono::system_clock::time_point finishDate() const override;
 
 private:
-	std::chrono::system_clock::time_point m_stateChangeDate;
 	AcceptableOrderPriceRange m_range;
-	std::weak_ptr<Order> m_order;
 };
 
 #endif //HAR_UNRECEIVEDORDERSTATE_H

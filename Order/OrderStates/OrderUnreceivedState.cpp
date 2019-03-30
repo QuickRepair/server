@@ -2,41 +2,43 @@
 #include "OrderReceivedState.h"
 #include "../Order.h"
 #include "OrderFinishedState.h"
-#include <stdexcept>
+#include "../../Errors/OrderNotAtRightState.h"
+#include "OrderRejectedState.h"
 
-using std::runtime_error;			using std::make_shared;
-using std::chrono::system_clock;
+using std::make_shared;						using std::chrono::system_clock;
 
 OrderUnreceivedState::OrderUnreceivedState(std::weak_ptr<Order> order, AcceptableOrderPriceRange &range)
-	: m_order{std::move(order)}, m_range{range}
-{
-	m_stateChangeDate = system_clock::now();
-}
+	: OrderState(std::move(order), system_clock::now()), m_range{range}
+{}
 
 OrderUnreceivedState::OrderUnreceivedState(std::weak_ptr<Order> order, AcceptableOrderPriceRange &range, std::chrono::system_clock::time_point date)
-	: m_order{std::move(order)}, m_range{range}, m_stateChangeDate{date}
+	: OrderState(std::move(order), date), m_range{range}
 {}
 
 void OrderUnreceivedState::receivedBy(std::weak_ptr<MerchantAccount> receiver)
 {
-	m_order.lock()->m_unreceivedState = shared_from_this();
 	m_order.lock()->m_acceptor = receiver;
-	m_order.lock()->setState(make_shared<OrderReceivedState>(m_order, weak_from_this(), receiver));
+	m_order.lock()->setState(make_shared<OrderReceivedState>(m_order, shared_from_this(), receiver));
+}
+
+void OrderUnreceivedState::reject()
+{
+	m_order.lock()->setState(make_shared<OrderRejectedState>(m_order, shared_from_this()));
 }
 
 void OrderUnreceivedState::startRepair()
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At unreceived state, can not switch to start repair state");
 }
 
 void OrderUnreceivedState::endRepair(double transactionPrice)
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At unreceived state, can not switch to end repair state");
 }
 
 void OrderUnreceivedState::orderFinished()
 {
-	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, weak_from_this()));
+	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
 }
 
 AcceptableOrderPriceRange OrderUnreceivedState::priceRange() const
@@ -46,20 +48,50 @@ AcceptableOrderPriceRange OrderUnreceivedState::priceRange() const
 
 double OrderUnreceivedState::transaction() const
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At unreceived state, no transaction");
 }
 
 void OrderUnreceivedState::setEvaluate(OrderEvaluate &evaluate)
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At unreceived state, can not set evaluate");
 }
 
 OrderEvaluate OrderUnreceivedState::evaluate() const
 {
-	throw runtime_error("Order state not fit");
+	throw OrderNotAtRightState("At unreceived state, no evaluate");
 }
 
-std::chrono::system_clock::time_point OrderUnreceivedState::date() const
+OrderState::States OrderUnreceivedState::atState() const
+{
+	return OrderState::States::unreceivedState;
+}
+
+std::chrono::system_clock::time_point OrderUnreceivedState::createDate() const
 {
 	return m_stateChangeDate;
+}
+
+std::chrono::system_clock::time_point OrderUnreceivedState::rejectDate() const
+{
+	throw OrderNotAtRightState("At unreceived state, no reject date");
+}
+
+std::chrono::system_clock::time_point OrderUnreceivedState::receiveDate() const
+{
+	throw OrderNotAtRightState("At unreceived state, no receive date");
+}
+
+std::chrono::system_clock::time_point OrderUnreceivedState::startRepairDate() const
+{
+	throw OrderNotAtRightState("At unreceived state, no start repair date");
+}
+
+std::chrono::system_clock::time_point OrderUnreceivedState::endRepairDate() const
+{
+	throw OrderNotAtRightState("At unreceived state, no end repair date");
+}
+
+std::chrono::system_clock::time_point OrderUnreceivedState::finishDate() const
+{
+	throw OrderNotAtRightState("At unreceived state, no finish date");
 }
