@@ -8,6 +8,7 @@
 #include <map>
 #include <cpprest/details/basic_types.h>
 #include <cpprest/json.h>
+#include "../Order/OrderStates/OrderState.h"
 
 class MerchantAccount;
 class Account;
@@ -37,6 +38,7 @@ private:
 	std::string getOrderList(std::weak_ptr<Account> account);
 	std::string getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> account);
 
+	std::string getOrderStateString(OrderState::States &state);
 	unsigned long toUnsignedLong(std::string s);
 	double toDouble(std::string s);
 };

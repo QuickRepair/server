@@ -69,6 +69,8 @@ std::list<std::weak_ptr<Order>> MerchantAccount::myOrdersList() const
 	list<weak_ptr<Order>> orderList;
 	for(auto &order : m_receivedOrders)
 		orderList.push_back(order);
+	for(auto &order : m_unreceivedOrders)
+		orderList.push_back(order);
 	return orderList;
 }
 

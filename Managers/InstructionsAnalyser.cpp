@@ -326,27 +326,8 @@ std::string InstructionsAnalyser::doGetOrderDetail(std::map<utility::string_t, u
 			retJson["appliance_type"] = web::json::value(order.lock()->applianceType());
 			retJson["detail"] = web::json::value(order.lock()->detail());
 			OrderState::States currentState = order.lock()->currentState();
-			switch (currentState)
-			{
-				case OrderState::States::unreceivedState:
-					retJson["state"] = web::json::value("unreceived");
-					break;
-				case OrderState::States::receivedState:
-					retJson["state"] = web::json::value("received");
-					break;
-				case OrderState::States::startRepairState:
-					retJson["state"] = web::json::value("repairing");
-					break;
-				case OrderState::States::endRepairState:
-					retJson["state"] = web::json::value("paying");
-					break;
-				case OrderState::States::finishedState:
-					retJson["state"] = web::json::value("finished");
-					break;
-				case OrderState::States::rejectState:
-					retJson["state"] = web::json::value("reject");
-					break;
-			}
+			retJson["state"] = web::json::value(getOrderStateString(currentState));
+
 			std::time_t time = std::chrono::system_clock::to_time_t(order.lock()->createDate());
 			retJson["create_date"] = web::json::value(ctime(&time));
 			time = std::chrono::system_clock::to_time_t(order.lock()->receiveDate());
@@ -367,6 +348,33 @@ std::string InstructionsAnalyser::doGetOrderDetail(std::map<utility::string_t, u
 	}
 
 	return retJson.serialize();
+}
+
+std::string InstructionsAnalyser::getOrderStateString(OrderState::States &state)
+{
+	string stateString;
+	switch (state)
+	{
+		case OrderState::States::unreceivedState:
+			stateString = "unreceived";
+			break;
+		case OrderState::States::receivedState:
+			stateString = "received";
+			break;
+		case OrderState::States::startRepairState:
+			stateString = "repairing";
+			break;
+		case OrderState::States::endRepairState:
+			stateString = "paying";
+			break;
+		case OrderState::States::finishedState:
+			stateString = "finished";
+			break;
+		case OrderState::States::rejectState:
+			stateString = "reject";
+			break;
+	}
+	return stateString;
 }
 
 unsigned long InstructionsAnalyser::toUnsignedLong(std::string s)

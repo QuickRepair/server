@@ -26,7 +26,7 @@ class Order : public std::enable_shared_from_this<Order> {
 	friend class OrderEndRepairStateFactory;
 	friend class OrderFinishedStateFactory;
 public:
-	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
 		  std::string applianceType, ContactInformation contactWay, std::string detail);
 
 	void reject();

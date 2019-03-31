@@ -5,12 +5,12 @@
 
 using std::make_shared;				using std::runtime_error;
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> commiter, std::weak_ptr<MerchantAccount> accpetor,
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
 			 std::string applianceType, ContactInformation contactWay, std::string detail)
 	: m_applianceType{std::move(applianceType)},
 	m_contactWay{std::move(contactWay)},
 	m_detail{std::move(detail)}, m_id{id},
-	m_committer{std::move(commiter)}, m_acceptor{std::move(accpetor)}
+	m_committer{std::move(committer)}
 {}
 
 void Order::orderInitState(AcceptableOrderPriceRange range)

@@ -26,7 +26,7 @@ void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 			AccountManager::getInstance().loadCustomer(get<1>(ret));
 		if (acceptor.lock() == nullptr)
 			AccountManager::getInstance().loadMerchant(get<2>(ret));
-		shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, acceptor, get<3>(ret), ContactInformation(), get<4>(ret));
+		shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, get<3>(ret), ContactInformation(), get<4>(ret));
 	}
 
 	//newOrder->m_currentState = getStates(newOrder, get<3>(orderInfo));
@@ -36,7 +36,7 @@ std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> 
 												 std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
 {
 	unsigned long id = DatabaseConnection::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
-	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, acceptor, applianceType, contactWay, detail);
+	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, applianceType, contactWay, detail);
 	newOrder->orderInitState(range);
 	return newOrder;
 }
