@@ -14,6 +14,7 @@ class OrderEvaluate;
 class CustomerAccount : public Account
 {
 	friend class CustomerFactory;
+	friend class OrderFactory;
 
 public:
     CustomerAccount(unsigned long id, std::string account, std::string password);
@@ -28,7 +29,7 @@ public:
 
 protected:
 	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
-	void loadOrders(std::list<std::shared_ptr<Order>> orders) override;
+	void loadOrder(std::shared_ptr<Order> order) override;
 
 private:
     std::list<std::shared_ptr<ContactInformation>> m_contactInfo;

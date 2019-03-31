@@ -10,6 +10,7 @@
 class MerchantFactory : public AccountFactory {
 public:
 	~MerchantFactory() override = default;
+	std::shared_ptr<Account> loadAccount(unsigned long id) override;
 
 protected:
 	std::shared_ptr<Account> loadAccountSpecific(std::string account, std::string password) override;

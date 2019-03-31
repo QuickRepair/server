@@ -26,8 +26,10 @@ class Order : public std::enable_shared_from_this<Order> {
 	friend class OrderEndRepairStateFactory;
 	friend class OrderFinishedStateFactory;
 public:
-	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
-		  std::string applianceType, ContactInformation contactWay, std::string detail);
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
+		  std::string &applianceType, ContactInformation &contactWay, std::string &detail);
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
+		  std::string &applianceType, ContactInformation &contactWay, std::string &detail, std::shared_ptr<OrderState> currentState);
 
 	void reject();
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver);
@@ -53,7 +55,7 @@ public:
 	bool isNotReceived() const;
 
 private:
-	void orderInitState(AcceptableOrderPriceRange range);
+	void orderInitState(AcceptableOrderPriceRange &range);
 	void setState(std::shared_ptr<OrderState> state);
 
 	std::string m_applianceType;

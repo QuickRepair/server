@@ -28,7 +28,7 @@ int main()
 		AccountFactory<CustomerAccount> customerFactory;
 		AccountFactory<MerchantAccount> merchantFactory;
 
-		shared_ptr<CustomerAccount> committer = customerFactory.createOrUpdateUser("a", "b");
+		shared_ptr<CustomerAccount> committer = customerFactory.createOrUpdateAccount("a", "b");
 
 		//send verification code
 		std::string verificationDeviceIdentification;
@@ -49,9 +49,9 @@ int main()
 		AcceptableOrderPriceRange range;
 		OrderManager::getInstance().publishOrder(committer, contact, detail, range);*/
 
-		/*shared_ptr<MerchantAccount> merchant = merchantFactory.createOrUpdateUser(10, "name", "ps", "email");
+		/*shared_ptr<MerchantAccount> merchant = merchantFactory.createOrUpdateAccount(10, "name", "ps", "email");
 		shared_ptr<MerchantAccount> dbMerchant = merchantFactory.readUser("email", "ps");
-		shared_ptr<CustomerAccount> dbCustomer = customerFactory.readUser("email", "ps");
+		shared_ptr<CustomerAccount> dbCustomer = customerFactory.readAccount("email", "ps");
 
 		shared_ptr<Order> newOorder = orderFactory.createOrder(dbCustomer, ContactInformation(), "detail", 123456789, AcceptableOrderPriceRange(12, 54));
 		shared_ptr<Order> dbOrder = orderFactory.readOrder(dbCustomer, 1234);

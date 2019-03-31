@@ -6,9 +6,18 @@
 #include "Database/DatabaseConnection.h"
 
 using std::shared_ptr;					using std::make_shared;
+using std::string;						using std::get;
+
+std::shared_ptr<Account> CustomerFactory::loadAccount(unsigned long id)
+{
+	auto accountInfo = DatabaseConnection::getInstance().loadCustomer(id);
+	shared_ptr<CustomerAccount> customer = make_shared<CustomerAccount>(id, get<0>(accountInfo), get<1>(accountInfo));
+	return customer;
+}
 
 std::shared_ptr<Account> CustomerFactory::loadAccountSpecific(std::string account, std::string password)
 {
+	//TODO check in memory
 	unsigned long id = DatabaseConnection::getInstance().checkCustomerPasswordAndGetId(account, password);
 	shared_ptr<CustomerAccount> customer = make_shared<CustomerAccount>(id, account, password);
 

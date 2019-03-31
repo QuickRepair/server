@@ -5,15 +5,23 @@
 
 using std::make_shared;				using std::runtime_error;
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
-			 std::string applianceType, ContactInformation contactWay, std::string detail)
-	: m_applianceType{std::move(applianceType)},
-	m_contactWay{std::move(contactWay)},
-	m_detail{std::move(detail)}, m_id{id},
-	m_committer{std::move(committer)}
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
+			 std::string &applianceType, ContactInformation &contactWay, std::string &detail)
+	: m_applianceType{applianceType},
+	m_contactWay{contactWay},
+	m_detail{detail}, m_id{id},
+	m_committer{committer}
 {}
 
-void Order::orderInitState(AcceptableOrderPriceRange range)
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
+	  std::string &applianceType, ContactInformation &contactWay, std::string &detail, std::shared_ptr<OrderState> currentState)
+		: m_applianceType{applianceType},
+		  m_contactWay{contactWay},
+		  m_detail{detail}, m_id{id},
+		  m_committer{committer}, m_currentState{currentState}
+{}
+
+void Order::orderInitState(AcceptableOrderPriceRange &range)
 {
 	if(!m_currentState)
 		m_currentState = make_shared<OrderUnreceivedState>(weak_from_this(), range);
@@ -121,5 +129,5 @@ bool Order::isNotReceived() const
 
 void Order::setState(std::shared_ptr<OrderState> state)
 {
-	m_currentState = std::move(state);
+	m_currentState = state;
 }

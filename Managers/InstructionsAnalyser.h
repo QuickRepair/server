@@ -32,15 +32,15 @@ private:
 
 	// about get lists
 	std::string doGetList(std::map<utility::string_t, utility::string_t> &instruction);
-	std::string getServiceTypeList(std::weak_ptr<MerchantAccount> account);
+	std::string getServiceTypeList(std::weak_ptr<MerchantAccount> &account);
 	std::string getMerchantList();
 	std::string getApplianceTypeList();
-	std::string getOrderList(std::weak_ptr<Account> account);
-	std::string getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> account);
+	std::string getOrderList(std::weak_ptr<Account> &account);
+	std::string getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> &account);
 
 	std::string getOrderStateString(OrderState::States &state);
-	unsigned long toUnsignedLong(std::string s);
-	double toDouble(std::string s);
+	unsigned long toUnsignedLong(std::string &s);
+	double toDouble(std::string &s);
 };
 
 

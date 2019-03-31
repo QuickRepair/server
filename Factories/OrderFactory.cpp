@@ -9,6 +9,8 @@
 #include "../Account/CustomerAccount.h"
 #include "../Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "../Managers/AccountManager.h"
+#include "../Managers/OrderManager.h"
+#include "../Errors/QueryResultEmptyError.h"
 #include <tuple>
 
 using std::make_shared;			using std::get;
@@ -16,20 +18,31 @@ using std::shared_ptr;
 
 void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 {
-	//TODO
-	auto orderInfo = DatabaseConnection::getInstance().queryOrderByAccountId(account.lock()->id());
-	for(auto &ret : orderInfo)
+	try
 	{
-		auto committer = AccountManager::getInstance().getCustomer(get<1>(ret));
-		auto acceptor = AccountManager::getInstance().getMerchant(get<2>(ret));
-		if(committer.lock() == nullptr)
-			AccountManager::getInstance().loadCustomer(get<1>(ret));
-		if (acceptor.lock() == nullptr)
-			AccountManager::getInstance().loadMerchant(get<2>(ret));
-		shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, get<3>(ret), ContactInformation(), get<4>(ret));
-	}
+		auto orderInfo = DatabaseConnection::getInstance().queryOrderByAccountId(account.lock()->id());
+		for (auto &ret : orderInfo)
+		{
+			auto committer = AccountManager::getInstance().getCustomer(get<1>(ret));
+			auto acceptor = AccountManager::getInstance().getMerchant(get<2>(ret));
 
-	//newOrder->m_currentState = getStates(newOrder, get<3>(orderInfo));
+			if (committer.lock() != nullptr || acceptor.lock() != nullptr)
+			{
+				if (committer.lock() == nullptr)
+					committer = AccountManager::getInstance().loadCustomer(get<1>(ret));
+				if (acceptor.lock() == nullptr)
+					acceptor = AccountManager::getInstance().loadMerchant(get<2>(ret));
+				ContactInformation tmp;
+				shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, get<3>(ret), tmp, get<4>(ret));
+				newOrder->m_currentState = getStates(newOrder, get<5>(ret));
+				committer.lock()->loadOrder(newOrder);
+				acceptor.lock()->loadOrder(newOrder);
+			}
+		}
+	}
+	catch (QueryResultEmptyError &e)
+	{
+	}
 }
 
 std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
@@ -43,16 +56,24 @@ std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> 
 
 std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order, unsigned long lastStateId, unsigned call)
 {
-	std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters> stateInfo;
-	if(call == 0)
-		stateInfo = DatabaseConnection::getInstance().queryOrderStateByOrderIdAndStateId(order->id(), lastStateId);
-	else
-		stateInfo = DatabaseConnection::getInstance().queryOrderStateByOrderIdAndLastStateId(order->id(), lastStateId);
+	try
+	{
+		std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters> stateInfo;
+		if (call == 0)
+			stateInfo = DatabaseConnection::getInstance().queryOrderStateByOrderIdAndStateId(order->id(), lastStateId);
+		else
+			stateInfo = DatabaseConnection::getInstance().queryOrderStateByOrderIdAndLastStateId(order->id(),
+																								 lastStateId);
 
-	shared_ptr<OrderStateAbstractFactory> stateFactory = get<0>(stateInfo);
-	OrderStateParameters parameters = get<1>(stateInfo);
-	if(parameters.lastStateId != 0)
-		parameters.lastState = getStates(order, parameters.lastStateId);
+		shared_ptr<OrderStateAbstractFactory> stateFactory = get<0>(stateInfo);
+		OrderStateParameters parameters = get<1>(stateInfo);
+		if (parameters.lastStateId != 0)
+			parameters.lastState = getStates(order, parameters.lastStateId);
 
-	return stateFactory ? stateFactory->readStateForOrder(order, parameters) : nullptr;
+		return stateFactory->makeStateForOrder(order, parameters);
+	}
+	catch (QueryResultEmptyError &e)
+	{
+		return nullptr;
+	}
 }

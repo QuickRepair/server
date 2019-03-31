@@ -8,15 +8,24 @@
 #include "../Account/MerchantServiceType.h"
 
 using std::shared_ptr;					using std::make_shared;
+using std::string;						using std::get;
+
+std::shared_ptr<Account> MerchantFactory::loadAccount(unsigned long id)
+{
+	auto accountInfo = DatabaseConnection::getInstance().loadMerchant(id);
+	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, get<0>(accountInfo), get<1>(accountInfo));
+	return merchant;
+}
 
 std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string account, std::string password)
 {
+	//TODO check in memory
 	unsigned long id = DatabaseConnection::getInstance().checkMerchantPasswordAndGetId(account, password);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, account, password);
 
 	// load service types
 	auto serviceTypeDetail = DatabaseConnection::getInstance().queryMerchantServiceType(id);
-	shared_ptr<MerchantServiceType> serviceType = make_shared<MerchantServiceType>(std::get<0>(serviceTypeDetail), std::get<1>(serviceTypeDetail));
+	shared_ptr<MerchantServiceType> serviceType = make_shared<MerchantServiceType>(get<0>(serviceTypeDetail), get<1>(serviceTypeDetail));
 	merchant->loadServiceType(serviceType);
 
 	//TODO: load contact info

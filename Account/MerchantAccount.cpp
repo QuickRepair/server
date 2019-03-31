@@ -92,10 +92,9 @@ void MerchantAccount::loadContactInformation(std::list<std::shared_ptr<ContactIn
 		m_contactInfo.push_back(element);
 }
 
-void MerchantAccount::loadOrders(std::list<std::shared_ptr<Order>> orders)
+void MerchantAccount::loadOrder(std::shared_ptr<Order> order)
 {
-	m_receivedOrders.clear();
-	m_receivedOrders = std::move(orders);
+	m_receivedOrders.push_back(order);
 }
 
 void MerchantAccount::loadServiceType(std::shared_ptr<MerchantServiceType> service)

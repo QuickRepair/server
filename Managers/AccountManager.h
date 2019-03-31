@@ -22,17 +22,17 @@ public:
 
 	std::list<std::weak_ptr<MerchantAccount>> getMerchantList();
 	std::weak_ptr<MerchantAccount> getMerchant(unsigned long id);
-	std::weak_ptr<MerchantAccount> getMerchant(std::string account);
+	std::weak_ptr<MerchantAccount> getMerchant(std::string &account);
 	std::weak_ptr<CustomerAccount> getCustomer(unsigned long id);
-	std::weak_ptr<CustomerAccount> getCustomer(std::string account);
+	std::weak_ptr<CustomerAccount> getCustomer(std::string &account);
 
-	void merchantRequestForVerificationCode(std::string codeSendToWhere);
-	void customerRequestForVerificationCode(std::string codeSendToWhere);
+	void merchantRequestForVerificationCode(std::string &codeSendToWhere);
+	void customerRequestForVerificationCode(std::string &codeSendToWhere);
 
-	bool merchantAuthentication(std::string account, std::string password);
-	bool customerAuthentication(std::string account, std::string password);
-	void loadMerchant(unsigned long id);
-	void loadCustomer(unsigned long id);
+	std::weak_ptr<MerchantAccount> merchantAuthentication(std::string &account, std::string &password);
+	std::weak_ptr<CustomerAccount> customerAuthentication(std::string &account, std::string &password);
+	std::weak_ptr<MerchantAccount> loadMerchant(unsigned long id);
+	std::weak_ptr<CustomerAccount> loadCustomer(unsigned long id);
 
 private:
 	AccountManager();

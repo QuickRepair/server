@@ -26,7 +26,7 @@ public:
 
 protected:
 	virtual void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) = 0;
-	virtual void loadOrders(std::list<std::shared_ptr<Order>> orders) = 0;
+	virtual void loadOrder(std::shared_ptr<Order> order) = 0;
 
     unsigned long int m_id;
 	std::string m_account;

@@ -10,6 +10,7 @@ class MerchantServiceType;
 class MerchantAccount : public Account, public std::enable_shared_from_this<MerchantAccount>
 {
 	friend class MerchantFactory;
+	friend class OrderFactory;
 
 public:
     MerchantAccount(unsigned long id, std::string account, std::string password);
@@ -30,7 +31,7 @@ public:
 
 protected:
 	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
-	void loadOrders(std::list<std::shared_ptr<Order>> orders) override;
+	void loadOrder(std::shared_ptr<Order> order) override;
 	void loadServiceType(std::shared_ptr<MerchantServiceType> service);
 
 private:

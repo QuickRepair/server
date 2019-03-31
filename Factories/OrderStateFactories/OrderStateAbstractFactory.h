@@ -15,7 +15,7 @@ class OrderStateAbstractFactory {
 public:
 	virtual ~OrderStateAbstractFactory() = 0;
 
-	virtual std::shared_ptr<OrderState> readStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters) = 0;
+	virtual std::shared_ptr<OrderState> makeStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters) = 0;
 };
 
 #endif //HAR_ORDERSTATEFACTORY_H

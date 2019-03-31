@@ -10,8 +10,9 @@ class AccountFactory {
 public:
 	virtual ~AccountFactory() = 0;
 
-	std::shared_ptr<Account> readUser(std::string account, std::string password);
-	std::shared_ptr<Account> createOrUpdateUser(std::string account, std::string password);
+	std::shared_ptr<Account> readAccount(std::string account, std::string password);
+	virtual std::shared_ptr<Account> loadAccount(unsigned long id) = 0;
+	std::shared_ptr<Account> createOrUpdateAccount(std::string account, std::string password);
 
 protected:
 	virtual std::shared_ptr<Account> loadAccountSpecific(std::string account, std::string password) = 0;

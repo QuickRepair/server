@@ -9,7 +9,7 @@ class OrderUnreceivedStateFactory : public OrderStateAbstractFactory {
 public:
 	~OrderUnreceivedStateFactory() override = default;
 
-	std::shared_ptr<OrderState> readStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters) override;
+	std::shared_ptr<OrderState> makeStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters) override;
 };
 
 #endif //HAR_ORDERUNRECEIVEDSTATEFACTORY_H

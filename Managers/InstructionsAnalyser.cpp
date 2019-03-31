@@ -19,6 +19,7 @@
 using std::string;					using std::cerr;
 using std::endl;					using std::list;
 using std::weak_ptr;				using std::istringstream;
+using std::cout;
 
 std::string InstructionsAnalyser::instructionFromMap(std::map<utility::string_t, utility::string_t> instruction)
 {
@@ -81,9 +82,15 @@ std::string InstructionsAnalyser::doLogin(web::json::object &object)
 		string password = object.at("password").as_string();
 		string accountType = object.at("account_type").as_string();
 		if(accountType == "merchant")
-			AccountManager::getInstance().merchantAuthentication(account, password);
+		{
+			auto merchant = AccountManager::getInstance().merchantAuthentication(account, password);
+			// OrderManager::getInstance().loadOrderForAccount(merchant);
+		}
 		else if(accountType == "customer")
-			AccountManager::getInstance().customerAuthentication(account, password);
+		{
+			auto customer = AccountManager::getInstance().customerAuthentication(account, password);
+			// OrderManager::getInstance().loadOrderForAccount(customer);
+		}
 		retJson["login_result"] = web::json::value::string("success");
 	}
 	catch (NoSuchAnAccountError &e)
@@ -135,7 +142,7 @@ std::string InstructionsAnalyser::doGetList(std::map<utility::string_t, utility:
 	return ret;
 }
 
-std::string InstructionsAnalyser::getServiceTypeList(std::weak_ptr<MerchantAccount> account)
+std::string InstructionsAnalyser::getServiceTypeList(std::weak_ptr<MerchantAccount> &account)
 {
 	web::json::value retJson;
 
@@ -208,7 +215,7 @@ std::string InstructionsAnalyser::doUpdateServiceType(web::json::object &object)
 	return retJson.serialize();
 }
 
-std::string InstructionsAnalyser::getOrderList(std::weak_ptr<Account> account)
+std::string InstructionsAnalyser::getOrderList(std::weak_ptr<Account> &account)
 {
 	web::json::value retJson;
 
@@ -233,7 +240,7 @@ std::string InstructionsAnalyser::getOrderList(std::weak_ptr<Account> account)
 	return retJson.serialize();
 }
 
-std::string InstructionsAnalyser::getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> account)
+std::string InstructionsAnalyser::getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> &account)
 {
 	web::json::value retJson;
 
@@ -273,9 +280,11 @@ std::string InstructionsAnalyser::doSubmitOrder(web::json::object &object)
 		auto merchant = AccountManager::getInstance().getMerchant(merchantAccount);
 		if (customer.lock() != nullptr && merchant.lock() != nullptr)
 		{
+			ContactInformation tmp(address);
+			AcceptableOrderPriceRange range;
 			OrderManager::getInstance().publishOrder(customer, merchant,
-													 appliance, ContactInformation(address), detailDescription,
-													 AcceptableOrderPriceRange()
+													 appliance, tmp, detailDescription,
+													 range
 			);
 		} else
 			retJson["result"] = web::json::value("empty");
@@ -377,18 +386,18 @@ std::string InstructionsAnalyser::getOrderStateString(OrderState::States &state)
 	return stateString;
 }
 
-unsigned long InstructionsAnalyser::toUnsignedLong(std::string s)
+unsigned long InstructionsAnalyser::toUnsignedLong(std::string &s)
 {
-	istringstream istr(s);
+	istringstream stream(s);
 	unsigned long num;
-	istr >> num;
+	stream >> num;
 	return num;
 }
 
-double InstructionsAnalyser::toDouble(std::string s)
+double InstructionsAnalyser::toDouble(std::string &s)
 {
-	istringstream istr(s);
+	istringstream stream(s);
 	double num;
-	istr >> num;
+	stream >> num;
 	return num;
 }

@@ -5,7 +5,8 @@
 
 using std::make_shared;
 
-std::shared_ptr<OrderState> OrderFinishedStateFactory::readStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters)
+std::shared_ptr<OrderState> OrderFinishedStateFactory::makeStateForOrder(std::weak_ptr<Order> order,
+																		 OrderStateParameters &parameters)
 {
 	auto finished = make_shared<OrderFinishedState>(order, parameters.lastState);
 	return finished;

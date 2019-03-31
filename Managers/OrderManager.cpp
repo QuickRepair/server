@@ -21,8 +21,8 @@ OrderManager::OrderManager()
 	m_factory = make_shared<OrderFactory>();
 }
 
-void OrderManager::publishOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
-								std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
+void OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
+								std::string &applianceType, ContactInformation &contactWay, std::string &detail, AcceptableOrderPriceRange &range)
 {
 	shared_ptr<Order> newOrder = m_factory->createOrder(committer, acceptor, applianceType, contactWay, detail, range);
 	m_orderList.push_back(newOrder);
@@ -56,7 +56,12 @@ void OrderManager::orderPayed(std::weak_ptr<CustomerAccount> &committer, std::we
 	committer.lock()->payTheOrder(order);
 }
 
-std::list<std::weak_ptr<Order>> OrderManager::getOrderList(std::weak_ptr<Account> account)
+void OrderManager::loadOrderForAccount(std::weak_ptr<Account> account)
+{
+	m_factory->readOrdersForAccount(account);
+}
+
+std::list<std::weak_ptr<Order>> OrderManager::getOrderList(std::weak_ptr<Account> &account)
 {
 	return account.lock()->myOrdersList();
 }

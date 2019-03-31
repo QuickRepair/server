@@ -5,7 +5,8 @@
 
 using std::make_shared;
 
-std::shared_ptr<OrderState> OrderStartRepairStateFactory::readStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters)
+std::shared_ptr<OrderState> OrderStartRepairStateFactory::makeStateForOrder(std::weak_ptr<Order> order,
+																			OrderStateParameters &parameters)
 {
 	auto startRepair = make_shared<OrderStartRepairState>(order, parameters.lastState, parameters.date);
 	return startRepair;

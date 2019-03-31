@@ -56,8 +56,7 @@ void CustomerAccount::loadContactInformation(std::list<std::shared_ptr<ContactIn
 		m_contactInfo.push_back(element);
 }
 
-void CustomerAccount::loadOrders(std::list<std::shared_ptr<Order>> orders)
+void CustomerAccount::loadOrder(std::shared_ptr<Order> order)
 {
-	m_orders.clear();
-	m_orders = std::move(orders);
+	m_orders.push_back(order);
 }

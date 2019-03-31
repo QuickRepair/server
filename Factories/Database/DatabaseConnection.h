@@ -32,8 +32,9 @@ public:
 	 * 3 unsigned long for receiver id
 	 * 4 string for appliance type
 	 * 5 string for detail
+	 * 6 unsigned long for current state id
 	 */
-	std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>> queryOrderByAccountId(unsigned long id);
+	std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> queryOrderByAccountId(unsigned long id);
 
 	/* in std::tuple<std::string, bool>
 	 * 0 std::shared_ptr<OrderStateAbstractFactory> for state factory
@@ -67,6 +68,14 @@ public:
 	 * 1 int for max repair distance
 	 */
 	std::tuple<std::list<std::string>, int> queryMerchantServiceType(unsigned long id);
+
+	/* Load account by id
+	 * return type:
+	 * 0 std::string for account
+	 * 1 std::string for password
+	 */
+	std::tuple<std::string, std::string> loadMerchant(unsigned long id);
+	std::tuple<std::string, std::string> loadCustomer(unsigned long id);
 
 private:
 	DatabaseConnection();
