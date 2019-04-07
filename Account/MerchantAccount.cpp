@@ -1,7 +1,7 @@
 #include "MerchantAccount.h"
 #include "ContactInformation.h"
 #include "MerchantServiceType.h"
-#include "../Order/Order.h"
+#include "Order/Order.h"
 #include <algorithm>
 
 using std::weak_ptr;					using std::list;
@@ -13,7 +13,8 @@ MerchantAccount::MerchantAccount(unsigned long id, std::string account, std::str
 
 void MerchantAccount::orderWaitToBeAccept(std::shared_ptr<Order> order)
 {
-	m_unreceivedOrders.push_back(order);
+	if(!isMyUnreceivedOrder(order))
+		m_unreceivedOrders.push_back(order);
 }
 
 void MerchantAccount::acceptOrder(std::weak_ptr<Order> order)
@@ -41,7 +42,10 @@ void MerchantAccount::endRepair(std::weak_ptr<Order> order, double transaction)
 void MerchantAccount::rejectOrder(std::weak_ptr<Order> order)
 {
 	if(isMyUnreceivedOrder(order))
+	{
 		order.lock()->reject();
+		m_unreceivedOrders.remove(order.lock());
+	}
 }
 
 bool MerchantAccount::isMyUnreceivedOrder(std::weak_ptr<Order> order)

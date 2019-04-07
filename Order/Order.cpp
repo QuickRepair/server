@@ -1,27 +1,27 @@
 #include "Order.h"
 #include "OrderStates/OrderUnreceivedState.h"
-#include "../Factories/OrderStateFactories/OrderStateAbstractFactory.h"
+#include "Factories/OrderStateFactories/OrderStateAbstractFactory.h"
 #include <stdexcept>
 
 using std::make_shared;				using std::runtime_error;
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
-			 std::string &applianceType, ContactInformation &contactWay, std::string &detail)
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
+			 std::string applianceType, ContactInformation &contactWay, std::string detail)
 	: m_applianceType{applianceType},
 	m_contactWay{contactWay},
 	m_detail{detail}, m_id{id},
 	m_committer{committer}
 {}
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
-	  std::string &applianceType, ContactInformation &contactWay, std::string &detail, std::shared_ptr<OrderState> currentState)
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
+	  std::string applianceType, ContactInformation &contactWay, std::string detail, std::shared_ptr<OrderState> currentState)
 		: m_applianceType{applianceType},
 		  m_contactWay{contactWay},
 		  m_detail{detail}, m_id{id},
 		  m_committer{committer}, m_currentState{currentState}
 {}
 
-void Order::orderInitState(AcceptableOrderPriceRange &range)
+void Order::initOrderState(AcceptableOrderPriceRange &range)
 {
 	if(!m_currentState)
 		m_currentState = make_shared<OrderUnreceivedState>(weak_from_this(), range);
@@ -45,6 +45,11 @@ void Order::startRepair()
 void Order::endRepair(double transactionPrice)
 {
 	m_currentState->endRepair(transactionPrice);
+}
+
+void Order::pay()
+{
+	m_currentState->payTheOrder();
 }
 
 void Order::finished()

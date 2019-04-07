@@ -2,15 +2,15 @@
 #include "OrderStateFactories/OrderStateAbstractFactory.h"
 #include "Database/DatabaseConnection.h"
 #include "Database/OrderStateParameters.h"
-#include "../Order/Order.h"
-#include "../Order/OrderStates/OrderState.h"
-#include "../Account/ContactInformation.h"
-#include "../Account/MerchantAccount.h"
-#include "../Account/CustomerAccount.h"
-#include "../Order/OrderStates/AcceptableOrderPriceRange.h"
-#include "../Managers/AccountManager.h"
-#include "../Managers/OrderManager.h"
-#include "../Errors/QueryResultEmptyError.h"
+#include "Order/Order.h"
+#include "Order/OrderStates/OrderState.h"
+#include "Account/ContactInformation.h"
+#include "Account/MerchantAccount.h"
+#include "Account/CustomerAccount.h"
+#include "Order/OrderStates/AcceptableOrderPriceRange.h"
+#include "Managers/AccountManager.h"
+#include "Managers/OrderManager.h"
+#include "Errors/QueryResultEmptyError.h"
 #include <tuple>
 
 using std::make_shared;			using std::get;
@@ -50,7 +50,7 @@ std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> 
 {
 	unsigned long id = DatabaseConnection::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
 	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, applianceType, contactWay, detail);
-	newOrder->orderInitState(range);
+	newOrder->initOrderState(range);
 	return newOrder;
 }
 

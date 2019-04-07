@@ -1,10 +1,10 @@
 #include "OrderManager.h"
-#include "../Factories/OrderFactory.h"
-#include "../Account/CustomerAccount.h"
-#include "../Account/MerchantAccount.h"
-#include "../Account/ContactInformation.h"
-#include "../Order/OrderStates/AcceptableOrderPriceRange.h"
-#include "../Order/Order.h"
+#include "Factories/OrderFactory.h"
+#include "Account/CustomerAccount.h"
+#include "Account/MerchantAccount.h"
+#include "Account/ContactInformation.h"
+#include "Order/OrderStates/AcceptableOrderPriceRange.h"
+#include "Order/Order.h"
 #include <algorithm>
 
 using std::make_shared;			using std::shared_ptr;

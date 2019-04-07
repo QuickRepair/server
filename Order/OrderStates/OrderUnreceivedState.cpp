@@ -1,8 +1,8 @@
 #include "OrderUnreceivedState.h"
 #include "OrderReceivedState.h"
-#include "../Order.h"
+#include "Order/Order.h"
 #include "OrderFinishedState.h"
-#include "../../Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.h"
 #include "OrderRejectedState.h"
 
 using std::make_shared;						using std::chrono::system_clock;
@@ -34,6 +34,11 @@ void OrderUnreceivedState::startRepair()
 void OrderUnreceivedState::endRepair(double transactionPrice)
 {
 	throw OrderNotAtRightState("At unreceived state, can not switch to end repair state");
+}
+
+void OrderUnreceivedState::payTheOrder()
+{
+	throw OrderNotAtRightState("At unreceived state, can not pay");
 }
 
 void OrderUnreceivedState::orderFinished()

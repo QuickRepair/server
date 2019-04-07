@@ -1,7 +1,7 @@
 #include "OrderUnreceivedStateFactory.h"
-#include "../../Order/Order.h"
-#include "../../Order/OrderStates/OrderUnreceivedState.h"
-#include "../Database/OrderStateParameters.h"
+#include "Order/Order.h"
+#include "Order/OrderStates/OrderUnreceivedState.h"
+#include "Factories/Database/OrderStateParameters.h"
 
 using std::make_shared;
 

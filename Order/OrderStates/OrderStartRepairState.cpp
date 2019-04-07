@@ -1,8 +1,8 @@
 #include "OrderStartRepairState.h"
 #include "OrderFinishedState.h"
 #include "OrderEndRepairState.h"
-#include "../Order.h"
-#include "../../Errors/OrderNotAtRightState.h"
+#include "Order/Order.h"
+#include "Errors/OrderNotAtRightState.h"
 
 using std::chrono::system_clock;				using std::make_shared;
 
@@ -32,6 +32,11 @@ void OrderStartRepairState::startRepair()
 void OrderStartRepairState::endRepair(double transactionPrice)
 {
 	m_order.lock()->setState(make_shared<OrderEndRepairState>(m_order, shared_from_this(), transactionPrice));
+}
+
+void OrderStartRepairState::payTheOrder()
+{
+	throw OrderNotAtRightState("At start repair state, can not pay");
 }
 
 void OrderStartRepairState::orderFinished()

@@ -1,9 +1,9 @@
 #include "CustomerAccount.h"
 #include "ContactInformation.h"
-#include "../Order/OrderStates/AcceptableOrderPriceRange.h"
-#include "../Factories/OrderFactory.h"
-#include "../Order/Order.h"
-#include "../Order/OrderStates/OrderEvaluate.h"
+#include "Order/OrderStates/AcceptableOrderPriceRange.h"
+#include "Factories/OrderFactory.h"
+#include "Order/Order.h"
+#include "Order/OrderStates/OrderEvaluate.h"
 #include <algorithm>
 
 using std::weak_ptr;						using std::list;
@@ -14,7 +14,8 @@ CustomerAccount::CustomerAccount(unsigned long id, std::string account, std::str
 
 void CustomerAccount::iAmPublishAnOrder(std::weak_ptr<Order> order)
 {
-	m_orders.push_back(order.lock());
+	if(!isMyOrder(order))
+		m_orders.push_back(order.lock());
 }
 
 void CustomerAccount::cancelOrder(std::weak_ptr<Order> order)
@@ -32,7 +33,7 @@ void CustomerAccount::evaluateTheOrder(std::weak_ptr<Order> order, OrderEvaluate
 void CustomerAccount::payTheOrder(std::weak_ptr<Order> order)
 {
 	if(isMyOrder(order))
-		order.lock()->finished();
+		order.lock()->pay();
 }
 
 bool CustomerAccount::isMyOrder(std::weak_ptr<Order> order) const

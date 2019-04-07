@@ -6,7 +6,8 @@
 #define HARSERVER_RESTHANDLER_H
 
 #include <cpprest/http_listener.h>
-#include "../Managers/InstructionsAnalyser.h"
+
+class InstructionsAnalyser;
 
 class RestHandler {
 public:

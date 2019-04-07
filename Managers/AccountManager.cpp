@@ -3,13 +3,13 @@
 //
 
 #include "AccountManager.h"
-#include "../Account/Account.h"
-#include "../Account/MerchantAccount.h"
-#include "../Account/CustomerAccount.h"
-#include "../Factories/MerchantFactory.h"
-#include "../Factories/CustomerFactory.h"
-#include "../Errors/NoSuchAnAccountError.h"
-#include "../Errors/PasswordNotRightError.h"
+#include "Account/Account.h"
+#include "Account/MerchantAccount.h"
+#include "Account/CustomerAccount.h"
+#include "Factories/MerchantFactory.h"
+#include "Factories/CustomerFactory.h"
+#include "Errors/NoSuchAnAccountError.h"
+#include "Errors/PasswordNotRightError.h"
 #include "AuthenticationCarrier/AuthenticationCarrier.h"
 #include <algorithm>
 

@@ -20,6 +20,7 @@ public:
 	virtual void receivedBy(std::weak_ptr<MerchantAccount> receiver) = 0;
 	virtual void startRepair() = 0;
 	virtual void endRepair(double transactionPrice) = 0;
+	virtual void payTheOrder() = 0;
 	virtual void orderFinished() = 0;
 
 	virtual AcceptableOrderPriceRange priceRange() const = 0;

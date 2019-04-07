@@ -4,8 +4,8 @@
 
 #include "MerchantFactory.h"
 #include "Database/DatabaseConnection.h"
-#include "../Account/MerchantAccount.h"
-#include "../Account/MerchantServiceType.h"
+#include "Account/MerchantAccount.h"
+#include "Account/MerchantServiceType.h"
 
 using std::shared_ptr;					using std::make_shared;
 using std::string;						using std::get;

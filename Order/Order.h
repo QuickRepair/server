@@ -5,7 +5,7 @@
 #include <memory>
 #include <queue>
 #include <chrono>
-#include "../Account/ContactInformation.h"
+#include "Account/ContactInformation.h"
 #include "OrderStates/AcceptableOrderPriceRange.h"
 #include "OrderStates/OrderState.h"
 
@@ -26,15 +26,18 @@ class Order : public std::enable_shared_from_this<Order> {
 	friend class OrderEndRepairStateFactory;
 	friend class OrderFinishedStateFactory;
 public:
-	Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
-		  std::string &applianceType, ContactInformation &contactWay, std::string &detail);
-	Order(unsigned long int id, std::weak_ptr<CustomerAccount> &committer,
-		  std::string &applianceType, ContactInformation &contactWay, std::string &detail, std::shared_ptr<OrderState> currentState);
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
+		  std::string applianceType, ContactInformation &contactWay, std::string detail);
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
+		  std::string applianceType, ContactInformation &contactWay, std::string detail, std::shared_ptr<OrderState> currentState);
+
+	void initOrderState(AcceptableOrderPriceRange &range);
 
 	void reject();
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver);
 	void startRepair();
 	void endRepair(double transactionPrice);
+	void pay();
 	void finished();
 
 	AcceptableOrderPriceRange priceRange();
@@ -55,7 +58,6 @@ public:
 	bool isNotReceived() const;
 
 private:
-	void orderInitState(AcceptableOrderPriceRange &range);
 	void setState(std::shared_ptr<OrderState> state);
 
 	std::string m_applianceType;

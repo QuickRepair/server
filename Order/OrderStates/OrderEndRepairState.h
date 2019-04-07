@@ -2,20 +2,20 @@
 #define HAR_ENDREPAIRORDERSTATE_H
 
 #include "OrderState.h"
-#include "OrderEvaluate.h"
 
 class Order;
 
 class OrderEndRepairState : public OrderState, public std::enable_shared_from_this<OrderEndRepairState> {
 public:
 	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice);
-	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, OrderEvaluate evaluate, std::chrono::system_clock::time_point date);
+	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, std::chrono::system_clock::time_point date);
 	~OrderEndRepairState() override = default;
 
 	void reject() override;
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver) override;
 	void startRepair() override;
 	void endRepair(double transactionPrice) override;
+	void payTheOrder() override;
 	void orderFinished() override;
 
 	AcceptableOrderPriceRange priceRange() const override;
@@ -32,7 +32,6 @@ public:
 
 private:
 	std::shared_ptr<OrderState> m_lastState;
-	OrderEvaluate m_evaluate;
 	double m_transaction;
 };
 

@@ -3,7 +3,7 @@
 //
 
 #include "OrderRejectedState.h"
-#include "../../Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.h"
 
 using std::make_shared;						using std::chrono::system_clock;
 
@@ -33,6 +33,11 @@ void OrderRejectedState::startRepair()
 void OrderRejectedState::endRepair(double transactionPrice)
 {
 	throw OrderNotAtRightState("At reject state, can not switch to end repair state");
+}
+
+void OrderRejectedState::payTheOrder()
+{
+	throw OrderNotAtRightState("At reject state, can not pay");
 }
 
 void OrderRejectedState::orderFinished()

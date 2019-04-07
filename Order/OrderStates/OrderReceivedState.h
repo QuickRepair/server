@@ -15,6 +15,7 @@ public:
 	void receivedBy(std::weak_ptr<MerchantAccount> receiver) override;
 	void startRepair() override;
 	void endRepair(double transactionPrice) override;
+	void payTheOrder() override;
 	void orderFinished() override;
 
 	AcceptableOrderPriceRange priceRange() const override;

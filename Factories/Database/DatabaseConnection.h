@@ -7,10 +7,10 @@
 #include <memory>
 #include <vector>
 #include <sstream>
-#include "../../Errors/AccountAlreadyExistError.h"
+#include "Errors/AccountAlreadyExistError.h"
+#include "Errors/DatabaseInternalError.h"
 #include "QueryResult.h"
-#include "../../Errors/DatabaseInternalError.h"
-#include "../../Account/CustomerAccount.h"
+#include "Account/CustomerAccount.h"
 
 class ContactInformation;
 class OrderStateParameters;

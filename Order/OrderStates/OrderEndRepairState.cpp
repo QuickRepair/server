@@ -1,7 +1,7 @@
 #include "OrderEndRepairState.h"
 #include "OrderFinishedState.h"
-#include "../Order.h"
-#include "../../Errors/OrderNotAtRightState.h"
+#include "Order/Order.h"
+#include "Errors/OrderNotAtRightState.h"
 
 using std::chrono::system_clock;					using std::make_shared;
 
@@ -9,8 +9,8 @@ OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared
 		: OrderState(std::move(order), system_clock::now()), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}
 {}
 
-OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, OrderEvaluate evaluate, std::chrono::system_clock::time_point date)
-	: OrderState(std::move(order), date), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}, m_evaluate{evaluate}
+OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, std::chrono::system_clock::time_point date)
+	: OrderState(std::move(order), date), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}
 {}
 
 void OrderEndRepairState::reject()
@@ -33,6 +33,11 @@ void OrderEndRepairState::endRepair(double transactionPrice)
 	throw OrderNotAtRightState("At end repair state, can not end repair");
 }
 
+void OrderEndRepairState::payTheOrder()
+{
+	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
+}
+
 void OrderEndRepairState::orderFinished()
 {
 	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
@@ -50,12 +55,12 @@ double OrderEndRepairState::transaction() const
 
 void OrderEndRepairState::setEvaluate(OrderEvaluate &evaluate)
 {
-	m_evaluate = evaluate;
+	throw OrderNotAtRightState("At end repair state, can not set evaluate");
 }
 
 OrderEvaluate OrderEndRepairState::evaluate() const
 {
-	return m_evaluate;
+	throw OrderNotAtRightState("At end repair state, no evaluate");
 }
 
 OrderState::States OrderEndRepairState::atState() const

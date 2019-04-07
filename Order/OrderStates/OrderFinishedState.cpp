@@ -1,5 +1,5 @@
 #include "OrderFinishedState.h"
-#include "../../Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.h"
 
 using std::chrono::system_clock;				using std::make_shared;
 
@@ -7,8 +7,8 @@ OrderFinishedState::OrderFinishedState(std::weak_ptr<Order> order, std::shared_p
 		: OrderState(order, system_clock::now()), m_lastState{lastState}
 {}
 
-OrderFinishedState::OrderFinishedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, std::chrono::system_clock::time_point date)
-		: OrderState(order, date), m_lastState{lastState}
+OrderFinishedState::OrderFinishedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, OrderEvaluate evaluate, std::chrono::system_clock::time_point date)
+		: OrderState(order, date), m_lastState{lastState}, m_evaluate{evaluate}
 {}
 
 void OrderFinishedState::reject()
@@ -31,6 +31,11 @@ void OrderFinishedState::endRepair(double transactionPrice)
 	throw OrderNotAtRightState("At finish state, can not end repair");
 }
 
+void OrderFinishedState::payTheOrder()
+{
+	throw OrderNotAtRightState("At finish state, can not pay");
+}
+
 void OrderFinishedState::orderFinished()
 {
 	throw OrderNotAtRightState("At finish state, can not finish");
@@ -48,12 +53,12 @@ double OrderFinishedState::transaction() const
 
 void OrderFinishedState::setEvaluate(OrderEvaluate &evaluate)
 {
-	throw OrderNotAtRightState("Order state not fit");
+	m_evaluate = evaluate;
 }
 
 OrderEvaluate OrderFinishedState::evaluate() const
 {
-	return m_lastState->evaluate();
+	return m_evaluate;
 }
 
 OrderState::States OrderFinishedState::atState() const

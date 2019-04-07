@@ -6,9 +6,9 @@
 #include "Database/DatabaseConnection.h"
 #include <tuple>
 #include <list>
-#include "../Account/ContactInformation.h"
-#include "../Errors/PasswordNotRightError.h"
-#include "../Errors/NoSuchAnAccountError.h"
+#include "Account/ContactInformation.h"
+#include "Errors/PasswordNotRightError.h"
+#include "Errors/NoSuchAnAccountError.h"
 
 AccountFactory::~AccountFactory()
 {}

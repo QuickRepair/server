@@ -1,11 +1,10 @@
 #include "OrderReceivedState.h"
 #include "OrderStartRepairState.h"
 #include "OrderFinishedState.h"
-#include "../Order.h"
-#include "../../Errors/OrderNotAtRightState.h"
+#include "Order/Order.h"
+#include "Errors/OrderNotAtRightState.h"
 
-using std::chrono::system_clock;		using std::runtime_error;
-using std::make_shared;
+using std::chrono::system_clock;					using std::make_shared;
 
 OrderReceivedState::OrderReceivedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, std::weak_ptr<MerchantAccount> receiver)
 	: OrderState(std::move(order), system_clock::now()),
@@ -24,7 +23,7 @@ void OrderReceivedState::reject()
 
 void OrderReceivedState::receivedBy(std::weak_ptr<MerchantAccount> receiver)
 {
-	throw runtime_error("At received state, can not receive");
+	throw OrderNotAtRightState("At received state, can not receive");
 }
 
 void OrderReceivedState::startRepair()
@@ -34,7 +33,12 @@ void OrderReceivedState::startRepair()
 
 void OrderReceivedState::endRepair(double transactionPrice)
 {
-	throw runtime_error("At received state, can not end repair");
+	throw OrderNotAtRightState("At received state, can not end repair");
+}
+
+void OrderReceivedState::payTheOrder()
+{
+	throw OrderNotAtRightState("At received state, can not pay");
 }
 
 void OrderReceivedState::orderFinished()
@@ -49,17 +53,17 @@ AcceptableOrderPriceRange OrderReceivedState::priceRange() const
 
 double OrderReceivedState::transaction() const
 {
-	throw runtime_error("At received state, no transaction");
+	throw OrderNotAtRightState("At received state, no transaction");
 }
 
 void OrderReceivedState::setEvaluate(OrderEvaluate &evaluate)
 {
-	throw runtime_error("At received state, can not set evaluate");
+	throw OrderNotAtRightState("At received state, can not set evaluate");
 }
 
 OrderEvaluate OrderReceivedState::evaluate() const
 {
-	throw runtime_error("At received state, no evaluate");
+	throw OrderNotAtRightState("At received state, no evaluate");
 }
 
 OrderState::States OrderReceivedState::atState() const
