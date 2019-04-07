@@ -10,14 +10,14 @@
 配置文件结构如下：  
 ```
 {
-	"listen_ip": "http://\*.\*.\*.\*",
+	"listen_ip": "http://*.*.*.*",
 	"listen_port": 12345,
 	"database": {
-		"ip": "\*.\*.\*.\*",
+		"ip": "*.*.*.*",
 		"port": 3306,
-		"database_name": "\*\*\*",
-		"user_name": "\*\*\*",
-		"password": "\*\*\*"
+		"database_name": "***",
+		"user_name": "***",
+		"password": "***"
 	}
 }
 ```
