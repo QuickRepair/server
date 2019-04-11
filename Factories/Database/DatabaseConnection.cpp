@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <ctime>
 #include <chrono>
 
 using std::string;						using std::runtime_error;

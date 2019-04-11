@@ -34,12 +34,6 @@ TEST(OrderProcess, publishOrder)
 	EXPECT_THROW(customer->payTheOrder(order), OrderNotAtRightState);
 	EXPECT_THROW(customer->evaluateTheOrder(order, OrderEvaluate()), OrderNotAtRightState);
 	EXPECT_EQ(OrderState::States::unreceivedState, order->currentState());
-
-	/*
-
-	customer->payTheOrder(order);
-	EXPECT_EQ(OrderState::States::finishedState, order->currentState());
-	customer->evaluateTheOrder(order, OrderEvaluate());*/
 }
 
 TEST(OrderProcess, registerAsUnreceived)

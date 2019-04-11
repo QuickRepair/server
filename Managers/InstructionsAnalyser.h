@@ -15,30 +15,30 @@ class Account;
 
 class InstructionsAnalyser {
 public:
-	std::string instructionFromMap(std::map<utility::string_t, utility::string_t> instruction);
-	std::string instructionFromJson(web::json::value json);
+	utility::string_t instructionFromMap(std::map<utility::string_t, utility::string_t> instruction);
+	utility::string_t instructionFromJson(web::json::value json);
 
 private:
 	// about login
-	std::string doGetVerification(std::map<utility::string_t, utility::string_t> &instruction);
-	std::string doLogin(web::json::object &object);
+	utility::string_t doGetVerification(std::map<utility::string_t, utility::string_t> &instruction);
+	utility::string_t doLogin(web::json::object &object);
 
-	std::string doUpdateServiceType(web::json::object &object);
+	utility::string_t doUpdateServiceType(web::json::object &object);
 
 	// about order
-	std::string doSubmitOrder(web::json::object &object);
-	std::string doUpdateOrderState(std::map<utility::string_t, utility::string_t> instruction);
-	std::string doGetOrderDetail(std::map<utility::string_t, utility::string_t> instruction);
+	utility::string_t doSubmitOrder(web::json::object &object);
+	utility::string_t doUpdateOrderState(std::map<utility::string_t, utility::string_t> instruction);
+	utility::string_t doGetOrderDetail(std::map<utility::string_t, utility::string_t> instruction);
 
 	// about get lists
-	std::string doGetList(std::map<utility::string_t, utility::string_t> &instruction);
-	std::string getServiceTypeList(std::weak_ptr<MerchantAccount> &account);
-	std::string getMerchantList();
-	std::string getApplianceTypeList();
-	std::string getOrderList(std::weak_ptr<Account> &account);
-	std::string getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> &account);
+	utility::string_t doGetList(std::map<utility::string_t, utility::string_t> &instruction);
+	utility::string_t getServiceTypeList(std::weak_ptr<MerchantAccount> &account);
+	utility::string_t getMerchantList();
+	utility::string_t getApplianceTypeList();
+	utility::string_t getOrderList(std::weak_ptr<Account> &account);
+	utility::string_t getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> &account);
 
-	std::string getOrderStateString(OrderState::States &state);
+	utility::string_t getOrderStateString(OrderState::States &state);
 	unsigned long toUnsignedLong(std::string &s);
 	double toDouble(std::string &s);
 };

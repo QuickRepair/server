@@ -11,7 +11,7 @@ class InstructionsAnalyser;
 
 class RestHandler {
 public:
-    explicit RestHandler(utility::string_t url);
+    explicit RestHandler(std::string url);
     ~RestHandler();
 
 private:

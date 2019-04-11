@@ -1,16 +1,28 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.7)
 project(HARserver)
 
-set(CMAKE_CXX_STANDARD 17)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} /usr/local/mariadb/mariadb-connector-c/include)
-link_directories(/usr/local/mariadb/mariadb-connector-c/lib/mariadb)
-link_directories(/usr/local/lib64)
+set(CMAKE_CXX_STANDARD 11)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} $ENV{PATH})
+link_directories($ENV{PATH})
+
+find_package(Boost REQUIRED)
+find_package(cpprestsdk CONFIG REQUIRED)
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(LINUX 1)
+    message(STATUS "build for platform linux")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(WINDOWS 1)
+    message(STATUS "build for platform windows")
+endif()
 
 option(_TEST_ENV "Switch to test enviroment" ON)
 if(_TEST_ENV STREQUAL ON)
     message("In test enviroment")
     add_definitions(-DENV_TEST)
-    link_libraries(gtest pthread)
+    find_package(GTest MODULE REQUIRED)
+    link_libraries(GTest::GTest)
 endif()
 
 add_executable(HARserver main.cpp
@@ -20,4 +32,8 @@ add_executable(HARserver main.cpp
         Factories/Database/DatabaseConnection.cpp Factories/Database/DatabaseConnection.h Factories/Database/QueryResult.cpp Factories/Database/QueryResult.h Factories/OrderFactory.cpp Factories/OrderFactory.h Factories/OrderStateFactories/OrderStateAbstractFactory.h Factories/Database/OrderStateParameters.h Factories/OrderStateFactories/OrderUnreceivedStateFactory.cpp Factories/OrderStateFactories/OrderUnreceivedStateFactory.h Factories/OrderStateFactories/OrderReceivedStateFactory.cpp Factories/OrderStateFactories/OrderReceivedStateFactory.h Factories/OrderStateFactories/OrderStartRepairStateFactory.cpp Factories/OrderStateFactories/OrderStartRepairStateFactory.h Factories/OrderStateFactories/OrderEndRepairStateFactory.cpp Factories/OrderStateFactories/OrderEndRepairStateFactory.h Factories/OrderStateFactories/OrderFinishedStateFactory.cpp Factories/OrderStateFactories/OrderFinishedStateFactory.h Factories/AccountFactory.h
         Managers/AccountManager.cpp Managers/AccountManager.h Errors/DatabaseInternalError.cpp Errors/DatabaseInternalError.h Errors/QueryResultEmptyError.cpp Errors/QueryResultEmptyError.h Factories/OrderStateFactories/OrderStateAbstractFactory.cpp Order/OrderStates/OrderState.cpp Errors/PasswordNotRightError.cpp Errors/PasswordNotRightError.h Errors/NoSuchAnAccountError.cpp Errors/NoSuchAnAccountError.h RestServer/RestHandler.cpp RestServer/RestHandler.h Managers/InstructionsAnalyser.cpp Managers/InstructionsAnalyser.h Managers/AuthenticationCarrier/AuthenticationCarrier.cpp Managers/AuthenticationCarrier/AuthenticationCarrier.h Managers/AuthenticationCarrier/AuthenticationToScreen.cpp Managers/AuthenticationCarrier/AuthenticationToScreen.h Errors/AccountAlreadyExistError.cpp Errors/AccountAlreadyExistError.h Configuration/Configure.cpp Configuration/Configure.h Factories/MerchantFactory.cpp Factories/MerchantFactory.h Factories/AccountFactory.cpp Factories/CustomerFactory.cpp Factories/CustomerFactory.h Order/OrderStates/OrderRejectedState.cpp Order/OrderStates/OrderRejectedState.h Errors/OrderNotAtRightState.cpp Errors/OrderNotAtRightState.h test/OrderProcess.cpp)
 
-target_link_libraries(HARserver -lmariadb -lpthread -lboost_system -lcrypto -lssl -lcpprest)
+if(WINDOWS)
+    target_link_libraries(HARserver libmariadb cpprestsdk::cpprest)
+elseif(LINUX)
+    target_link_libraries(HARserver mariadb crypto ssl cpprest)
+endif()

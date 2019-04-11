@@ -1,7 +1,7 @@
 #ifndef HAR_DATABASE_H
 #define HAR_DATABASE_H
 
-#include <mariadb/mysql.h>
+#include <mysql/mysql.h>
 #include <tuple>
 #include <chrono>
 #include <memory>

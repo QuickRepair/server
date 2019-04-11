@@ -3,6 +3,7 @@
 #define HAR_ORDERFACTORY_H
 
 #include <memory>
+#include <string>
 
 class Order;
 class OrderStateAbstractFactory;

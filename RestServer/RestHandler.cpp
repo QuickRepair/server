@@ -6,13 +6,14 @@
 #include "Managers/AccountManager.h"
 #include "Managers/InstructionsAnalyser.h"
 
-using web::http::methods;			using std::bind;
-using web::uri;						using std::map;
-using std::make_shared;				using web::http::status_codes;
-using std::string;
+using web::http::methods;					using std::bind;
+using web::uri;								using std::map;
+using std::make_shared;						using web::http::status_codes;
+using std::string;							using utility::conversions::to_utf8string;
+using utility::conversions::to_string_t;
 
-RestHandler::RestHandler(utility::string_t url)
-    : m_listener{url}
+RestHandler::RestHandler(std::string url)
+    : m_listener{to_string_t(url)}
 {
 	m_analyser = make_shared<InstructionsAnalyser>();
 	
@@ -37,17 +38,17 @@ void RestHandler::handleGet(web::http::http_request msg)
 	std::map<utility::string_t, utility::string_t> query = uri::split_query(msg.relative_uri().query());
 	std::cout << "get:" << std::endl;
 	for(auto &s : query)
-		std::cout << s.first << " " << s.second << std::endl;
+		std::cout << to_utf8string(s.first) << " " << to_utf8string(s.second) << std::endl;
 	
-	string replyMsg = m_analyser->instructionFromMap(query);
-	std::cout << replyMsg << std::endl;
+	utility::string_t replyMsg = m_analyser->instructionFromMap(query);
+	std::cout << to_utf8string(replyMsg) << std::endl;
 	msg.reply(status_codes::OK, replyMsg);
 }
 
 void RestHandler::handlePut(web::http::http_request msg)
 {
 	//TODO
-	std::cout << msg.to_string() << std::endl;
+	std::cout << to_utf8string(msg.to_string()) << std::endl;
 }
 
 void RestHandler::handlePost(web::http::http_request msg)
@@ -57,14 +58,14 @@ void RestHandler::handlePost(web::http::http_request msg)
 	web::json::value json = aTask.get();
 
 	std::cout << "post:" << std::endl;
-	std::cout << json.serialize() << std::endl;
+	std::cout << to_utf8string(json.serialize()) << std::endl;
 
-	string replyMsg = m_analyser->instructionFromJson(json);
+	utility::string_t replyMsg = m_analyser->instructionFromJson(json);
 	msg.reply(status_codes::OK, replyMsg);
 }
 
 void RestHandler::handleDelete(web::http::http_request msg)
 {
 	//TODO
-	std::cout << msg.to_string() << std::endl;
+	std::cout <<to_utf8string(msg.to_string()) << std::endl;
 }

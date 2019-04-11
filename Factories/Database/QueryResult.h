@@ -5,7 +5,7 @@
 #ifndef HAR_QUERYRESULT_H
 #define HAR_QUERYRESULT_H
 
-#include <mariadb/mysql.h>
+#include <mysql/mysql.h>
 #include <vector>
 #include <string>
 
