@@ -39,8 +39,8 @@ private:
 	utility::string_t getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> &account);
 
 	utility::string_t getOrderStateString(OrderState::States &state);
-	unsigned long toUnsignedLong(std::string &s);
-	double toDouble(std::string &s);
+	unsigned long toUnsignedLong(const std::string &s);
+	double toDouble(const std::string &s);
 };
 
 

@@ -17,12 +17,10 @@ std::shared_ptr<Account> CustomerFactory::loadAccount(unsigned long id)
 
 std::shared_ptr<Account> CustomerFactory::loadAccountSpecific(std::string account, std::string password)
 {
-	//TODO check in memory
 	unsigned long id = DatabaseConnection::getInstance().checkCustomerPasswordAndGetId(account, password);
 	shared_ptr<CustomerAccount> customer = make_shared<CustomerAccount>(id, account, password);
 
 	//TODO: load contact info
-	//TODO: load order
 	return customer;
 }
 

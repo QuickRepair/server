@@ -19,7 +19,6 @@ std::shared_ptr<Account> MerchantFactory::loadAccount(unsigned long id)
 
 std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string account, std::string password)
 {
-	//TODO check in memory
 	unsigned long id = DatabaseConnection::getInstance().checkMerchantPasswordAndGetId(account, password);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, account, password);
 
@@ -29,7 +28,6 @@ std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string accoun
 	merchant->loadServiceType(serviceType);
 
 	//TODO: load contact info
-	//TODO: load order
 	return merchant;
 }
 

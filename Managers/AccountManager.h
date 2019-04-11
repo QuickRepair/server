@@ -21,13 +21,13 @@ public:
 	void registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier);
 
 	std::list<std::weak_ptr<MerchantAccount>> getMerchantList();
-	std::weak_ptr<MerchantAccount> getMerchant(unsigned long id);
-	std::weak_ptr<MerchantAccount> getMerchant(std::string &account);
-	std::weak_ptr<CustomerAccount> getCustomer(unsigned long id);
-	std::weak_ptr<CustomerAccount> getCustomer(std::string &account);
+	std::weak_ptr<MerchantAccount> getMerchant(const unsigned long id);
+	std::weak_ptr<MerchantAccount> getMerchant(const std::string &account);
+	std::weak_ptr<CustomerAccount> getCustomer(const unsigned long id);
+	std::weak_ptr<CustomerAccount> getCustomer(const std::string &account);
 
-	void merchantRequestForVerificationCode(std::string &codeSendToWhere);
-	void customerRequestForVerificationCode(std::string &codeSendToWhere);
+	void merchantRequestForVerificationCode(const std::string &codeSendToWhere);
+	void customerRequestForVerificationCode(const std::string &codeSendToWhere);
 
 	std::weak_ptr<MerchantAccount> merchantAuthentication(std::string &account, std::string &password);
 	std::weak_ptr<CustomerAccount> customerAuthentication(std::string &account, std::string &password);

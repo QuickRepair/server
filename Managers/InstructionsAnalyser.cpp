@@ -388,7 +388,7 @@ utility::string_t InstructionsAnalyser::getOrderStateString(OrderState::States &
 	return stateString;
 }
 
-unsigned long InstructionsAnalyser::toUnsignedLong(std::string &s)
+unsigned long InstructionsAnalyser::toUnsignedLong(const std::string &s)
 {
 	istringstream stream(s);
 	unsigned long num;
@@ -396,7 +396,7 @@ unsigned long InstructionsAnalyser::toUnsignedLong(std::string &s)
 	return num;
 }
 
-double InstructionsAnalyser::toDouble(std::string &s)
+double InstructionsAnalyser::toDouble(const std::string &s)
 {
 	istringstream stream(s);
 	double num;
