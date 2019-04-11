@@ -12,11 +12,11 @@ int main(int argc, char *argv[])
 
 #include <iostream>
 #include <memory>
+#include "Configuration/Configure.h"
 #include "Managers/AccountManager.h"
 #include "Managers/OrderManager.h"
 #include "RestServer/RestHandler.h"
 #include "Managers/AuthenticationCarrier/AuthenticationToScreen.h"
-#include "Configuration/Configure.h"
 #include "Factories/Database/DatabaseConnection.h"
 
 using std::shared_ptr;			using std::make_shared;

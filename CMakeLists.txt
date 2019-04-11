@@ -17,7 +17,7 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
     message(STATUS "build for platform windows")
 endif()
 
-option(_TEST_ENV "Switch to test enviroment" ON)
+option(_TEST_ENV "Switch to test enviroment" OFF)
 if(_TEST_ENV STREQUAL ON)
     message("In test enviroment")
     add_definitions(-DENV_TEST)
