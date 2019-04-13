@@ -7,7 +7,6 @@
 
 class ContactInformation;
 class Order;
-class OrderFactory;
 class AcceptableOrderPriceRange;
 class OrderEvaluate;
 

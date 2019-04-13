@@ -1,7 +1,7 @@
 #include "OrderEndRepairStateFactory.h"
 #include "Order/Order.h"
 #include "Order/OrderStates/OrderEndRepairState.h"
-#include "Factories/Database/OrderStateParameters.h"
+#include "Factories/DataSource/OrderStateParameters.h"
 
 using std::make_shared;
 

@@ -9,7 +9,7 @@
 
 class Configure {
 public:
-	explicit Configure(std::string configureFilePath);
+	explicit Configure(std::string configureFilePath = "har.json");
 
 	std::string ip() const;
 	unsigned port() const;

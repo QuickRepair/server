@@ -1,7 +1,7 @@
 #include "DatabaseConnection.h"
 #include "QueryResult.h"
 #include "Account/ContactInformation.h"
-#include "OrderStateParameters.h"
+#include "Factories/DataSource/OrderStateParameters.h"
 #include "Factories/OrderStateFactories/OrderUnreceivedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderReceivedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderStartRepairStateFactory.h"
@@ -16,6 +16,7 @@
 #include <sstream>
 #include <ctime>
 #include <chrono>
+#include "Configuration/Configure.h"
 
 using std::string;						using std::runtime_error;
 using std::tuple;						using std::istringstream;
@@ -23,31 +24,27 @@ using std::ostringstream;				using std::shared_ptr;
 using std::make_shared;					using std::list;
 using std::vector;
 
-MYSQL * DatabaseConnection::m_mysqlConnection;
+MYSQL *DatabaseConnection::m_mysqlConnection;
 
 DatabaseConnection::DatabaseConnection()
 {
 	m_mysqlConnection = mysql_init(nullptr);
+	Configure configure;
+	if(!mysql_real_connect(
+			m_mysqlConnection,
+			configure.databaseIp().data(),
+			configure.databaseUserName().data(),
+			configure.databasePassword().data(),
+			configure.databaseName().data(),
+			configure.databasePort(),
+			"/run/mysqld/mysqld.sock", 0)
+			)
+		throw DatabaseInternalError("DatabaseConnection connection error, " + string(mysql_error(m_mysqlConnection)));
 }
 
 DatabaseConnection::~DatabaseConnection()
 {
 	mysql_close(m_mysqlConnection);
-}
-
-void DatabaseConnection::connect(std::string databaseIp, std::string databaseName, std::string databaseUser,
-								 std::string databasePassword, unsigned databasePort)
-{
-	if (!mysql_real_connect(m_mysqlConnection, databaseIp.data(),
-							databaseUser.data(), databasePassword.data(), databaseName.data(), databasePort,
-							"/run/mysqld/mysqld.sock", 0))
-		throw DatabaseInternalError("DatabaseConnection connection error, " + string(mysql_error(m_mysqlConnection)));
-}
-
-DatabaseConnection &DatabaseConnection::getInstance()
-{
-	static DatabaseConnection m_instance = DatabaseConnection();
-	return m_instance;
 }
 
 unsigned long DatabaseConnection::createOrder(unsigned long committerId, unsigned long acceptorId,

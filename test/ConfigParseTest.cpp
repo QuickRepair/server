@@ -12,7 +12,7 @@ using std::string;
 
 TEST(ConfigureParseTest, parse)
 {
-	Configure configure("./har.json");
+	Configure configure;
 	EXPECT_EQ(string("http://10.42.0.1"), configure.ip());
 	EXPECT_EQ(12345, configure.port());
 	EXPECT_EQ("http://10.42.0.1:12345", configure.listenOn());

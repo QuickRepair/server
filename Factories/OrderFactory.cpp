@@ -1,7 +1,8 @@
 #include "OrderFactory.h"
 #include "OrderStateFactories/OrderStateAbstractFactory.h"
-#include "Database/DatabaseConnection.h"
-#include "Database/OrderStateParameters.h"
+#include "Factories/DataSource/MariaDB/DatabaseConnection.h"
+#include "Factories/DataSource/SimulateDatabase/SimulateDatabase.h"
+#include "Factories/DataSource/OrderStateParameters.h"
 #include "Order/Order.h"
 #include "Order/OrderStates/OrderState.h"
 #include "Account/ContactInformation.h"
@@ -9,7 +10,6 @@
 #include "Account/CustomerAccount.h"
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "Managers/AccountManager.h"
-#include "Managers/OrderManager.h"
 #include "Errors/QueryResultEmptyError.h"
 #include <tuple>
 
@@ -20,7 +20,7 @@ void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 {
 	try
 	{
-		auto orderInfo = DatabaseConnection::getInstance().queryOrderByAccountId(account.lock()->id());
+		auto orderInfo = DataSourceFrom::getInstance().queryOrderByAccountId(account.lock()->id());
 		for (auto &ret : orderInfo)
 		{
 			auto committer = AccountManager::getInstance().getCustomer(get<1>(ret));
@@ -48,7 +48,7 @@ void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 												 std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
 {
-	unsigned long id = DatabaseConnection::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
+	unsigned long id = DataSourceFrom::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
 	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, applianceType, contactWay, detail);
 	newOrder->initOrderState(range);
 	return newOrder;
@@ -60,9 +60,9 @@ std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order, un
 	{
 		std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters> stateInfo;
 		if (call == 0)
-			stateInfo = DatabaseConnection::getInstance().queryOrderStateByOrderIdAndStateId(order->id(), lastStateId);
+			stateInfo = DataSourceFrom::getInstance().queryOrderStateByOrderIdAndStateId(order->id(), lastStateId);
 		else
-			stateInfo = DatabaseConnection::getInstance().queryOrderStateByOrderIdAndLastStateId(order->id(),
+			stateInfo = DataSourceFrom::getInstance().queryOrderStateByOrderIdAndLastStateId(order->id(),
 																								 lastStateId);
 
 		shared_ptr<OrderStateAbstractFactory> stateFactory = get<0>(stateInfo);

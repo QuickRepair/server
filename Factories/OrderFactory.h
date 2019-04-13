@@ -6,7 +6,6 @@
 #include <string>
 
 class Order;
-class OrderStateAbstractFactory;
 class OrderState;
 class Account;
 class CustomerAccount;

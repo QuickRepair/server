@@ -26,7 +26,7 @@ int main()
 {
 	try
 	{
-		Configure configure("./har.json");
+		Configure configure;
 		DatabaseConnection::getInstance().connect(
 				configure.databaseIp(), configure.databaseName(),
 				configure.databaseUserName(), configure.databasePassword(),
