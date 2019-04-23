@@ -3,7 +3,7 @@
 
 #include "OrderStateAbstractFactory.h"
 
-class OrderStateParameters;
+struct OrderStateParameters;
 
 class OrderUnreceivedStateFactory : public OrderStateAbstractFactory {
 public:

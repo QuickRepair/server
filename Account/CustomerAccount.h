@@ -10,6 +10,7 @@ class Order;
 class AcceptableOrderPriceRange;
 class OrderEvaluate;
 
+/// @brief a subclass of Account, represent a customer who is using the system
 class CustomerAccount : public Account
 {
 	friend class CustomerFactory;
@@ -18,9 +19,22 @@ class CustomerAccount : public Account
 public:
     CustomerAccount(unsigned long id, std::string account, std::string password);
 
+    /// @brief CustomerAccount specific operation, publish a new order to system
+    /// @param order: a weak_ptr to the new order
 	void iAmPublishAnOrder(std::weak_ptr<Order> order);
+
+	/// @brief CustomerAccount specific operation, cancel a order belong to the customer
+	/// @param order: a weak_ptr to the order
+	/// @todo: add some limit here
     void cancelOrder(std::weak_ptr<Order> order);
+
+    /// @brief CustomerAccount specific operation, evaluate the order after finish repair
+    /// @param order: a weak_ptr to the order
+    /// @param evaluate: the evaluate add to order
     void evaluateTheOrder(std::weak_ptr<Order> order, OrderEvaluate evaluate);
+
+    /// @brief CustomerAccount specific operation, pay for the order after finish repair
+    /// @param order: a weak_ptr to the order
     void payTheOrder(std::weak_ptr<Order> order);
 
     bool isMyOrder(std::weak_ptr<Order> order) const override;

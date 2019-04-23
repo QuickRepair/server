@@ -18,10 +18,8 @@ public:
 
 	std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> queryOrderByAccountId(unsigned long id) override;
 
-	std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-	queryOrderStateByOrderIdAndStateId(unsigned long orderId, unsigned long stateId) override;
-	std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-	queryOrderStateByOrderIdAndLastStateId(unsigned long orderId, unsigned long lastState) override;
+	std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	queryOrderStateByOrderId(unsigned long orderId) override;
 
 	unsigned long checkMerchantPasswordAndGetId(std::string account, std::string password) override;
 	unsigned long checkCustomerPasswordAndGetId(std::string account, std::string password) override;
@@ -39,29 +37,31 @@ public:
 	std::tuple<std::string, std::string> loadCustomer(unsigned long id) override;
 
 protected:
-	SimulateDatabase() = default;
+	SimulateDatabase();
 	~SimulateDatabase() override = default;
 
 private:
+	std::shared_ptr<OrderStateAbstractFactory> findFactory(std::string orderType);
+
 	/* simulate account table
 	 * id	account	password	type	max_service_distance
 	 */
-	std::list<std::tuple<unsigned, std::string, std::string, std::string, unsigned>> m_account;
+	std::list<std::tuple<unsigned long, std::string, std::string, std::string, unsigned long>> m_account;
 
 	/* simulate merchant_service_type
-	 * merchant_id	type
+	 * type	merchant_id
 	 */
-	std::list<std::tuple<unsigned, std::string>> m_serviceType;
+	std::list<std::tuple<std::list<std::string>, unsigned long>> m_serviceType;
 
 	/* simulate orders
 	 * id	committer	acceptor	appliance_type	detail	current_state
 	 */
-	std::list<std::tuple<unsigned, unsigned, unsigned, std::string, std::string, unsigned>> m_orders;
+	std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> m_orders;
 
 	/* simulate order_states
 	 * order_id	id	last_state	date	transaction	state_name
 	 */
-	std::list<std::tuple<unsigned, unsigned, unsigned, std::chrono::system_clock::time_point, double, std::string>> m_orderStates;
+	std::list<std::tuple<unsigned long, int, unsigned long, std::chrono::system_clock::time_point, double, std::string>> m_orderStates;
 };
 
 

@@ -103,7 +103,7 @@ std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string,
 		throw QueryResultEmptyError("Query Order by id empty");
 
 	vector<tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>> ret;
-	for(int i = 0; i < res.size(); /*empty*/)
+	for(unsigned i = 0; i < res.size(); /*empty*/)
 	{
 		unsigned long orderId = toUnsignedLong(res[i++]);
 		unsigned long committer = toUnsignedLong(res[i++]);
@@ -119,47 +119,12 @@ std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string,
 	return ret;
 }
 
-std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-		DatabaseConnection::queryOrderStateByOrderIdAndStateId(unsigned long orderId, unsigned long stateId)
+std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+DatabaseConnection::queryOrderStateByOrderId(unsigned long orderId)
 {
-	//query
+	/* TODO
 	ostringstream ostr;
-	ostr << "SELECT * FROM order_states WHERE order_id='" << orderId
-		<< "' AND id='" << stateId << "'";
-	string query = ostr.str();
-	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
-		throw DatabaseInternalError("Query Order state by id, " + string(mysql_error(m_mysqlConnection)));
-
-	//save result
-	QueryResult result = mysql_store_result(m_mysqlConnection);
-	auto res = result.fetchRow();
-	if(res.empty())
-		throw QueryResultEmptyError("Query Order state by id empty, ");
-
-	OrderStateParameters parameters;
-
-	unsigned long currentStateId = toUnsignedLong(res[1]);
-	unsigned long lastStateId = toUnsignedLong(res[2]);
-	std::chrono::system_clock::time_point date = toTimePoint(res[3]);
-	double transaction = toDouble(res[4]);
-	string type = res[5];
-
-	parameters.date = date;
-	parameters.range = AcceptableOrderPriceRange();
-	parameters.transactionPrice = transaction;
-	parameters.currentStateId = currentStateId;
-	parameters.lastStateId = lastStateId;
-
-	auto factory = findFactory(type);
-
-	return tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>(factory, parameters);
-}
-
-std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-DatabaseConnection::queryOrderStateByOrderIdAndLastStateId(unsigned long orderId, unsigned long lastState)
-{
-	ostringstream ostr;
-	ostr << "SELECT * FROM order_states WHERE order_id='" << orderId << "' AND last_state='" << lastState << "'";
+	ostr << "SELECT * FROM order_states WHERE order_id='" << orderId << "' AND last_state='" << currentState << "'";
 	string query = ostr.str();
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Query Order state by id, " + string(mysql_error(m_mysqlConnection)));
@@ -186,6 +151,16 @@ DatabaseConnection::queryOrderStateByOrderIdAndLastStateId(unsigned long orderId
 	factory = findFactory(type);
 
 	return tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>(factory, parameters);
+	 */
+
+	OrderStateParameters parameters;
+	list<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> states;
+	states.push_back(
+			tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>(
+					nullptr, parameters
+			)
+	);
+	return states;
 }
 
 unsigned long DatabaseConnection::checkMerchantPasswordAndGetId(std::string account, std::string password)

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+/// @brief save all contact information about an account
 class ContactInformation
 {
 public:

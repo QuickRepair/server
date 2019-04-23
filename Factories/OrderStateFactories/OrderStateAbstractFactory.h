@@ -9,7 +9,7 @@
 
 class OrderState;
 class Order;
-class OrderStateParameters;
+struct OrderStateParameters;
 
 class OrderStateAbstractFactory {
 public:

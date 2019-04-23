@@ -14,7 +14,7 @@
 #include "Account/CustomerAccount.h"
 
 class ContactInformation;
-class OrderStateParameters;
+struct OrderStateParameters;
 class OrderStateAbstractFactory;
 
 class DatabaseConnection : public DataSource<DatabaseConnection> {
@@ -28,10 +28,8 @@ public:
 
 	std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> queryOrderByAccountId(unsigned long id) override;
 
-	std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-		queryOrderStateByOrderIdAndStateId(unsigned long orderId, unsigned long stateId) override;
-	std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-		queryOrderStateByOrderIdAndLastStateId(unsigned long orderId, unsigned long lastState) override;
+	std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	queryOrderStateByOrderId(unsigned long orderId) override;
 
 	unsigned long checkMerchantPasswordAndGetId(std::string account, std::string password) override;
 	unsigned long checkCustomerPasswordAndGetId(std::string account, std::string password) override;

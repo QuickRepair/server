@@ -14,7 +14,8 @@
 #include <tuple>
 
 using std::make_shared;			using std::get;
-using std::shared_ptr;
+using std::shared_ptr;			using std::list;
+using std::tuple;
 
 void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 {
@@ -34,7 +35,7 @@ void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 					acceptor = AccountManager::getInstance().loadMerchant(get<2>(ret));
 				ContactInformation tmp;
 				shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, get<3>(ret), tmp, get<4>(ret));
-				newOrder->m_currentState = getStates(newOrder, get<5>(ret));
+				newOrder->m_currentState = getStates(newOrder);
 				committer.lock()->loadOrder(newOrder);
 				acceptor.lock()->loadOrder(newOrder);
 			}
@@ -54,16 +55,13 @@ std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> 
 	return newOrder;
 }
 
-std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order, unsigned long lastStateId, unsigned call)
+std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order)
 {
+	/* TODO
 	try
 	{
-		std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters> stateInfo;
-		if (call == 0)
-			stateInfo = DataSourceFrom::getInstance().queryOrderStateByOrderIdAndStateId(order->id(), lastStateId);
-		else
-			stateInfo = DataSourceFrom::getInstance().queryOrderStateByOrderIdAndLastStateId(order->id(),
-																								 lastStateId);
+		list<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> stateInfo;
+		stateInfo = DataSourceFrom::getInstance().queryOrderStateByOrderId(order->id());
 
 		shared_ptr<OrderStateAbstractFactory> stateFactory = get<0>(stateInfo);
 		OrderStateParameters parameters = get<1>(stateInfo);
@@ -75,5 +73,6 @@ std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order, un
 	catch (QueryResultEmptyError &e)
 	{
 		return nullptr;
-	}
+	}*/
+	return nullptr;
 }

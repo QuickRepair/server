@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
 #include "Managers/OrderManager.h"
 #include "RestServer/RestHandler.h"
 #include "Managers/AuthenticationCarrier/AuthenticationToScreen.h"
-#include "Factories/Database/DatabaseConnection.h"
 
 using std::shared_ptr;			using std::make_shared;
 using std::cout;				using std::runtime_error;

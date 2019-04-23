@@ -6,7 +6,7 @@
 #define HARSERVER_DATASOURCE_HPP
 
 // define use which data source
-#ifdef ENV_TEST1
+#ifdef ENV_TEST
 #define DataSourceFrom DataSource<SimulateDatabase>
 #else
 #define DataSourceFrom DataSource<DatabaseConnection>
@@ -51,7 +51,7 @@ public:
 	virtual unsigned long createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail) = 0;
 
 	/* parameters:
-	 * 1 unsigned long order id
+	 * 1 unsigned long account id
 	 *
 	 * return value:
 	 * 1 unsigned long for order id
@@ -71,10 +71,8 @@ public:
 	 * 0 shared_ptr<OrderStateAbstractFactory> for state factory
 	 * 1 OrderStateParameters for detail state information
 	 */
-	virtual std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-	queryOrderStateByOrderIdAndStateId(unsigned long orderId, unsigned long stateId) = 0;
-	virtual std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>
-	queryOrderStateByOrderIdAndLastStateId(unsigned long orderId, unsigned long lastState) = 0;
+	virtual std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	queryOrderStateByOrderId(unsigned long orderId) = 0;
 
 	/* parameters:
 	 * 1 string the account

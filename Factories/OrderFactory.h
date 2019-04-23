@@ -20,7 +20,7 @@ public:
 									   std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range);
 
 private:
-	std::shared_ptr<OrderState> getStates(std::shared_ptr<Order> &order, unsigned long stateId, unsigned call = 0);
+	std::shared_ptr<OrderState> getStates(std::shared_ptr<Order> &order);
 };
 
 #endif //HAR_ORDERFACTORY_H
