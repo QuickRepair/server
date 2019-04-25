@@ -9,36 +9,38 @@
 #include "Account/MerchantAccount.h"
 #include "Account/CustomerAccount.h"
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
-#include "Managers/AccountManager.h"
-#include "Errors/QueryResultEmptyError.h"
+#include "Errors/QueryResultEmptyError.hpp"
+#include "ManagerProxy/OrderManagerProxy.h"
+#include "ManagerProxy/AccountManagerProxy.h"
 #include <tuple>
 
 using std::make_shared;			using std::get;
-using std::shared_ptr;			using std::list;
-using std::tuple;
+using std::shared_ptr;			using std::vector;
+using std::tuple;				using std::list;
 
-void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
+OrderFactory::OrderFactory()
+{
+	orderManagerProxy = make_shared<OrderManagerProxy>();
+	accountManagerProxy = make_shared<AccountManagerProxy>();
+}
+
+void OrderFactory::getOrdersListForAccount(std::weak_ptr<Account> account)
 {
 	try
 	{
-		auto orderInfo = DataSourceFrom::getInstance().queryOrderByAccountId(account.lock()->id());
+		auto orderInfo = DATA_SOURCE_FROM::getInstance().queryOrderByAccountId(account.lock()->id());
 		for (auto &ret : orderInfo)
 		{
-			auto committer = AccountManager::getInstance().getCustomer(get<1>(ret));
-			auto acceptor = AccountManager::getInstance().getMerchant(get<2>(ret));
+			auto customer = accountManagerProxy->getOrLoadCustomer(get<1>(ret));
+			auto merchant = accountManagerProxy->getOrLoadMerchant(get<2>(ret));
 
-			if (committer.lock() != nullptr || acceptor.lock() != nullptr)
-			{
-				if (committer.lock() == nullptr)
-					committer = AccountManager::getInstance().loadCustomer(get<1>(ret));
-				if (acceptor.lock() == nullptr)
-					acceptor = AccountManager::getInstance().loadMerchant(get<2>(ret));
-				ContactInformation tmp;
-				shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), committer, get<3>(ret), tmp, get<4>(ret));
-				newOrder->m_currentState = getStates(newOrder);
-				committer.lock()->loadOrder(newOrder);
-				acceptor.lock()->loadOrder(newOrder);
-			}
+			//TODO: load contanct information
+			ContactInformation tmp;
+			shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), customer, merchant, get<3>(ret), tmp, get<4>(ret));
+			newOrder->m_currentState = getStates(newOrder);
+
+			customer.lock()->loadOrder(newOrder);
+			merchant.lock()->loadOrder(newOrder);
 		}
 	}
 	catch (QueryResultEmptyError &e)
@@ -49,7 +51,7 @@ void OrderFactory::readOrdersForAccount(std::weak_ptr<Account> account)
 std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 												 std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
 {
-	unsigned long id = DataSourceFrom::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
+	unsigned long id = DATA_SOURCE_FROM::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
 	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, applianceType, contactWay, detail);
 	newOrder->initOrderState(range);
 	return newOrder;
@@ -57,22 +59,25 @@ std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> 
 
 std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order)
 {
-	/* TODO
 	try
 	{
-		list<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> stateInfo;
-		stateInfo = DataSourceFrom::getInstance().queryOrderStateByOrderId(order->id());
+		vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> stateInfo;
+		stateInfo = DATA_SOURCE_FROM::getInstance().queryOrderStateByOrderId(order->id());
 
-		shared_ptr<OrderStateAbstractFactory> stateFactory = get<0>(stateInfo);
-		OrderStateParameters parameters = get<1>(stateInfo);
-		if (parameters.lastStateId != 0)
-			parameters.lastState = getStates(order, parameters.lastStateId);
+		shared_ptr<OrderStateAbstractFactory> stateFactory;
+		OrderStateParameters parameters;
 
-		return stateFactory->makeStateForOrder(order, parameters);
+		for(auto state = stateInfo.rbegin(); state != stateInfo.rend(); ++state)
+		{
+			stateFactory = get<0>(*state);
+			parameters = get<1>(*state);
+			parameters.lastState = stateFactory->makeStateForOrder(order, parameters);
+		}
+
+		return parameters.lastState;
 	}
 	catch (QueryResultEmptyError &e)
 	{
 		return nullptr;
-	}*/
-	return nullptr;
+	}
 }

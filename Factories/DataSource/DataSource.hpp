@@ -5,11 +5,11 @@
 #ifndef HARSERVER_DATASOURCE_HPP
 #define HARSERVER_DATASOURCE_HPP
 
-// define use which data source
+/// @brief The DATA_SOURCE_FROM marco define which data source is used
 #ifdef ENV_TEST
-#define DataSourceFrom DataSource<SimulateDatabase>
+#define DATA_SOURCE_FROM DataSource<SimulateDatabase>
 #else
-#define DataSourceFrom DataSource<DatabaseConnection>
+#define DATA_SOURCE_FROM DataSource<DatabaseConnection>
 #endif
 
 #include <memory>
@@ -21,10 +21,14 @@
 class OrderStateAbstractFactory;
 struct OrderStateParameters;
 
+/// @brief The super class of all data sources, this is a singleton template,
+/// no matter how many subclass is derived, only ONE instance will exist among them
+/// @note: DataSource class does not define any operations but @getInstance(), define a subclass befor using it
 template<typename T>
 class DataSource {
 public:
 
+	/// @brief Get instance of singleton
 	static DataSource &getInstance() {
 		//TODO: not thread safe
 		if(!m_dataSource)
@@ -39,87 +43,74 @@ public:
 		return *m_dataSource.get();
 	}
 
-	/* parameters:
-	 * 1 unsigned long the customer id
-	 * 2 unsigned long the specific merchant id
-	 * 3 string type of appliance
-	 * 4 string detail description of order
-	 *
-	 * return value:
-	 * 1 unsigned long for order id
-	 */
+	/// @brief Create a new order and return generated id for the order
+	/// @param committerId: the customer id
+	/// @param acceptorId: the merchant id
+	/// @param applianceType: type of appliance
+	/// @param detail: detail description of order
+	/// @return the new order id
 	virtual unsigned long createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail) = 0;
 
-	/* parameters:
-	 * 1 unsigned long account id
-	 *
-	 * return value:
-	 * 1 unsigned long for order id
-	 * 2 unsigned long for committer id
-	 * 3 unsigned long for receiver id
-	 * 4 string for appliance type
-	 * 5 string for detail
-	 * 6 unsigned long for current state id
-	 */
-	virtual std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> queryOrderByAccountId(unsigned long id) = 0;
+	/// @brief Query all order that the account hold
+	/// @param id: the id of an account
+	/// @return return all orders belong to the account,
+	/// 		saved in a vector of tuple, tuple holds:
+	/// @returns:
+	/// 		order id,
+	/// 		committer id,
+	/// 		receiver id,
+	/// 		appliance type,
+	/// 		detail,
+	/// 		current state id
+	virtual std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>>
+	queryOrderByAccountId(unsigned long id) = 0;
 
-	/* parameters:
-	 * 1 unsigned long order id
-	 * 2 unsigned long the state id
-	 *
-	 * return value:
-	 * 0 shared_ptr<OrderStateAbstractFactory> for state factory
-	 * 1 OrderStateParameters for detail state information
-	 */
-	virtual std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	/// @brief Query order state according to the order id
+	/// @param orderId: the order's id
+	/// @return return state factory and state details,
+	/// 		saved in a vector of tuple, tuple holds:
+	///	@returns:
+	/// 		a shared_prt to OrderStateAbstractFactory,
+	/// 		the state details
+	virtual std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
 	queryOrderStateByOrderId(unsigned long orderId) = 0;
 
-	/* parameters:
-	 * 1 string the account
-	 * 2 string the password
-	 *
-	 * return value:
-	 * unsigned long for id
-	 */
+	/// @brief check password of account and get account id
+	/// @param account: the account to be verified, @note: not account id
+	/// @param password: the input password of account
+	/// @return id of account
 	virtual unsigned long checkMerchantPasswordAndGetId(std::string account, std::string password) = 0;
 	virtual unsigned long checkCustomerPasswordAndGetId(std::string account, std::string password) = 0;
 
 	virtual std::vector<std::tuple<>> queryContactInfoByUserId(unsigned long userId) = 0;
 
-	/* create account
-	 * parameters:
-	 * 1 string new account
-	 * 2 string new password
-	 */
+	/// @brief create a new account
+	/// @param account: account of the new account
+	/// @param password: password of new account
 	virtual void createMerchantAccount(std::string account, std::string password) = 0;
 	virtual void createCustomerAccount(std::string account, std::string password) = 0;
 
-	/* update account password
-	 * parameters:
-	 * 1 string update for which account
-	 * 2 string new password
-	 */
+	/// @brief update password of an account
+	/// @param account: specific the account needs to be updated
+	/// @param password: new password for account
 	virtual void updateMerchantAccountPassword(std::string account, std::string password) = 0;
 	virtual void updateCustomerAccountPassword(std::string account, std::string password) = 0;
 
-	/* Query merchant service type by merchant id
-	 * parameters:
-	 * 1 unsigned long merchant account id
-	 *
-	 * return value:
-	 * 0 std::list<std::string>> for supported types
-	 * 1 int for max repair distance
-	 */
+	/// @brief Query merchant service type by merchant id
+	/// @param id: the merchant id
+	/// @return merchant service types, include support appliances and max repair distance,
+	/// 		the tuple holds:
+	///	@returns:
+	/// 		a list of string for support appliances,
+	/// 		max repair distance
 	virtual std::tuple<std::list<std::string>, int> queryMerchantServiceType(unsigned long id) = 0;
 
-	/* Get account information by account id
-	 * parameters:
-	 * 1 unsigned long account id
-	 *
-	 * return value:
-	 * 0 std::string for account
-	 * 1 std::string for password
-	 */
+	/// @brief Get account information about the id
+	/// @param id: the account id
+	/// @return the account and password of account, the tuple holds:
+	/// @returns:
+	///			account,
+	///			password
 	virtual std::tuple<std::string, std::string> loadMerchant(unsigned long id) = 0;
 	virtual std::tuple<std::string, std::string> loadCustomer(unsigned long id) = 0;
 

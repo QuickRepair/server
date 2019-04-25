@@ -1,5 +1,5 @@
 #include "OrderFinishedState.h"
-#include "Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.hpp"
 
 using std::chrono::system_clock;				using std::make_shared;
 

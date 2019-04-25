@@ -5,6 +5,7 @@
 #include "Account/ContactInformation.h"
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "Order/Order.h"
+#include "AccountManager.h"
 #include <algorithm>
 
 using std::make_shared;			using std::shared_ptr;
@@ -56,9 +57,9 @@ void OrderManager::orderPayed(std::weak_ptr<CustomerAccount> &committer, std::we
 	committer.lock()->payTheOrder(order);
 }
 
-void OrderManager::loadOrderForAccount(std::weak_ptr<Account> account)
+void OrderManager::loadAllOrderForAccount(std::weak_ptr<Account> account)
 {
-	m_factory->readOrdersForAccount(account);
+	m_factory->getOrdersListForAccount(account);
 }
 
 std::list<std::weak_ptr<Order>> OrderManager::getOrderList(std::weak_ptr<Account> &account)

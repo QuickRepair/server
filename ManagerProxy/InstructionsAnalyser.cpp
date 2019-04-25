@@ -3,25 +3,31 @@
 //
 
 #include "InstructionsAnalyser.h"
-#include "AccountManager.h"
-#include "OrderManager.h"
+#include "ManagerProxy/AccountManagerProxy.h"
+#include "ManagerProxy/OrderManagerProxy.h"
 #include "Account/MerchantServiceType.h"
 #include "Account/MerchantAccount.h"
 #include "Account/CustomerAccount.h"
 #include "Account/ContactInformation.h"
-#include "Errors/DatabaseInternalError.h"
-#include "Errors/NoSuchAnAccountError.h"
-#include "Errors/PasswordNotRightError.h"
+#include "Errors/DatabaseInternalError.hpp"
+#include "Errors/NoSuchAnAccountError.hpp"
+#include "Errors/PasswordNotRightError.hpp"
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "Order/Order.h"
-#include "Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.hpp"
 #include <ctime>
 
 using std::string;							using std::cerr;
 using std::endl;							using std::list;
 using std::weak_ptr;						using std::istringstream;
 using std::cout;							using utility::conversions::to_utf8string;
-using utility::conversions::to_string_t;
+using utility::conversions::to_string_t;	using std::make_shared;
+
+InstructionsAnalyser::InstructionsAnalyser()
+{
+	orderManagerProxy = make_shared<OrderManagerProxy>();
+	accountManagerProxy = make_shared<AccountManagerProxy>();
+}
 
 utility::string_t InstructionsAnalyser::instructionFromMap(std::map<utility::string_t, utility::string_t> instruction)
 {
@@ -62,9 +68,9 @@ utility::string_t InstructionsAnalyser::doGetVerification(std::map<utility::stri
 	try
 	{
 		if (instruction[U("account_type")] == U("merchant"))
-			AccountManager::getInstance().merchantRequestForVerificationCode(to_utf8string(instruction[U("account")]));
+			accountManagerProxy->merchantRequestForVerificationCode(to_utf8string(instruction[U("account")]));
 		else if (instruction[U("account_type")] == U("customer"))
-			AccountManager::getInstance().customerRequestForVerificationCode(to_utf8string(instruction[U("account")]));
+			accountManagerProxy->customerRequestForVerificationCode(to_utf8string(instruction[U("account")]));
 	}
 	catch (DatabaseInternalError &e)
 	{
@@ -85,13 +91,13 @@ utility::string_t InstructionsAnalyser::doLogin(web::json::object &object)
 		string accountType = to_utf8string(object.at(U("account_type")).as_string());
 		if(accountType == "merchant")
 		{
-			auto merchant = AccountManager::getInstance().merchantAuthentication(account, password);
-			// OrderManager::getInstance().loadOrderForAccount(merchant);
+			auto merchant = accountManagerProxy->merchantAuthentication(account, password);
+			// orderManagerProxy->loadOrderForAccount(merchant);
 		}
 		else if(accountType == "customer")
 		{
-			auto customer = AccountManager::getInstance().customerAuthentication(account, password);
-			// OrderManager::getInstance().loadOrderForAccount(customer);
+			auto customer = accountManagerProxy->customerAuthentication(account, password);
+			// orderManagerProxy->loadOrderForAccount(customer);
 		}
 		retJson[U("login_result")] = web::json::value(U("success"));
 	}
@@ -118,7 +124,7 @@ utility::string_t InstructionsAnalyser::doGetList(std::map<utility::string_t, ut
 	string getListType = to_utf8string(instruction[U("get_list")]);
 	if(getListType == "origin_service_type")	// get origin service types
 	{
-		weak_ptr<MerchantAccount> account = AccountManager::getInstance().getMerchant(to_utf8string(instruction[U("account"])));
+		weak_ptr<MerchantAccount> account = accountManagerProxy->getMerchant(to_utf8string(instruction[U("account"])));
 		ret = getServiceTypeList(account);
 	}
 	else if(getListType == "merchant_list")		// get merchant list
@@ -129,15 +135,15 @@ utility::string_t InstructionsAnalyser::doGetList(std::map<utility::string_t, ut
 	{
 		weak_ptr<Account> account;
 		if(instruction[U("account_type")] == U("customer"))
-			account = AccountManager::getInstance().getCustomer(to_utf8string(instruction[U("account"])));
+			account = accountManagerProxy->getCustomer(to_utf8string(instruction[U("account"])));
 		else
-			account = AccountManager::getInstance().getMerchant(to_utf8string(instruction[U("account"])));
+			account = accountManagerProxy->getMerchant(to_utf8string(instruction[U("account"])));
 		if(account.lock())
 			ret = getOrderList(account);
 	}
 	else if(getListType == "unreceived_order")	// get unreceived order list
 	{
-		weak_ptr<MerchantAccount> account = AccountManager::getInstance().getMerchant(to_utf8string(instruction[U("account"])));
+		weak_ptr<MerchantAccount> account = accountManagerProxy->getMerchant(to_utf8string(instruction[U("account"])));
 		ret = getUnreceivedOrderForCustomer(account);
 	}
 
@@ -169,7 +175,7 @@ utility::string_t InstructionsAnalyser::getMerchantList()
 {
 	web::json::value retJson;
 
-	list<weak_ptr<MerchantAccount>> merchants = AccountManager::getInstance().getMerchantList();
+	list<weak_ptr<MerchantAccount>> merchants = accountManagerProxy->getMerchantList();
 	web::json::value array;
 	auto it = merchants.begin();
 	for(unsigned i = 0; it != merchants.end(); ++i, ++it)
@@ -183,7 +189,7 @@ utility::string_t InstructionsAnalyser::getApplianceTypeList()
 {
 	web::json::value retJson;
 
-	list<weak_ptr<MerchantAccount>> merchantList = AccountManager::getInstance().getMerchantList();
+	list<weak_ptr<MerchantAccount>> merchantList = accountManagerProxy->getMerchantList();
 	web::json::value array;
 	for(auto &merchant : merchantList)
 	{
@@ -208,7 +214,7 @@ utility::string_t InstructionsAnalyser::doUpdateServiceType(web::json::object &o
 	for(auto &s : supportAppliances)
 		supportAppliancesList.push_back(to_utf8string(s.as_string()));
 
-	auto merchant = AccountManager::getInstance().getMerchant(account);
+	auto merchant = accountManagerProxy->getMerchant(account);
 	if(merchant.lock() != nullptr)
 		merchant.lock()->updateSupportedService(supportAppliancesList, maxDistance);
 	else
@@ -278,13 +284,13 @@ utility::string_t InstructionsAnalyser::doSubmitOrder(web::json::object &object)
 		string detailDescription = to_utf8string(object[U("detail")].as_string());
 		string address = to_utf8string(object[U("address")].as_string());
 
-		auto customer = AccountManager::getInstance().getCustomer(customerAccount);
-		auto merchant = AccountManager::getInstance().getMerchant(merchantAccount);
+		auto customer = accountManagerProxy->getCustomer(customerAccount);
+		auto merchant = accountManagerProxy->getMerchant(merchantAccount);
 		if (customer.lock() != nullptr && merchant.lock() != nullptr)
 		{
 			ContactInformation tmp(address);
 			AcceptableOrderPriceRange range;
-			OrderManager::getInstance().publishOrder(customer, merchant,
+			orderManagerProxy->publishOrder(customer, merchant,
 													 appliance, tmp, detailDescription,
 													 range
 			);
@@ -303,20 +309,20 @@ utility::string_t InstructionsAnalyser::doUpdateOrderState(std::map<utility::str
 {
 	utility::string_t ret;
 
-	weak_ptr<MerchantAccount> merchant = AccountManager::getInstance().getMerchant(to_utf8string(instruction[U("account"])));
+	weak_ptr<MerchantAccount> merchant = accountManagerProxy->getMerchant(to_utf8string(instruction[U("account"])));
 	unsigned long id = toUnsignedLong(to_utf8string(instruction[U("order_id")]));
-	weak_ptr<Order> order = OrderManager::getInstance().getOrder(id);
+	weak_ptr<Order> order = orderManagerProxy->getOrder(id);
 
 	if(instruction[U("order_operate")] == U("accept"))
-		OrderManager::getInstance().orderAccepted(merchant, order);
+		orderManagerProxy->orderAccepted(merchant, order);
 	else if(instruction[U("order_operate")] == U("reject"))
-		OrderManager::getInstance().orderRejected(merchant, order);
+		orderManagerProxy->orderRejected(merchant, order);
 	else if(instruction[U("order_operate")] == U("start_repair"))
-		OrderManager::getInstance().orderStartRepair(merchant, order);
+		orderManagerProxy->orderStartRepair(merchant, order);
 	else if(instruction[U("order_operate")] == U("end_repair"))
 	{
 		double transaction = toDouble(to_utf8string(instruction[U("transaction")]));
-		OrderManager::getInstance().orderEndRepair(merchant, order, transaction);
+		orderManagerProxy->orderEndRepair(merchant, order, transaction);
 	}
 
 	return ret;
@@ -327,7 +333,7 @@ utility::string_t InstructionsAnalyser::doGetOrderDetail(std::map<utility::strin
 	web::json::value retJson;
 
 	unsigned long id = toUnsignedLong(to_utf8string(instruction[U("order_id")]));
-	auto order = OrderManager::getInstance().getOrder(id);
+	auto order = orderManagerProxy->getOrder(id);
 
 	try
 	{

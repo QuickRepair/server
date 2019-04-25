@@ -16,9 +16,9 @@ class SimulateDatabase : public DataSource<SimulateDatabase> {
 public:
 	unsigned long createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail) override;
 
-	std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> queryOrderByAccountId(unsigned long id) override;
+	std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> queryOrderByAccountId(unsigned long id) override;
 
-	std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
 	queryOrderStateByOrderId(unsigned long orderId) override;
 
 	unsigned long checkMerchantPasswordAndGetId(std::string account, std::string password) override;

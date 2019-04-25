@@ -4,10 +4,10 @@
 
 #include "SimulateDatabase.h"
 #include "Factories/DataSource/OrderStateParameters.h"
-#include "Errors/PasswordNotRightError.h"
-#include "Errors/QueryResultEmptyError.h"
-#include "Errors/AccountAlreadyExistError.h"
-#include "Errors/NoSuchAnAccountError.h"
+#include "Errors/PasswordNotRightError.hpp"
+#include "Errors/QueryResultEmptyError.hpp"
+#include "Errors/AccountAlreadyExistError.hpp"
+#include "Errors/NoSuchAnAccountError.hpp"
 #include "Factories/OrderStateFactories/OrderUnreceivedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderReceivedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderEndRepairStateFactory.h"
@@ -22,6 +22,11 @@ using std::shared_ptr;							using std::make_shared;
 
 SimulateDatabase::SimulateDatabase()
 {
+	/* table account in database should contain following rows
+	 * id	account	password	type
+	 * 6	1234	1234		merchant
+	 * 9	1		1			customer
+	 */
 	m_account.push_back(
 			make_tuple<unsigned long, string, string, string, unsigned long>(
 					6, "1234", "1234", "merchant", 1
@@ -32,11 +37,21 @@ SimulateDatabase::SimulateDatabase()
 					9, "1", "1", "customer", -1
 			)
 	);
+
+	/* table orders in database should contain following rows
+	 * id	committer	accpetor	appliance_type	detail	current_state
+	 * 34	9			6			type			detail	3
+	 */
 	m_orders.push_back(
 			make_tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>(
-					34, 1, 1234, "type", "detail", 3
+					34, 9, 6, "type", "detail", 3
 			)
 	);
+
+	/* table order_states should contain following rows
+	 * order_id	id	last_state	date	transaction	state_name
+	 * 34		3	null		now()	null		unreceived
+	 */
 	m_orderStates.push_back(
 			make_tuple<unsigned long, int, unsigned long, system_clock::time_point, double, string>(
 					34, 3, -1, system_clock::now(), -1, "unreceived"
@@ -46,28 +61,28 @@ SimulateDatabase::SimulateDatabase()
 
 unsigned long SimulateDatabase::createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail)
 {
-	auto newOrder = make_tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>(std::move(get<0>(m_orders.back()) + 1), std::move(committerId), std::move(acceptorId), std::move(applianceType), std::move(detail), 0);
-	auto newOrderState = make_tuple<unsigned long, unsigned long, unsigned long, system_clock::time_point, double, string>(std::move(get<0>(m_orders.back()) + 1), std::move(get<1>(m_orderStates.back()) + 1), -1, std::move(system_clock::now()), -1, string("unreceived"));
+	auto newOrder = make_tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>((get<0>(m_orders.back()) + 1), std::move(committerId), std::move(acceptorId), std::move(applianceType), std::move(detail), 0);
+	auto newOrderState = make_tuple<unsigned long, unsigned long, unsigned long, system_clock::time_point, double, string>((get<0>(m_orders.back()) + 1), std::move(get<1>(m_orderStates.back()) + 1), -1, std::move(system_clock::now()), -1, string("unreceived"));
 	m_orders.push_back(newOrder);
 	m_orderStates.emplace_back(newOrderState);
 	return get<0>(m_orders.back()) + 1;
 }
 
-std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> SimulateDatabase::queryOrderByAccountId(unsigned long id)
+std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> SimulateDatabase::queryOrderByAccountId(unsigned long id)
 {
-	vector<tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>> orders;
+	list<tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>> orders;
 	for(auto &t : m_orders)
 	{
-		if(get<0>(t) == id)
+		if(get<1>(t) == id || get<2>(t) == id)
 			orders.push_back(t);
 	}
 	return orders;
 }
 
-std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
 SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 {
-	list<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> states;
+	vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> states;
 
 	for(auto &t : m_orders)
 	{
@@ -96,7 +111,7 @@ SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 								)
 						);
 						// update last state
-						lastState = get<1>(state);
+						lastState = get<2>(state);
 					}
 			}
 			break;
@@ -148,7 +163,7 @@ void SimulateDatabase::createMerchantAccount(std::string account, std::string pa
 		if(get<1>(t) == account)
 			throw AccountAlreadyExistError("Create merchant account");
 	}
-	auto merchant = make_tuple<unsigned long, string, string, string, unsigned long>(std::move(get<0>(m_account.back()) + 1), std::move(account), std::move(password), "merchant", 1);
+	auto merchant = make_tuple<unsigned long, string, string, string, unsigned long>((get<0>(m_account.back()) + 1), std::move(account), std::move(password), "merchant", 1);
 	m_account.push_back(merchant);
 }
 
@@ -159,7 +174,7 @@ void SimulateDatabase::createCustomerAccount(std::string account, std::string pa
 		if(get<1>(t) == account)
 			throw AccountAlreadyExistError("Create customer account");
 	}
-	auto customer = make_tuple<unsigned long, string, string, string, unsigned long>(std::move(get<0>(m_account.back()) + 1), std::move(account), std::move(password), string("customer"), 1);
+	auto customer = make_tuple<unsigned long, string, string, string, unsigned long>((get<0>(m_account.back()) + 1), std::move(account), std::move(password), string("customer"), 1);
 	m_account.push_back(customer);
 }
 
@@ -196,7 +211,7 @@ std::tuple<std::list<std::string>, int> SimulateDatabase::queryMerchantServiceTy
 			max_service_distance = get<4>(t);
 	
 	max_service_distance = static_cast<int>(max_service_distance);
-	return make_tuple<list<string>, int>(std::move(types), std::move(max_service_distance));
+	return make_tuple<list<string>, int>(std::move(types), max_service_distance);
 }
 
 std::tuple<std::string, std::string> SimulateDatabase::loadMerchant(unsigned long id)

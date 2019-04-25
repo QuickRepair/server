@@ -8,9 +8,8 @@
 #include "Account/CustomerAccount.h"
 #include "Factories/MerchantFactory.h"
 #include "Factories/CustomerFactory.h"
-#include "Errors/NoSuchAnAccountError.h"
-#include "Errors/PasswordNotRightError.h"
-#include "AuthenticationCarrier/AuthenticationCarrier.h"
+#include "Errors/NoAuthenticationCarrierFound.hpp"
+#include "ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.h"
 #include <algorithm>
 
 using std::shared_ptr;						using std::find_if;
@@ -73,6 +72,8 @@ std::weak_ptr<CustomerAccount> AccountManager::getCustomer(const std::string &ac
 void AccountManager::merchantRequestForVerificationCode(const std::string &codeSendToWhere)
 {
 	// get verification code
+	if(!m_authenticationCarrier)
+		throw NoAuthenticationCarrierFound("Not registered an authentication carrier in account manager");
 	long code = m_authenticationCarrier->sendVerificationCode(codeSendToWhere);
 
 	// try to update/create account
@@ -85,6 +86,8 @@ void AccountManager::merchantRequestForVerificationCode(const std::string &codeS
 void AccountManager::customerRequestForVerificationCode(const std::string &codeSendToWhere)
 {
 	// get verification code
+	if(!m_authenticationCarrier)
+		throw NoAuthenticationCarrierFound("Not registered an authentication carrier in account manager");
 	long code = m_authenticationCarrier->sendVerificationCode(codeSendToWhere);
 
 	// try to update/create account
@@ -126,19 +129,24 @@ std::weak_ptr<CustomerAccount> AccountManager::customerAuthentication(std::strin
 	}
 }
 
-std::weak_ptr<MerchantAccount> AccountManager::loadMerchant(unsigned long id)
+std::weak_ptr<MerchantAccount> AccountManager::getOrLoadMerchant(unsigned long id)
 {
-	//TODO check in memory
-	auto account = dynamic_pointer_cast<MerchantAccount>(m_merchantFactory->loadAccount(id));
-	m_merchantAccountList.push_back(account);
-	return account;
-
+	shared_ptr<MerchantAccount> merchant = getMerchant(id).lock();
+	if(!merchant)
+	{
+		merchant = dynamic_pointer_cast<MerchantAccount>(m_merchantFactory->loadAccount(id));
+		m_merchantAccountList.push_back(merchant);
+	}
+	return merchant;
 }
 
-std::weak_ptr<CustomerAccount> AccountManager::loadCustomer(unsigned long id)
+std::weak_ptr<CustomerAccount> AccountManager::getOrLoadCustomer(unsigned long id)
 {
-	//TODO check in memory
-	auto account = dynamic_pointer_cast<CustomerAccount>(m_customerFactory->loadAccount(id));
-	m_customerAccountList.push_back(account);
-	return account;
+	shared_ptr<CustomerAccount> customer = getCustomer(id).lock();
+	if(!customer)
+	{
+		customer = dynamic_pointer_cast<CustomerAccount>(m_customerFactory->loadAccount(id));
+		m_customerAccountList.push_back(customer);
+	}
+	return customer;
 }

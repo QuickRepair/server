@@ -98,7 +98,10 @@ void MerchantAccount::loadContactInformation(std::list<std::shared_ptr<ContactIn
 
 void MerchantAccount::loadOrder(std::shared_ptr<Order> order)
 {
-	m_receivedOrders.push_back(order);
+	if(order->currentState() == OrderState::unreceivedState)
+		m_unreceivedOrders.push_back(order);
+	else
+		m_receivedOrders.push_back(order);
 }
 
 void MerchantAccount::loadServiceType(std::shared_ptr<MerchantServiceType> service)

@@ -28,8 +28,8 @@ class Order : public std::enable_shared_from_this<Order> {
 public:
 	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
 		  std::string applianceType, ContactInformation &contactWay, std::string detail);
-	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
-		  std::string applianceType, ContactInformation &contactWay, std::string detail, std::shared_ptr<OrderState> currentState);
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+			std::string applianceType, ContactInformation &contactWay, std::string detail);
 
 	void initOrderState(AcceptableOrderPriceRange &range);
 
@@ -63,7 +63,7 @@ private:
 	std::string m_applianceType;
 	ContactInformation m_contactWay;
 	std::string m_detail;
-	unsigned long int m_id;
+	unsigned long m_id;
 	std::shared_ptr<OrderState> m_currentState;
 
 	std::weak_ptr<CustomerAccount> m_committer;

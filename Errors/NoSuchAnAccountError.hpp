@@ -10,10 +10,15 @@
 
 class NoSuchAnAccountError : public std::exception {
 public:
-    explicit NoSuchAnAccountError(std::string error);
+    explicit NoSuchAnAccountError(std::string error)
+			: m_msg{std::move(error)}
+	{}
+
     ~NoSuchAnAccountError() override = default;
 
-    const char* what() const noexcept override;
+    const char* what() const noexcept override {
+		return m_msg.data();
+	}
 
 private:
     std::string m_msg;

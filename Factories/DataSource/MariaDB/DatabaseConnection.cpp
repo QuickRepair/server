@@ -7,10 +7,10 @@
 #include "Factories/OrderStateFactories/OrderStartRepairStateFactory.h"
 #include "Factories/OrderStateFactories/OrderEndRepairStateFactory.h"
 #include "Factories/OrderStateFactories/OrderFinishedStateFactory.h"
-#include "Errors/DatabaseInternalError.h"
-#include "Errors/QueryResultEmptyError.h"
-#include "Errors/AccountAlreadyExistError.h"
-#include "Errors/PasswordNotRightError.h"
+#include "Errors/DatabaseInternalError.hpp"
+#include "Errors/QueryResultEmptyError.hpp"
+#include "Errors/AccountAlreadyExistError.hpp"
+#include "Errors/PasswordNotRightError.hpp"
 #include <stdexcept>
 #include <string>
 #include <sstream>
@@ -88,7 +88,7 @@ unsigned long DatabaseConnection::createOrder(unsigned long committerId, unsigne
 	return orderId;
 }
 
-std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>>
+std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>>
 	DatabaseConnection::queryOrderByAccountId(unsigned long id)
 {
 	ostringstream ostr;
@@ -102,7 +102,7 @@ std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string,
 	if(res.empty())
 		throw QueryResultEmptyError("Query Order by id empty");
 
-	vector<tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>> ret;
+	list<tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>> ret;
 	for(unsigned i = 0; i < res.size(); /*empty*/)
 	{
 		unsigned long orderId = toUnsignedLong(res[i++]);
@@ -119,7 +119,7 @@ std::vector<std::tuple<unsigned long, unsigned long, unsigned long, std::string,
 	return ret;
 }
 
-std::list<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
 DatabaseConnection::queryOrderStateByOrderId(unsigned long orderId)
 {
 	/* TODO
@@ -154,7 +154,7 @@ DatabaseConnection::queryOrderStateByOrderId(unsigned long orderId)
 	 */
 
 	OrderStateParameters parameters;
-	list<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> states;
+	vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> states;
 	states.push_back(
 			tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>(
 					nullptr, parameters

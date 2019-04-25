@@ -12,9 +12,13 @@
 
 class MerchantAccount;
 class Account;
+class OrderManagerProxy;
+class AccountManagerProxy;
 
 class InstructionsAnalyser {
 public:
+	InstructionsAnalyser();
+
 	utility::string_t instructionFromMap(std::map<utility::string_t, utility::string_t> instruction);
 	utility::string_t instructionFromJson(web::json::value json);
 
@@ -41,6 +45,9 @@ private:
 	utility::string_t getOrderStateString(OrderState::States &state);
 	unsigned long toUnsignedLong(const std::string &s);
 	double toDouble(const std::string &s);
+
+	std::shared_ptr<OrderManagerProxy> orderManagerProxy;
+	std::shared_ptr<AccountManagerProxy> accountManagerProxy;
 };
 
 

@@ -9,16 +9,19 @@ Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
 			 std::string applianceType, ContactInformation &contactWay, std::string detail)
 	: m_applianceType{applianceType},
 	m_contactWay{contactWay},
-	m_detail{detail}, m_id{id},
+	m_detail{detail},
+	m_id{id},
 	m_committer{committer}
 {}
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
-	  std::string applianceType, ContactInformation &contactWay, std::string detail, std::shared_ptr<OrderState> currentState)
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+		std::string applianceType, ContactInformation &contactWay, std::string detail)
 		: m_applianceType{applianceType},
 		  m_contactWay{contactWay},
-		  m_detail{detail}, m_id{id},
-		  m_committer{committer}, m_currentState{currentState}
+		  m_detail{detail},
+		  m_id{id},
+		  m_committer{committer},
+		  m_acceptor{acceptor}
 {}
 
 void Order::initOrderState(AcceptableOrderPriceRange &range)

@@ -10,10 +10,15 @@
 
 class PasswordNotRightError : public std::exception {
 public:
-    explicit PasswordNotRightError(std::string error);
+    explicit PasswordNotRightError(std::string error)
+			: m_msg{std::move(error)}
+	{}
+
     ~PasswordNotRightError() override = default;
 
-    const char* what() const noexcept override;
+    const char* what() const noexcept override {
+		return m_msg.data();
+	}
 
 private:
     std::string m_msg;

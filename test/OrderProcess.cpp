@@ -11,7 +11,7 @@
 #include "Account/MerchantAccount.h"
 #include "Account/ContactInformation.h"
 #include "Order/Order.h"
-#include "Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.hpp"
 
 using std::shared_ptr;				using std::make_shared;
 using std::string;					using std::dynamic_pointer_cast;

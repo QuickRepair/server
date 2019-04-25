@@ -14,18 +14,18 @@ using std::string;						using std::get;
 
 std::shared_ptr<Account> MerchantFactory::loadAccount(unsigned long id)
 {
-	auto accountInfo = DataSourceFrom::getInstance().loadMerchant(id);
+	auto accountInfo = DATA_SOURCE_FROM::getInstance().loadMerchant(id);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, get<0>(accountInfo), get<1>(accountInfo));
 	return merchant;
 }
 
 std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string account, std::string password)
 {
-	unsigned long id = DataSourceFrom::getInstance().checkMerchantPasswordAndGetId(account, password);
+	unsigned long id = DATA_SOURCE_FROM::getInstance().checkMerchantPasswordAndGetId(account, password);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, account, password);
 
 	// load service types
-	auto serviceTypeDetail = DataSourceFrom::getInstance().queryMerchantServiceType(id);
+	auto serviceTypeDetail = DATA_SOURCE_FROM::getInstance().queryMerchantServiceType(id);
 	shared_ptr<MerchantServiceType> serviceType = make_shared<MerchantServiceType>(get<0>(serviceTypeDetail), get<1>(serviceTypeDetail));
 	merchant->loadServiceType(serviceType);
 
@@ -35,10 +35,10 @@ std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string accoun
 
 void MerchantFactory::createAccountSpecific(std::string account, std::string password)
 {
-	DataSourceFrom::getInstance().createMerchantAccount(account, password);
+	DATA_SOURCE_FROM::getInstance().createMerchantAccount(account, password);
 }
 
 void MerchantFactory::updateAccountSpecific(std::string account, std::string password)
 {
-	DataSourceFrom::getInstance().updateMerchantAccountPassword(account, password);
+	DATA_SOURCE_FROM::getInstance().updateMerchantAccountPassword(account, password);
 }

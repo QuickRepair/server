@@ -37,10 +37,12 @@ public:
     /// @param order: a weak_ptr to the order
     void payTheOrder(std::weak_ptr<Order> order);
 
+    ///@override
     bool isMyOrder(std::weak_ptr<Order> order) const override;
 	std::list<std::weak_ptr<Order>> myOrdersList() const override;
 
 protected:
+    ///@override
 	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
 	void loadOrder(std::shared_ptr<Order> order) override;
 

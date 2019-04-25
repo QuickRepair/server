@@ -6,12 +6,13 @@
 
 #include <gtest/gtest.h>
 #include <memory>
+#include "ManagerProxy/AccountManagerProxy.h"
 #include "Factories/DataSource/MariaDB/DatabaseConnection.h"
 #include "Factories/MerchantFactory.h"
 #include "Factories/CustomerFactory.h"
 #include "Factories/OrderFactory.h"
-#include "Errors/PasswordNotRightError.h"
-#include "Errors/QueryResultEmptyError.h"
+#include "Errors/PasswordNotRightError.hpp"
+#include "Errors/QueryResultEmptyError.hpp"
 #include "Account/MerchantAccount.h"
 #include "Configuration/Configure.h"
 
@@ -115,18 +116,18 @@ TEST(FactoryTest, customerFactory)
  * 34		3	null		2019-04-13 04:04:45		null		unreceived
  */
 
-TEST(FactoryTest, orderFactory)
+TEST(FactoryTest, OrderFactoryTest)
 {
-	/*auto orderFactory = make_shared<OrderFactory>();
+	auto orderFactory = make_shared<OrderFactory>();
+	auto accountManagerProxy = make_shared<AccountManagerProxy>();
 
 	// merchant order
-	auto merchantFactory = make_shared<MerchantFactory>();
 	string account = "1234";
 	string password = "1234";
-	auto merchant = merchantFactory->readAccount(account, password);
-	orderFactory->readOrdersForAccount(merchant);
-	EXPECT_EQ(1, merchant->myOrdersList());
+	auto merchant = accountManagerProxy->merchantAuthentication(account, password);
+	orderFactory->getOrdersListForAccount(merchant);
+	EXPECT_EQ(1, merchant.lock()->myOrdersList().size());
 
-	auto customerFactory = make_shared<CustomerFactory>();*/
+	//auto customerFactory = make_shared<CustomerFactory>();*/
 }
 #endif

@@ -2,7 +2,7 @@
 #include "OrderReceivedState.h"
 #include "Order/Order.h"
 #include "OrderFinishedState.h"
-#include "Errors/OrderNotAtRightState.h"
+#include "Errors/OrderNotAtRightState.hpp"
 #include "OrderRejectedState.h"
 
 using std::make_shared;						using std::chrono::system_clock;
