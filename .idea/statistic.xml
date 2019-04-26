@@ -4,6 +4,8 @@
     <option name="excludedDirectories">
       <list>
         <option value="$PROJECT_DIR$/cmake-build-debug" />
+        <option value="$PROJECT_DIR$/.idea" />
+        <option value="$PROJECT_DIR$/.vscode" />
       </list>
     </option>
   </component>

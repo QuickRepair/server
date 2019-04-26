@@ -8,6 +8,7 @@
 #include <exception>
 #include <string>
 
+/// @brief Throw this when customer or merchant change dorder state illegally
 class OrderNotAtRightState : public std::exception {
 public:
 	explicit OrderNotAtRightState(std::string error)

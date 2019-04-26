@@ -4,20 +4,23 @@
 
 #ifdef ENV_TEST
 
+/// @brief In test environment, marco DATA_SOURCE_FROM is set to read data from SimulateDatabase
+
 #include <gtest/gtest.h>
 #include <memory>
-#include "ManagerProxy/AccountManagerProxy.h"
+#include <list>
 #include "Factories/DataSource/MariaDB/DatabaseConnection.h"
 #include "Factories/MerchantFactory.h"
 #include "Factories/CustomerFactory.h"
 #include "Factories/OrderFactory.h"
 #include "Errors/PasswordNotRightError.hpp"
 #include "Errors/QueryResultEmptyError.hpp"
+#include "Errors/OrderNotAtRightState.hpp"
 #include "Account/MerchantAccount.h"
-#include "Configuration/Configure.h"
+#include "Order/Order.h"
 
 using std::make_shared;					using std::shared_ptr;
-using std::string;
+using std::string;						using std::list;
 
 /* to pass the test,
  * table account in database should contain following rows
@@ -119,15 +122,34 @@ TEST(FactoryTest, customerFactory)
 TEST(FactoryTest, OrderFactoryTest)
 {
 	auto orderFactory = make_shared<OrderFactory>();
-	auto accountManagerProxy = make_shared<AccountManagerProxy>();
+	auto merchantFactory = make_shared<MerchantFactory>();
+	auto customerFactory = make_shared<CustomerFactory>();
 
 	// merchant order
 	string account = "1234";
 	string password = "1234";
-	auto merchant = accountManagerProxy->merchantAuthentication(account, password);
-	orderFactory->getOrdersListForAccount(merchant);
-	EXPECT_EQ(1, merchant.lock()->myOrdersList().size());
+	auto merchant = merchantFactory->readAccount(account, password);
+	list<shared_ptr<Order>> merchantOrderList = orderFactory->getOrdersListForAccount(merchant);
+	EXPECT_EQ(0, merchant->myOrdersList().size());
+	EXPECT_EQ(1, merchantOrderList.size());
+	for(auto &order : merchantOrderList)
+		EXPECT_EQ(merchant->id(), order->acceptorId());
+	EXPECT_EQ(OrderState::unreceivedState, (*merchantOrderList.begin())->currentState());
 
-	//auto customerFactory = make_shared<CustomerFactory>();*/
+	// customer order
+	account = "1";
+	password = "1";
+	auto customer = customerFactory->readAccount(account, password);
+	list<shared_ptr<Order>> customerOrderList = orderFactory->getOrdersListForAccount(customer);
+	EXPECT_EQ(0, customer->myOrdersList().size());
+	EXPECT_EQ(1, customerOrderList.size());
+	for(auto &order : customerOrderList)
+		EXPECT_EQ(customer->id(), order->committerId());
+	auto firstOrder = *customerOrderList.begin();
+	EXPECT_EQ(OrderState::unreceivedState, firstOrder->currentState());
+	EXPECT_THROW(firstOrder->startRepair(), OrderNotAtRightState);
+	EXPECT_THROW(firstOrder->endRepair(1), OrderNotAtRightState);
+	EXPECT_THROW(firstOrder->pay(), OrderNotAtRightState);
 }
+
 #endif

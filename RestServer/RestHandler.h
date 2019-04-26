@@ -15,6 +15,7 @@ public:
     ~RestHandler();
 
 private:
+	/// @brief Handle http operates
     void handleGet(web::http::http_request msg);
     void handlePut(web::http::http_request msg);
     void handlePost(web::http::http_request msg);

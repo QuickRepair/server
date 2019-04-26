@@ -10,42 +10,32 @@
 #include "Account/CustomerAccount.h"
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "Errors/QueryResultEmptyError.hpp"
-#include "ManagerProxy/OrderManagerProxy.h"
-#include "ManagerProxy/AccountManagerProxy.h"
 #include <tuple>
 
 using std::make_shared;			using std::get;
 using std::shared_ptr;			using std::vector;
 using std::tuple;				using std::list;
 
-OrderFactory::OrderFactory()
+std::list<std::shared_ptr<Order>> OrderFactory::getOrdersListForAccount(std::weak_ptr<Account> account)
 {
-	orderManagerProxy = make_shared<OrderManagerProxy>();
-	accountManagerProxy = make_shared<AccountManagerProxy>();
-}
-
-void OrderFactory::getOrdersListForAccount(std::weak_ptr<Account> account)
-{
+	list<shared_ptr<Order>> orderList;
 	try
 	{
 		auto orderInfo = DATA_SOURCE_FROM::getInstance().queryOrderByAccountId(account.lock()->id());
 		for (auto &ret : orderInfo)
 		{
-			auto customer = accountManagerProxy->getOrLoadCustomer(get<1>(ret));
-			auto merchant = accountManagerProxy->getOrLoadMerchant(get<2>(ret));
-
-			//TODO: load contanct information
+			//TODO: load contact information
 			ContactInformation tmp;
-			shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), customer, merchant, get<3>(ret), tmp, get<4>(ret));
+			shared_ptr<Order> newOrder = make_shared<Order>(get<0>(ret), get<1>(ret), get<2>(ret), get<3>(ret), tmp, get<4>(ret));
 			newOrder->m_currentState = getStates(newOrder);
 
-			customer.lock()->loadOrder(newOrder);
-			merchant.lock()->loadOrder(newOrder);
+			orderList.push_back(newOrder);
 		}
 	}
 	catch (QueryResultEmptyError &e)
 	{
 	}
+	return orderList;
 }
 
 std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,

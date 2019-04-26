@@ -8,6 +8,7 @@
 #include <exception>
 #include <string>
 
+/// @brief Throw this when Database find the password for account not right
 class PasswordNotRightError : public std::exception {
 public:
     explicit PasswordNotRightError(std::string error)

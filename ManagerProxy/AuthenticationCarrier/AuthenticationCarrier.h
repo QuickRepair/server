@@ -7,9 +7,14 @@
 
 #include <string>
 
+/// @brief The interface of all authentication carriers
 class AuthenticationCarrier {
 public:
 	virtual ~AuthenticationCarrier() = 0;
+
+	/// @brief Send verification to given code
+	/// @param sendTo: represent where does the code go
+	/// @return the code just sent
 	virtual long sendVerificationCode(std::string sendTo) = 0;
 };
 

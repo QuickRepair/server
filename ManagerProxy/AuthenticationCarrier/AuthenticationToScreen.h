@@ -7,6 +7,7 @@
 
 #include "AuthenticationCarrier.h"
 
+/// @brief Out put authentication code to terminal
 class AuthenticationToScreen : public AuthenticationCarrier {
 public:
 	~AuthenticationToScreen() override;

@@ -5,10 +5,12 @@
 
 struct OrderStateParameters;
 
+/// @brief The unrecieved state factory
 class OrderUnreceivedStateFactory : public OrderStateAbstractFactory {
 public:
 	~OrderUnreceivedStateFactory() override = default;
 
+	/// @override
 	std::shared_ptr<OrderState> makeStateForOrder(std::weak_ptr<Order> order, OrderStateParameters &parameters) override;
 };
 

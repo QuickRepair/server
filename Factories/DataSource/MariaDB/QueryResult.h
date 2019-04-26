@@ -9,12 +9,16 @@
 #include <vector>
 #include <string>
 
+/// @brief A RAII packaged MYSQL_RES
 class QueryResult {
 public:
 	QueryResult(MYSQL_RES *res);
 	~QueryResult();
 
+	/// @brief Get a row of result
 	std::vector<std::string> fetchRow();
+
+	/// @brief Get all rows of result
 	std::vector<std::string> fetchAllRows();
 
 private:

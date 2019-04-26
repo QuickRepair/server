@@ -12,6 +12,7 @@ class Order;
 class Account;
 class ContactInformation;
 class AcceptableOrderPriceRange;
+class AccountManagerProxy;
 
 class OrderManager : public OrderManagerSubject {
 public:
@@ -38,6 +39,7 @@ private:
 
 	std::list<std::shared_ptr<Order>> m_orderList;
 	std::shared_ptr<OrderFactory> m_factory;
+	std::shared_ptr<AccountManagerProxy> m_accountManagerProxy;
 };
 
 #endif //HAR_ORDERMANAGESYSTEM_H

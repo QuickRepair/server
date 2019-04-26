@@ -15,6 +15,7 @@ class CustomerAccount : public Account
 {
 	friend class CustomerFactory;
 	friend class OrderFactory;
+	friend class OrderManager;
 
 public:
     CustomerAccount(unsigned long id, std::string account, std::string password);

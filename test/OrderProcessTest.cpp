@@ -17,15 +17,26 @@ using std::shared_ptr;				using std::make_shared;
 using std::string;					using std::dynamic_pointer_cast;
 using std::weak_ptr;
 
-TEST(OrderProcess, publishOrder)
-{
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
+class OrderProcessWithAccount : public testing::Test {
+protected:
+	void SetUp() override {
+		customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
+		merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
+		ContactInformation contactInformation;
+		order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
+		AcceptableOrderPriceRange range;
+		order->initOrderState(range);
+	}
 
+	void TearDown() override {}
+
+	shared_ptr<CustomerAccount> customer;
+	shared_ptr<MerchantAccount> merchant;
+	shared_ptr<Order> order;
+};
+
+TEST_F(OrderProcessWithAccount, publishOrder)
+{
 	// publish an order
 	customer->iAmPublishAnOrder(order);
 	EXPECT_EQ(1, customer->myOrdersList().size());
@@ -45,14 +56,8 @@ TEST(OrderProcess, publishOrder)
 	EXPECT_EQ(OrderState::States::unreceivedState, order->currentState());
 }
 
-TEST(OrderProcess, registerAsUnreceived)
+TEST_F(OrderProcessWithAccount, registerAsUnreceived)
 {
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
 	customer->iAmPublishAnOrder(order);
 
 	// add order to merchant's pending received list
@@ -72,14 +77,8 @@ TEST(OrderProcess, registerAsUnreceived)
 	EXPECT_EQ(OrderState::States::unreceivedState, order->currentState());
 }
 
-TEST(OrderProcess, accept)
+TEST_F(OrderProcessWithAccount, accept)
 {
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
 	customer->iAmPublishAnOrder(order);
 	merchant->orderWaitToBeAccept(order);
 
@@ -101,14 +100,8 @@ TEST(OrderProcess, accept)
 	EXPECT_EQ(OrderState::States::receivedState, order->currentState());
 }
 
-TEST(OrderProcess, reject)
+TEST_F(OrderProcessWithAccount, reject)
 {
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
 	customer->iAmPublishAnOrder(order);
 	merchant->orderWaitToBeAccept(order);
 
@@ -128,14 +121,8 @@ TEST(OrderProcess, reject)
 	EXPECT_EQ(OrderState::States::rejectState, order->currentState());
 }
 
-TEST(OrderProcess, startRepair)
+TEST_F(OrderProcessWithAccount, startRepair)
 {
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
 	customer->iAmPublishAnOrder(order);
 	merchant->orderWaitToBeAccept(order);
 	merchant->acceptOrder(order);
@@ -153,14 +140,8 @@ TEST(OrderProcess, startRepair)
 	EXPECT_EQ(OrderState::States::startRepairState, order->currentState());
 }
 
-TEST(OrderProcess, endRepair)
+TEST_F(OrderProcessWithAccount, endRepair)
 {
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
 	customer->iAmPublishAnOrder(order);
 	merchant->orderWaitToBeAccept(order);
 	merchant->acceptOrder(order);
@@ -180,14 +161,8 @@ TEST(OrderProcess, endRepair)
 	EXPECT_EQ(OrderState::States::endRepairState, order->currentState());
 }
 
-TEST(OrderProcess, pay)
+TEST_F(OrderProcessWithAccount, pay)
 {
-	auto customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
-	auto merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
-	ContactInformation contactInformation;
-	auto order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
-	AcceptableOrderPriceRange range;
-	order->initOrderState(range);
 	customer->iAmPublishAnOrder(order);
 	merchant->orderWaitToBeAccept(order);
 	merchant->acceptOrder(order);

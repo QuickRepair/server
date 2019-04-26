@@ -7,7 +7,7 @@
 
 #include "OrderState.h"
 
-class OrderRejectedState : public OrderState {
+class OrderRejectedState : public OrderState, public std::enable_shared_from_this<OrderRejectedState> {
 public:
 	OrderRejectedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState);
 	OrderRejectedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, std::chrono::system_clock::time_point date);

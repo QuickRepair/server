@@ -8,6 +8,7 @@
 #include <exception>
 #include <string>
 
+/// @brief Throw this when Database did not find the account
 class NoSuchAnAccountError : public std::exception {
 public:
     explicit NoSuchAnAccountError(std::string error)

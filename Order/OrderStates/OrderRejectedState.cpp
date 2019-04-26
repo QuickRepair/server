@@ -4,6 +4,8 @@
 
 #include "OrderRejectedState.h"
 #include "Errors/OrderNotAtRightState.hpp"
+#include "OrderFinishedState.h"
+#include "Order/Order.h"
 
 using std::make_shared;						using std::chrono::system_clock;
 
@@ -42,7 +44,7 @@ void OrderRejectedState::payTheOrder()
 
 void OrderRejectedState::orderFinished()
 {
-	throw OrderNotAtRightState("At reject state, can not switch to finish state");
+	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
 }
 
 AcceptableOrderPriceRange OrderRejectedState::priceRange() const

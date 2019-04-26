@@ -1,6 +1,8 @@
 #include "Order.h"
 #include "OrderStates/OrderUnreceivedState.h"
 #include "Factories/OrderStateFactories/OrderStateAbstractFactory.h"
+#include "Account/CustomerAccount.h"
+#include "Account/MerchantAccount.h"
 #include <stdexcept>
 
 using std::make_shared;				using std::runtime_error;
@@ -11,17 +13,18 @@ Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
 	m_contactWay{contactWay},
 	m_detail{detail},
 	m_id{id},
-	m_committer{committer}
+	m_committer{committer},
+	m_committerId{committer.lock()->id()}
 {}
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
+Order::Order(unsigned long int id, unsigned long committerId, unsigned long acceptorId,
 		std::string applianceType, ContactInformation &contactWay, std::string detail)
 		: m_applianceType{applianceType},
 		  m_contactWay{contactWay},
 		  m_detail{detail},
 		  m_id{id},
-		  m_committer{committer},
-		  m_acceptor{acceptor}
+		  m_committerId{committerId},
+		  m_acceptorId{acceptorId}
 {}
 
 void Order::initOrderState(AcceptableOrderPriceRange &range)
@@ -37,7 +40,8 @@ void Order::reject()
 
 void Order::receivedBy(std::weak_ptr<MerchantAccount> receiver)
 {
-	m_currentState->receivedBy(std::move(receiver));
+	m_currentState->receivedBy(receiver);
+	m_acceptorId = receiver.lock()->id();
 }
 
 void Order::startRepair()
@@ -133,6 +137,16 @@ OrderState::States Order::currentState() const
 bool Order::isNotReceived() const
 {
 	return m_acceptor.lock() == nullptr;
+}
+
+unsigned long Order::committerId() const
+{
+	return m_committerId;
+}
+
+unsigned long Order::acceptorId() const
+{
+	return m_acceptorId;
 }
 
 void Order::setState(std::shared_ptr<OrderState> state)

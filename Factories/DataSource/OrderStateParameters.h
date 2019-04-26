@@ -8,6 +8,7 @@
 class MerchantAccount;
 class OrderState;
 
+/// @brief A structure save order state specific values
 struct OrderStateParameters {
 	OrderStateParameters()
 		: receiverId{0}, transactionPrice{0.0}, evaluate{OrderEvaluate()},

@@ -6,10 +6,12 @@
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "Order/Order.h"
 #include "AccountManager.h"
+#include "ManagerProxy/AccountManagerProxy.h"
 #include <algorithm>
 
 using std::make_shared;			using std::shared_ptr;
 using std::string;				using std::find_if;
+using std::list;
 
 OrderManager &OrderManager::getInstance()
 {
@@ -20,6 +22,7 @@ OrderManager &OrderManager::getInstance()
 OrderManager::OrderManager()
 {
 	m_factory = make_shared<OrderFactory>();
+	m_accountManagerProxy = make_shared<AccountManagerProxy>();
 }
 
 void OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
@@ -59,7 +62,17 @@ void OrderManager::orderPayed(std::weak_ptr<CustomerAccount> &committer, std::we
 
 void OrderManager::loadAllOrderForAccount(std::weak_ptr<Account> account)
 {
-	m_factory->getOrdersListForAccount(account);
+	list<shared_ptr<Order>> orderList;
+	orderList = m_factory->getOrdersListForAccount(account);
+	for(auto &order : orderList)
+	{
+		auto customer = m_accountManagerProxy->getOrLoadCustomer(order->committerId());
+		auto merchant = m_accountManagerProxy->getOrLoadMerchant(order->acceptorId());
+
+		customer.lock()->loadOrder(order);
+		merchant.lock()->loadOrder(order);
+		m_orderList.push_back(order);
+	}
 }
 
 std::list<std::weak_ptr<Order>> OrderManager::getOrderList(std::weak_ptr<Account> &account)

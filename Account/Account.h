@@ -18,10 +18,11 @@ public:
     Account(unsigned long id, std::string account, std::string password);
     virtual ~Account() = default;
 
-    /// @brief test if the given order belong to the account
+    /// @brief Test if the given order belong to the account
     /// @return true if the order belong to the account, false if not
 	virtual bool isMyOrder(std::weak_ptr<Order> order) const = 0;
 
+	/// @brief Get order list of the account
 	/// @return return the order list belong to the account
 	virtual std::list<std::weak_ptr<Order>> myOrdersList() const = 0;
 

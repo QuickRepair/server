@@ -9,20 +9,35 @@
 class Order;
 class MerchantAccount;
 
+/// @brief An interface of order states
 class OrderState {
 public:
+	/// @brief All list all states
 	enum States { unreceivedState, receivedState, startRepairState, endRepairState, finishedState, rejectState};
 
 	OrderState(std::weak_ptr<Order> order, std::chrono::system_clock::time_point timePoint);
 	virtual ~OrderState() = 0;
 
+	/// @brief Transform state to rejected
 	virtual void reject() = 0;
+
+	/// @brief Transform state to received
+	/// @param receiver: a weak_ptr to receiver
 	virtual void receivedBy(std::weak_ptr<MerchantAccount> receiver) = 0;
+
+	/// @brief Transform state to repairing
 	virtual void startRepair() = 0;
+
+	/// @brief Transform state to ended
 	virtual void endRepair(double transactionPrice) = 0;
+
+	/// @brief Transform state to payed
 	virtual void payTheOrder() = 0;
+
+	/// @brief Transform state to finished
 	virtual void orderFinished() = 0;
 
+	/// @brief Getters
 	virtual AcceptableOrderPriceRange priceRange() const = 0;
 	virtual double transaction() const = 0;
 	virtual void setEvaluate(OrderEvaluate &evaluate) = 0;

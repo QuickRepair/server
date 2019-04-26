@@ -242,18 +242,18 @@ std::tuple<std::string, std::string> SimulateDatabase::loadCustomer(unsigned lon
 	throw QueryResultEmptyError("Load customer");
 }
 
-std::shared_ptr<OrderStateAbstractFactory> SimulateDatabase::findFactory(std::string orderType)
+std::shared_ptr<OrderStateAbstractFactory> SimulateDatabase::findFactory(std::string orderState)
 {
 	shared_ptr<OrderStateAbstractFactory> factory;
-	if(orderType == "unreceived")
+	if(orderState == "unreceived")
 		factory = make_shared<OrderUnreceivedStateFactory>();
-	else if(orderType == "received")
+	else if(orderState == "received")
 		factory = make_shared<OrderReceivedStateFactory>();
-	else if(orderType == "startRepair")
+	else if(orderState == "startRepair")
 		factory = make_shared<OrderStartRepairStateFactory>();
-	else if(orderType == "endRepair")
+	else if(orderState == "endRepair")
 		factory = make_shared<OrderEndRepairStateFactory>();
-	else if(orderType == "finished")
+	else if(orderState == "finished")
 		factory = make_shared<OrderFinishedStateFactory>();
 
 	return factory;

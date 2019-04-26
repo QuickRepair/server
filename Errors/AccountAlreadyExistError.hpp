@@ -8,6 +8,7 @@
 #include <exception>
 #include <string>
 
+/// @brief Throw this when Database find the account exists
 class AccountAlreadyExistError : public std::exception {
 public:
 	explicit AccountAlreadyExistError(std::string error)
