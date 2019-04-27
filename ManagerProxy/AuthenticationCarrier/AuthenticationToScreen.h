@@ -10,7 +10,7 @@
 /// @brief Out put authentication code to terminal
 class AuthenticationToScreen : public AuthenticationCarrier {
 public:
-	~AuthenticationToScreen() override;
+	~AuthenticationToScreen() override = default;
 	long sendVerificationCode(std::string sendTo) override;
 };
 

@@ -8,9 +8,6 @@
 
 using std::default_random_engine;
 
-AuthenticationToScreen::~AuthenticationToScreen()
-{}
-
 long AuthenticationToScreen::sendVerificationCode(std::string sendTo)
 {
 	default_random_engine e;
