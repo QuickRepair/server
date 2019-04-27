@@ -22,7 +22,7 @@ void MerchantAccount::acceptOrder(std::weak_ptr<Order> order)
 	if(isMyUnreceivedOrder(order) && order.lock()->isNotReceived())
 	{
 		order.lock()->receivedBy(weak_from_this());
-		m_receivedOrders.push_back(order.lock());
+		m_allOrders.push_back(order.lock());
 		m_unreceivedOrders.remove(order.lock());
 	}
 }
@@ -45,6 +45,7 @@ void MerchantAccount::rejectOrder(std::weak_ptr<Order> order)
 	{
 		order.lock()->reject();
 		m_unreceivedOrders.remove(order.lock());
+		m_allOrders.push_back(order.lock());
 	}
 }
 
@@ -56,7 +57,7 @@ bool MerchantAccount::isMyUnreceivedOrder(std::weak_ptr<Order> order)
 
 bool MerchantAccount::isMyOrder(std::weak_ptr<Order> order) const
 {
-	return m_receivedOrders.end() != std::find_if(m_receivedOrders.begin(), m_receivedOrders.end(),
+	return m_allOrders.end() != std::find_if(m_allOrders.begin(), m_allOrders.end(),
 			[&order](shared_ptr<Order> a){ return a == order.lock(); });
 }
 
@@ -71,7 +72,7 @@ std::list<std::weak_ptr<Order>> MerchantAccount::myUnreceivedOrderList() const
 std::list<std::weak_ptr<Order>> MerchantAccount::myOrdersList() const
 {
 	list<weak_ptr<Order>> orderList;
-	for(auto &order : m_receivedOrders)
+	for(auto &order : m_allOrders)
 		orderList.push_back(order);
 	for(auto &order : m_unreceivedOrders)
 		orderList.push_back(order);
@@ -101,7 +102,7 @@ void MerchantAccount::loadOrder(std::shared_ptr<Order> order)
 	if(order->currentState() == OrderState::unreceivedState)
 		m_unreceivedOrders.push_back(order);
 	else
-		m_receivedOrders.push_back(order);
+		m_allOrders.push_back(order);
 }
 
 void MerchantAccount::loadServiceType(std::shared_ptr<MerchantServiceType> service)

@@ -71,7 +71,7 @@ protected:
 private:
 	std::list<std::shared_ptr<ContactInformation>> m_contactInfo;
     std::shared_ptr<MerchantServiceType> m_serviceType;
-    std::list<std::shared_ptr<Order>> m_receivedOrders;
+    std::list<std::shared_ptr<Order>> m_allOrders;
     std::list<std::shared_ptr<Order>> m_unreceivedOrders;
 };
 

@@ -7,14 +7,16 @@
 
 using std::make_shared;				using std::runtime_error;
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
+Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 			 std::string applianceType, ContactInformation &contactWay, std::string detail)
 	: m_applianceType{applianceType},
 	m_contactWay{contactWay},
 	m_detail{detail},
 	m_id{id},
 	m_committer{committer},
-	m_committerId{committer.lock()->id()}
+	m_committerId{committer.lock()->id()},
+	m_acceptor{acceptor},
+	m_acceptorId{acceptor.lock()->id()}
 {}
 
 Order::Order(unsigned long int id, unsigned long committerId, unsigned long acceptorId,
@@ -136,7 +138,7 @@ OrderState::States Order::currentState() const
 
 bool Order::isNotReceived() const
 {
-	return m_acceptor.lock() == nullptr;
+	return currentState() == OrderState::unreceivedState;
 }
 
 unsigned long Order::committerId() const

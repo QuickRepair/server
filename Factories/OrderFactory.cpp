@@ -42,7 +42,7 @@ std::shared_ptr<Order> OrderFactory::createOrder(std::weak_ptr<CustomerAccount> 
 												 std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range)
 {
 	unsigned long id = DATA_SOURCE_FROM::getInstance().createOrder(committer.lock()->id(), acceptor.lock()->id(), applianceType, detail);
-	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, applianceType, contactWay, detail);
+	shared_ptr<Order> newOrder = make_shared<Order>(id, committer, acceptor, applianceType, contactWay, detail);
 	newOrder->initOrderState(range);
 	return newOrder;
 }

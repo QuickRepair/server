@@ -10,7 +10,7 @@
 class OrderManagerProxy : public OrderManagerSubject {
 public:
 	/// @override
-	void publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
+	std::weak_ptr<Order> publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
 					  std::string &applianceType, ContactInformation &contactWay, std::string &detail, AcceptableOrderPriceRange &range) override;
 	void orderAccepted(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order) override;
 	void orderRejected(std::weak_ptr<MerchantAccount> &account, std::weak_ptr<Order> &order) override;
@@ -22,7 +22,6 @@ public:
 	void loadAllOrderForAccount(std::weak_ptr<Account> account) override;
 
 	/// @override
-	std::list<std::weak_ptr<Order>> getOrderList(std::weak_ptr<Account> &account) override;
 	std::weak_ptr<Order> getOrder(unsigned long id) override;
 };
 

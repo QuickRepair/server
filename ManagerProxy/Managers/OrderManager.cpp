@@ -25,13 +25,14 @@ OrderManager::OrderManager()
 	m_accountManagerProxy = make_shared<AccountManagerProxy>();
 }
 
-void OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
+std::weak_ptr<Order> OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
 								std::string &applianceType, ContactInformation &contactWay, std::string &detail, AcceptableOrderPriceRange &range)
 {
 	shared_ptr<Order> newOrder = m_factory->createOrder(committer, acceptor, applianceType, contactWay, detail, range);
 	m_orderList.push_back(newOrder);
 	committer.lock()->iAmPublishAnOrder(newOrder);
 	acceptor.lock()->orderWaitToBeAccept(newOrder);
+	return newOrder;
 }
 
 void OrderManager::orderAccepted(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order)
@@ -73,11 +74,6 @@ void OrderManager::loadAllOrderForAccount(std::weak_ptr<Account> account)
 		merchant.lock()->loadOrder(order);
 		m_orderList.push_back(order);
 	}
-}
-
-std::list<std::weak_ptr<Order>> OrderManager::getOrderList(std::weak_ptr<Account> &account)
-{
-	return account.lock()->myOrdersList();
 }
 
 std::weak_ptr<Order> OrderManager::getOrder(unsigned long id)

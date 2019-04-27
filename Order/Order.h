@@ -29,7 +29,7 @@ class Order : public std::enable_shared_from_this<Order> {
 	friend class OrderFinishedStateFactory;
 public:
 	/// @brief A Constructor who make new order
-	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer,
+	Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 		  std::string applianceType, ContactInformation &contactWay, std::string detail);
 	/// @brief A Constructor who load order
 	Order(unsigned long int id, unsigned long committerId, unsigned long acceptorId,

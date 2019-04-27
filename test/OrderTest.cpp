@@ -22,7 +22,7 @@ protected:
 		committer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
 		merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
 		ContactInformation contactInformation;
-		order = make_shared<Order>(1, committer, "type", contactInformation, "detail");
+		order = make_shared<Order>(1, committer, merchant, "type", contactInformation, "detail");
 		AcceptableOrderPriceRange range;
 		order->initOrderState(range);
 	}
@@ -87,7 +87,7 @@ TEST_F(OrderTest, rejectTest)
 	EXPECT_EQ(string("detail"), order->detail());
 	EXPECT_EQ(1, order->id());
 	EXPECT_EQ(OrderState::rejectState, order->currentState());
-	EXPECT_TRUE(order->isNotReceived());
+	EXPECT_FALSE(order->isNotReceived());
 	EXPECT_EQ(committer->id(), order->committerId());
 }
 

@@ -21,7 +21,7 @@ class OrderManagerSubject {
 public:
 	virtual ~OrderManagerSubject() = 0;
 
-	virtual void publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
+	virtual std::weak_ptr<Order> publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
 					  std::string &applianceType, ContactInformation &contactWay, std::string &detail, AcceptableOrderPriceRange &range) = 0;
 	virtual void orderAccepted(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order) = 0;
 	virtual void orderRejected(std::weak_ptr<MerchantAccount> &account, std::weak_ptr<Order> &order) = 0;
@@ -31,7 +31,6 @@ public:
 
 	virtual void loadAllOrderForAccount(std::weak_ptr<Account> account) = 0;
 
-	virtual std::list<std::weak_ptr<Order>> getOrderList(std::weak_ptr<Account> &account) = 0;
 	virtual std::weak_ptr<Order> getOrder(unsigned long id) = 0;
 };
 

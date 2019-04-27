@@ -53,7 +53,7 @@ SimulateDatabase::SimulateDatabase()
 	 * 34		3	null		now()	null		unreceived
 	 */
 	m_orderStates.push_back(
-			make_tuple<unsigned long, int, unsigned long, system_clock::time_point, double, string>(
+			make_tuple<unsigned long, int, int, system_clock::time_point, double, string>(
 					34, 3, -1, system_clock::now(), -1, "unreceived"
 			)
 	);
@@ -61,8 +61,8 @@ SimulateDatabase::SimulateDatabase()
 
 unsigned long SimulateDatabase::createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail)
 {
-	auto newOrder = make_tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>((get<0>(m_orders.back()) + 1), std::move(committerId), std::move(acceptorId), std::move(applianceType), std::move(detail), 0);
-	auto newOrderState = make_tuple<unsigned long, unsigned long, unsigned long, system_clock::time_point, double, string>((get<0>(m_orders.back()) + 1), std::move(get<1>(m_orderStates.back()) + 1), -1, std::move(system_clock::now()), -1, string("unreceived"));
+	auto newOrder = make_tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>((get<0>(m_orders.back()) + 1), std::move(committerId), std::move(acceptorId), std::move(applianceType), std::move(detail), std::move(get<1>(m_orderStates.back()) + 1));
+	auto newOrderState = make_tuple<unsigned long, unsigned long, int, system_clock::time_point, double, string>((get<0>(m_orders.back()) + 1), std::move(get<1>(m_orderStates.back()) + 1), -1, std::move(system_clock::now()), -1, string("unreceived"));
 	m_orders.push_back(newOrder);
 	m_orderStates.emplace_back(newOrderState);
 	return get<0>(m_orders.back()) + 1;
@@ -89,13 +89,14 @@ SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 		// find the order
 		if(get<0>(t) == orderId)
 		{
-			// get last state
+			// get current state
 			int lastState = get<5>(t);
 			// get all state
 			while(lastState != -1)
 			{
 				for(auto &state : m_orderStates)
-					if(get<0>(state) == orderId && get<1>(state) == lastState)
+				{
+					if (get<0>(state) == orderId && get<1>(state) == lastState)
 					{
 						string stateType = get<5>(state);
 						OrderStateParameters parameters;
@@ -113,6 +114,7 @@ SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 						// update last state
 						lastState = get<2>(state);
 					}
+				}
 			}
 			break;
 		}
@@ -211,7 +213,7 @@ std::tuple<std::list<std::string>, int> SimulateDatabase::queryMerchantServiceTy
 			max_service_distance = get<4>(t);
 	
 	max_service_distance = static_cast<int>(max_service_distance);
-	return make_tuple<list<string>, int>(std::move(types), max_service_distance);
+	return make_tuple<list<string>, int>(std::move(types), std::move(max_service_distance));
 }
 
 std::tuple<std::string, std::string> SimulateDatabase::loadMerchant(unsigned long id)

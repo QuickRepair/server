@@ -23,7 +23,7 @@ protected:
 		customer = make_shared<CustomerAccount>(1, string("customer"), string("password"));
 		merchant = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
 		ContactInformation contactInformation;
-		order = make_shared<Order>(1, customer, string("type"), contactInformation, string("detail"));
+		order = make_shared<Order>(1, customer, merchant, string("type"), contactInformation, string("detail"));
 		AcceptableOrderPriceRange range;
 		order->initOrderState(range);
 	}
@@ -108,16 +108,13 @@ TEST_F(OrderProcessWithAccount, reject)
 	merchant->rejectOrder(order);
 	EXPECT_EQ(OrderState::States::rejectState, order->currentState());
 	EXPECT_FALSE(merchant->isMyUnreceivedOrder(order));
-	EXPECT_FALSE(merchant->isMyOrder(order));
+	EXPECT_TRUE(merchant->isMyOrder(order));
 
 	// do operations not fit current state
 	merchant->rejectOrder(order);
-	EXPECT_EQ(OrderState::States::rejectState, order->currentState());
 	merchant->acceptOrder(order);
-	EXPECT_EQ(OrderState::States::rejectState, order->currentState());
-	merchant->startRepair(order);
-	EXPECT_EQ(OrderState::States::rejectState, order->currentState());
-	merchant->endRepair(order, 1);
+	EXPECT_THROW(merchant->startRepair(order), OrderNotAtRightState);
+	EXPECT_THROW(merchant->endRepair(order, 1), OrderNotAtRightState);
 	EXPECT_EQ(OrderState::States::rejectState, order->currentState());
 }
 

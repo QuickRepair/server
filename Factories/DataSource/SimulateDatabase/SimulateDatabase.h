@@ -72,7 +72,7 @@ private:
 	/* simulate order_states
 	 * order_id	id	last_state	date	transaction	state_name
 	 */
-	std::list<std::tuple<unsigned long, int, unsigned long, std::chrono::system_clock::time_point, double, std::string>> m_orderStates;
+	std::list<std::tuple<unsigned long, int, int, std::chrono::system_clock::time_point, double, std::string>> m_orderStates;
 };
 
 
