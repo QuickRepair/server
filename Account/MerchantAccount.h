@@ -1,14 +1,14 @@
 #ifndef MERCHANTACCOUNT_H
 #define MERCHANTACCOUNT_H
 
-#include "Account.h"
+#include "CustomerAccount.h"
 #include <memory>
 
 class ContactInformation;
 class MerchantServiceType;
 
 /// @brief a subclass of Account, represent a merchant who is using the system
-class MerchantAccount : public Account, public std::enable_shared_from_this<MerchantAccount>
+class MerchantAccount : public CustomerAccount, public std::enable_shared_from_this<MerchantAccount>
 {
 	friend class MerchantFactory;
 	friend class OrderFactory;
@@ -37,9 +37,11 @@ public:
     /// @brief MerchantAccount specific operation, reject an order which was registered by @orderWaitToBeAccept()
 	void rejectOrder(std::weak_ptr<Order> order);
 
-	/// @brief Test if the order belong to the merchant unreceived orders
+	/// @brief Test if the order belong to the merchant submitted/processed/unreceived orders
 	/// @param order: a weak_ptr to the order
 	/// @return true if the order is in the list, false on the contrary
+	bool isMySubmittedOrder(std::weak_ptr<Order> order) const;
+	bool isMyProcessedOrder(std::weak_ptr<Order> order) const;
 	bool isMyUnreceivedOrder(std::weak_ptr<Order> order);
 
 	/// @brief Get all unreceived orders
@@ -69,9 +71,8 @@ protected:
 	void loadServiceType(std::shared_ptr<MerchantServiceType> service);
 
 private:
-	std::list<std::shared_ptr<ContactInformation>> m_contactInfo;
     std::shared_ptr<MerchantServiceType> m_serviceType;
-    std::list<std::shared_ptr<Order>> m_allOrders;
+    std::list<std::shared_ptr<Order>> m_processedOrders;
     std::list<std::shared_ptr<Order>> m_unreceivedOrders;
 };
 

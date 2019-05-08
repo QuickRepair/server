@@ -15,7 +15,7 @@ public:
 	/// @brief Send verification to given code
 	/// @param sendTo: represent where does the code go
 	/// @return the code just sent
-	virtual long sendVerificationCode(std::string sendTo) = 0;
+	virtual unsigned sendVerificationCode(std::string sendTo) = 0;
 };
 
 

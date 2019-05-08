@@ -11,12 +11,12 @@
 class AuthenticationSaver : public AuthenticationCarrier {
 public:
 	~AuthenticationSaver() override = default;
-	long sendVerificationCode(std::string sendTo) override;
+	unsigned sendVerificationCode(std::string sendTo) override;
 
-	long lastAuthenticationCode() const;
+	unsigned lastAuthenticationCode() const;
 
 private:
-	long m_code;
+	unsigned m_code;
 };
 
 

@@ -15,7 +15,7 @@ CustomerAccount::CustomerAccount(unsigned long id, std::string account, std::str
 void CustomerAccount::iAmPublishAnOrder(std::weak_ptr<Order> order)
 {
 	if(!isMyOrder(order))
-		m_orders.push_back(order.lock());
+		m_publishedOrders.push_back(order.lock());
 }
 
 void CustomerAccount::cancelOrder(std::weak_ptr<Order> order)
@@ -38,14 +38,14 @@ void CustomerAccount::payTheOrder(std::weak_ptr<Order> order)
 
 bool CustomerAccount::isMyOrder(std::weak_ptr<Order> order) const
 {
-	return m_orders.end() != std::find_if(m_orders.begin(), m_orders.end(),
+	return m_publishedOrders.end() != std::find_if(m_publishedOrders.begin(), m_publishedOrders.end(),
 			[&order](weak_ptr<Order> a){ return a.lock() == order.lock(); });
 }
 
 std::list<std::weak_ptr<Order>> CustomerAccount::myOrdersList() const
 {
 	list<weak_ptr<Order>> orderList;
-	for(auto &order : m_orders)
+	for(auto &order : m_publishedOrders)
 		orderList.push_back(order);
 	return orderList;
 }
@@ -59,5 +59,5 @@ void CustomerAccount::loadContactInformation(std::list<std::shared_ptr<ContactIn
 
 void CustomerAccount::loadOrder(std::shared_ptr<Order> order)
 {
-	m_orders.push_back(order);
+	m_publishedOrders.push_back(order);
 }

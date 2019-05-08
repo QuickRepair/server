@@ -47,6 +47,7 @@ TEST_F(ManagerTest, AccountManagerForMerchantTest)
 {
 	EXPECT_EQ(0, accountProxy->getMerchantList().size());
 
+	// make new merchant and login
 	string account = "1000";
 	string password;
 	accountProxy->merchantRequestForVerificationCode(account);
@@ -57,29 +58,35 @@ TEST_F(ManagerTest, AccountManagerForMerchantTest)
 	accountProxy->merchantAuthentication(account, password);
 	EXPECT_EQ(1, accountProxy->getMerchantList().size());
 
+	// get merchant
 	auto getMerchantByAccount = accountProxy->getMerchant(account);
 	auto getMerchantById = accountProxy->getMerchant(getMerchantByAccount.lock()->id());
 	EXPECT_EQ(getMerchantById.lock(), getMerchantById.lock());
 	EXPECT_EQ(getMerchantById.lock()->account(), account);
 
+	// get or load merchant
 	auto loadedMerchant = accountProxy->getOrLoadMerchant(getMerchantById.lock()->id());
 	EXPECT_EQ(1, accountProxy->getMerchantList().size());
 	EXPECT_EQ(getMerchantById.lock()->id(), loadedMerchant.lock()->id());
 
+	// get merchant not exist
 	auto getMerchantByAccountWithWrongAccount = accountProxy->getMerchant("123434wetf");
 	auto getMerchantByIdWithWrongId = accountProxy->getMerchant(1231242);
 	EXPECT_TRUE(getMerchantByAccountWithWrongAccount.expired());
 	EXPECT_TRUE(getMerchantByIdWithWrongId.expired());
 
+	// login not exist merchant
 	account = "123483274023";
 	password = "9237410324712034";
 	EXPECT_THROW(accountProxy->merchantAuthentication(account, password), NoSuchAnAccountError);
 
+	// get or load merchant not exist
 	EXPECT_THROW(accountProxy->getOrLoadMerchant(12341), QueryResultEmptyError);
 }
 
 TEST_F(ManagerTest, AccountManagerForCustomerTest)
 {
+	// make new customer and login
 	string account = "1111";
 	string password;
 	accountProxy->customerRequestForVerificationCode("1111");
@@ -87,6 +94,8 @@ TEST_F(ManagerTest, AccountManagerForCustomerTest)
 	os << authentication->lastAuthenticationCode();
 	password = os.str();
 	auto authenticationCustomer = accountProxy->customerAuthentication(account, password);
+
+	// get or load customer
 	auto getCustomerWithId = accountProxy->getCustomer(authenticationCustomer.lock()->id());
 	auto getCustomerWithAccount = accountProxy->getCustomer(account);
 	auto loadCustomer = accountProxy->getOrLoadCustomer(getCustomerWithId.lock()->id());
@@ -94,25 +103,30 @@ TEST_F(ManagerTest, AccountManagerForCustomerTest)
 	EXPECT_EQ(authenticationCustomer.lock(), getCustomerWithAccount.lock());
 	EXPECT_EQ(authenticationCustomer.lock(), loadCustomer.lock());
 
+	// login not exist customer
 	account = "123483274023";
 	password = "9237410324712034";
 	EXPECT_THROW(accountProxy->customerAuthentication(account, password), NoSuchAnAccountError);
 
+	// get or load custome not exist
 	EXPECT_THROW(accountProxy->getOrLoadCustomer(12341), QueryResultEmptyError);
 }
 
 TEST_F(ManagerTest, OrderManagerLoadTest)
 {
+	// merchant login
 	string account = "1234";
 	string password = "1234";
 	auto merchant = accountProxy->merchantAuthentication(account, password);
 	EXPECT_EQ(0, merchant.lock()->myOrdersList().size());
 
+	// customer login
 	account = "1";
 	password = "1";
 	auto customer = accountProxy->customerAuthentication(account, password);
 	EXPECT_EQ(0, customer.lock()->myOrdersList().size());
 
+	// load orders
 	orderProxy->loadAllOrderForAccount(merchant);
 	EXPECT_NE(0, merchant.lock()->myOrdersList().size());
 	EXPECT_NE(0, customer.lock()->myOrdersList().size());
@@ -120,6 +134,7 @@ TEST_F(ManagerTest, OrderManagerLoadTest)
 
 TEST_F(ManagerTest, OrderManagerTest)
 {
+	// publish order
 	string account = "1000";
 	auto merchant = accountProxy->getMerchant(account);
 	account = "1111";
@@ -135,22 +150,27 @@ TEST_F(ManagerTest, OrderManagerTest)
 	EXPECT_EQ(OrderState::unreceivedState, newOrder.lock()->currentState());
 	EXPECT_EQ(orderProxy->getOrder(newOrder.lock()->id()).lock(), newOrder.lock());
 
+	// accept order
 	orderProxy->orderAccepted(merchant, newOrder);
 	EXPECT_TRUE(customer.lock()->isMyOrder(newOrder));
 	EXPECT_FALSE(merchant.lock()->isMyUnreceivedOrder(newOrder));
 	EXPECT_TRUE(merchant.lock()->isMyOrder(newOrder));
 	EXPECT_EQ(OrderState::receivedState, newOrder.lock()->currentState());
 
+	// start repair
 	orderProxy->orderStartRepair(merchant, newOrder);
 	EXPECT_EQ(OrderState::startRepairState, newOrder.lock()->currentState());
 
+	// end repair
 	orderProxy->orderEndRepair(merchant, newOrder, 1);
 	EXPECT_EQ(OrderState::endRepairState, newOrder.lock()->currentState());
 	EXPECT_EQ(1, newOrder.lock()->transaction());
 
+	// pay
 	orderProxy->orderPayed(customer, newOrder);
 	EXPECT_EQ(OrderState::finishedState, newOrder.lock()->currentState());
 
+	// publish order and reject
 	applianceType = "type1";
 	detail = "detail1";
 	auto rejectOrder = orderProxy->publishOrder(customer, merchant, applianceType, contact, detail, range);

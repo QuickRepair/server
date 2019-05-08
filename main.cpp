@@ -13,10 +13,9 @@ int main(int argc, char *argv[])
 #include <iostream>
 #include <memory>
 #include "Configuration/Configure.h"
-#include "Managers/AccountManager.h"
-#include "Managers/OrderManager.h"
+#include "ManagerProxy/AccountManagerProxy.h"
 #include "RestServer/RestHandler.h"
-#include "Managers/AuthenticationCarrier/AuthenticationToScreen.h"
+#include "ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.h"
 
 using std::shared_ptr;			using std::make_shared;
 using std::cout;				using std::runtime_error;
@@ -26,12 +25,8 @@ int main()
 	try
 	{
 		Configure configure;
-		DatabaseConnection::getInstance().connect(
-				configure.databaseIp(), configure.databaseName(),
-				configure.databaseUserName(), configure.databasePassword(),
-				configure.databasePort()
-		);
-		AccountManager::getInstance().registerAuthenticationCarrier(make_shared<AuthenticationToScreen>());
+		AccountManagerProxy accountProxy;
+		accountProxy.registerAuthenticationCarrier(make_shared<AuthenticationToScreen>());
 		RestHandler handler(configure.listenOn());
 		while (true)
 			continue;

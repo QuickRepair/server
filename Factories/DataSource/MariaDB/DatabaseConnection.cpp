@@ -210,7 +210,7 @@ void DatabaseConnection::createCustomerAccount(std::string account, std::string 
 void DatabaseConnection::createAccount(std::string account, std::string password, std::string accountType)
 {
 	// does the user exist
-	std::string query =  "SELECT * FROM account WHERE account='" + account + "' and type='" + accountType + "'";
+	std::string query =  "SELECT * FROM account WHERE account='" + account + "'";
 	if(mysql_real_query(m_mysqlConnection, query.data(), query.length()))
 		throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
 	QueryResult findResult = mysql_store_result(m_mysqlConnection);

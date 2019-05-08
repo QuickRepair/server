@@ -35,7 +35,7 @@ unsigned Configure::port() const
 
 std::string Configure::listenOn() const
 {
-	return (mIp + ":" + std::to_string(mPort));
+	return ("http://" + mIp + ":" + std::to_string(mPort));
 }
 
 std::string Configure::databaseIp() const

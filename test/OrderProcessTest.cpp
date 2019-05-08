@@ -179,4 +179,26 @@ TEST_F(OrderProcessWithAccount, pay)
 	EXPECT_EQ(OrderState::States::finishedState, order->currentState());
 }
 
+TEST(MerchantToMerchantOrder, merchantPublishOrder)
+{
+	auto merchant1 = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
+	auto merchant2 = make_shared<MerchantAccount>(2, string("merchant"), string("password"));
+	ContactInformation contactInformation;
+	auto merchantToMerchantOrder = make_shared<Order>(1, merchant1, merchant2, string("type"), contactInformation, string("detail"));
+	AcceptableOrderPriceRange range;
+	merchantToMerchantOrder->initOrderState(range);
+
+	merchant1->iAmPublishAnOrder(merchantToMerchantOrder);
+	EXPECT_TRUE(merchant1->isMyOrder(merchantToMerchantOrder));
+	EXPECT_TRUE(merchant1->isMySubmittedOrder(merchantToMerchantOrder));
+	EXPECT_FALSE(merchant1->isMyProcessedOrder(merchantToMerchantOrder));
+	EXPECT_FALSE(merchant1->isMyUnreceivedOrder(merchantToMerchantOrder));
+
+	merchant2->orderWaitToBeAccept(merchantToMerchantOrder);
+	EXPECT_FALSE(merchant2->isMyOrder(merchantToMerchantOrder));
+	EXPECT_FALSE(merchant2->isMySubmittedOrder(merchantToMerchantOrder));
+	EXPECT_FALSE(merchant2->isMyProcessedOrder(merchantToMerchantOrder));
+	EXPECT_TRUE(merchant2->isMyUnreceivedOrder(merchantToMerchantOrder));
+}
+
 #endif

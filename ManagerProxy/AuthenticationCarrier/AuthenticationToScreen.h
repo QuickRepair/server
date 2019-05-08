@@ -11,7 +11,7 @@
 class AuthenticationToScreen : public AuthenticationCarrier {
 public:
 	~AuthenticationToScreen() override = default;
-	long sendVerificationCode(std::string sendTo) override;
+	unsigned sendVerificationCode(std::string sendTo) override;
 };
 
 

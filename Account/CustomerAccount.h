@@ -26,7 +26,7 @@ public:
 
 	/// @brief CustomerAccount specific operation, cancel a order belong to the customer
 	/// @param order: a weak_ptr to the order
-	/// @todo: add some limit here
+	// TODO: add some cancelable limit here
     void cancelOrder(std::weak_ptr<Order> order);
 
     /// @brief CustomerAccount specific operation, evaluate the order after finish repair
@@ -47,9 +47,8 @@ protected:
 	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
 	void loadOrder(std::shared_ptr<Order> order) override;
 
-private:
     std::list<std::shared_ptr<ContactInformation>> m_contactInfo;
-    std::list<std::shared_ptr<Order>> m_orders;
+    std::list<std::shared_ptr<Order>> m_publishedOrders;
 };
 
 #endif // CUSTOMERACCOUNT_H

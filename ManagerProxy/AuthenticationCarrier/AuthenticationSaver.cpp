@@ -5,16 +5,19 @@
 #include "AuthenticationSaver.h"
 #include <random>
 
-using std::default_random_engine;
+using std::random_device;
+using std::default_random_engine;			using std::uniform_int_distribution;
 
-long AuthenticationSaver::sendVerificationCode(std::string sendTo)
+unsigned AuthenticationSaver::sendVerificationCode(std::string sendTo)
 {
-	default_random_engine e;
-	m_code = e() % 1000000;
+	random_device r;
+	default_random_engine e(r());
+	uniform_int_distribution<unsigned> distribution(0, 999999);
+	m_code = distribution(e);
 	return m_code;
 }
 
-long AuthenticationSaver::lastAuthenticationCode() const
+unsigned AuthenticationSaver::lastAuthenticationCode() const
 {
 	return m_code;
 }
