@@ -1,4 +1,5 @@
-#include "DatabaseConnection.h"
+#if 0
+#include "MariaDBConnection.h"
 #include "QueryResult.h"
 #include "Account/ContactInformation.h"
 #include "Factories/DataSource/OrderStateParameters.h"
@@ -24,9 +25,9 @@ using std::ostringstream;				using std::shared_ptr;
 using std::make_shared;					using std::list;
 using std::vector;
 
-MYSQL *DatabaseConnection::m_mysqlConnection;
+MYSQL *MariaDBConnection::m_mysqlConnection;
 
-DatabaseConnection::DatabaseConnection()
+MariaDBConnection::MariaDBConnection()
 {
 	m_mysqlConnection = mysql_init(nullptr);
 	Configure configure;
@@ -42,12 +43,12 @@ DatabaseConnection::DatabaseConnection()
 		throw DatabaseInternalError("DatabaseConnection connection error, " + string(mysql_error(m_mysqlConnection)));
 }
 
-DatabaseConnection::~DatabaseConnection()
+MariaDBConnection::~MariaDBConnection()
 {
 	mysql_close(m_mysqlConnection);
 }
 
-unsigned long DatabaseConnection::createOrder(unsigned long committerId, unsigned long acceptorId,
+unsigned long MariaDBConnection::createOrder(unsigned long committerId, unsigned long acceptorId,
 											  std::string applianceType, std::string detail)
 {
 	ostringstream ostr;
@@ -89,7 +90,7 @@ unsigned long DatabaseConnection::createOrder(unsigned long committerId, unsigne
 }
 
 std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>>
-	DatabaseConnection::queryOrderByAccountId(unsigned long id)
+	MariaDBConnection::queryOrderByAccountId(unsigned long id)
 {
 	ostringstream ostr;
 	ostr << "SELECT * FROM orders WHERE committer='" << id << "' or acceptor='" << id << "'";
@@ -120,7 +121,7 @@ std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, s
 }
 
 std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
-DatabaseConnection::queryOrderStateByOrderId(unsigned long orderId)
+MariaDBConnection::queryOrderStateByOrderId(unsigned long orderId)
 {
 	/* TODO
 	ostringstream ostr;
@@ -163,17 +164,17 @@ DatabaseConnection::queryOrderStateByOrderId(unsigned long orderId)
 	return states;
 }
 
-unsigned long DatabaseConnection::checkMerchantPasswordAndGetId(std::string account, std::string password)
+unsigned long MariaDBConnection::checkMerchantPasswordAndGetId(std::string account, std::string password)
 {
 	return checkPasswordAndGetId(std::move(account), std::move(password), "merchant");
 }
 
-unsigned long DatabaseConnection::checkCustomerPasswordAndGetId(std::string account, std::string password)
+unsigned long MariaDBConnection::checkCustomerPasswordAndGetId(std::string account, std::string password)
 {
 	return checkPasswordAndGetId(std::move(account), std::move(password), "customer");
 }
 
-unsigned long DatabaseConnection::checkPasswordAndGetId(std::string account, std::string password, std::string accountType)
+unsigned long MariaDBConnection::checkPasswordAndGetId(std::string account, std::string password, std::string accountType)
 {
 	// query
 	ostringstream ostr;
@@ -191,23 +192,23 @@ unsigned long DatabaseConnection::checkPasswordAndGetId(std::string account, std
 	return id;
 }
 
-std::vector<std::tuple<>> DatabaseConnection::queryContactInfoByUserId(unsigned long userId)
+std::vector<std::tuple<>> MariaDBConnection::queryContactInfoByUserId(unsigned long userId)
 {
 	//TODO, read from Database
 	return std::vector<std::tuple<>>();
 }
 
-void DatabaseConnection::createMerchantAccount(std::string account, std::string password)
+void MariaDBConnection::createMerchantAccount(std::string account, std::string password)
 {
 	createAccount(std::move(account), std::move(password), "merchant");
 }
 
-void DatabaseConnection::createCustomerAccount(std::string account, std::string password)
+void MariaDBConnection::createCustomerAccount(std::string account, std::string password)
 {
 	createAccount(std::move(account), std::move(password), "customer");
 }
 
-void DatabaseConnection::createAccount(std::string account, std::string password, std::string accountType)
+void MariaDBConnection::createAccount(std::string account, std::string password, std::string accountType)
 {
 	// does the user exist
 	std::string query =  "SELECT * FROM account WHERE account='" + account + "'";
@@ -224,17 +225,17 @@ void DatabaseConnection::createAccount(std::string account, std::string password
 		throw DatabaseInternalError("Create user, " + std::string(mysql_error(m_mysqlConnection)));
 }
 
-void DatabaseConnection::updateMerchantAccountPassword(std::string account, std::string password)
+void MariaDBConnection::updateMerchantAccountPassword(std::string account, std::string password)
 {
 	updateAccount(std::move(account), std::move(password), "merchant");
 }
 
-void DatabaseConnection::updateCustomerAccountPassword(std::string account, std::string password)
+void MariaDBConnection::updateCustomerAccountPassword(std::string account, std::string password)
 {
 	updateAccount(std::move(account), std::move(password), "customer");
 }
 
-void DatabaseConnection::updateAccount(std::string account, std::string password, std::string accountType)
+void MariaDBConnection::updateAccount(std::string account, std::string password, std::string accountType)
 {
 	ostringstream ostr;
 	ostr << "UPDATE account SET password='" << password << "' WHERE account='" << account << "' AND type='" << accountType << "'";
@@ -243,7 +244,7 @@ void DatabaseConnection::updateAccount(std::string account, std::string password
 		throw DatabaseInternalError("Update password, " + string(mysql_error(m_mysqlConnection)));
 }
 
-std::tuple<std::list<std::string>, int> DatabaseConnection::queryMerchantServiceType(unsigned long id)
+std::tuple<std::list<std::string>, int> MariaDBConnection::queryMerchantServiceType(unsigned long id)
 {
 	// query supported types
 	ostringstream ostr;
@@ -268,7 +269,7 @@ std::tuple<std::list<std::string>, int> DatabaseConnection::queryMerchantService
 	return tuple<list<string>, int>(supportedTypes, maxDistance);
 }
 
-std::tuple<std::string, std::string> DatabaseConnection::loadMerchant(unsigned long id)
+std::tuple<std::string, std::string> MariaDBConnection::loadMerchant(unsigned long id)
 {
 	ostringstream ostr;
 	ostr << "SELECT account,password FROM account WHERE id=" << id << " AND type='merchant'";
@@ -282,7 +283,7 @@ std::tuple<std::string, std::string> DatabaseConnection::loadMerchant(unsigned l
 	return tuple<string, string>(res[0], res[1]);
 }
 
-std::tuple<std::string, std::string> DatabaseConnection::loadCustomer(unsigned long id)
+std::tuple<std::string, std::string> MariaDBConnection::loadCustomer(unsigned long id)
 {
 	ostringstream ostr;
 	ostr << "SELECT account,password FROM account WHERE id=" << id << " AND type='customer'";
@@ -296,7 +297,7 @@ std::tuple<std::string, std::string> DatabaseConnection::loadCustomer(unsigned l
 	return tuple<string, string>(res[0], res[1]);
 }
 
-unsigned long DatabaseConnection::toUnsignedLong(std::string str)
+unsigned long MariaDBConnection::toUnsignedLong(std::string str)
 {
 	istringstream is(str);
 	unsigned long ret{0};
@@ -304,7 +305,7 @@ unsigned long DatabaseConnection::toUnsignedLong(std::string str)
 	return ret;
 }
 
-int DatabaseConnection::toInt(std::string str)
+int MariaDBConnection::toInt(std::string str)
 {
 	istringstream is(str);
 	int ret{0};
@@ -312,7 +313,7 @@ int DatabaseConnection::toInt(std::string str)
 	return ret;
 }
 
-double DatabaseConnection::toDouble(std::string str)
+double MariaDBConnection::toDouble(std::string str)
 {
 	istringstream is(str);
 	double ret{0};
@@ -320,7 +321,7 @@ double DatabaseConnection::toDouble(std::string str)
 	return ret;
 }
 
-std::chrono::system_clock::time_point DatabaseConnection::toTimePoint(std::string str)
+std::chrono::system_clock::time_point MariaDBConnection::toTimePoint(std::string str)
 {
 	std::time_t t{0};
 	long int system_time_t_type{0};
@@ -330,7 +331,7 @@ std::chrono::system_clock::time_point DatabaseConnection::toTimePoint(std::strin
 	return std::chrono::system_clock::from_time_t(t);
 }
 
-std::shared_ptr<OrderStateAbstractFactory> DatabaseConnection::findFactory(std::string orderType)
+std::shared_ptr<OrderStateAbstractFactory> MariaDBConnection::findFactory(std::string orderType)
 {
 	shared_ptr<OrderStateAbstractFactory> factory;
 	if(orderType == "unreceived")
@@ -346,3 +347,4 @@ std::shared_ptr<OrderStateAbstractFactory> DatabaseConnection::findFactory(std::
 
 	return factory;
 }
+#endif

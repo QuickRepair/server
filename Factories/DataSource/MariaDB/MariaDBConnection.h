@@ -1,3 +1,4 @@
+#if 0
 #ifndef HAR_DATABASE_H
 #define HAR_DATABASE_H
 
@@ -17,10 +18,10 @@ class ContactInformation;
 struct OrderStateParameters;
 class OrderStateAbstractFactory;
 
-class DatabaseConnection : public DataSource<DatabaseConnection> {
+class MariaDBConnection : public DataSource<MariaDBConnection> {
 
-	friend class DataSource<DatabaseConnection>;
-	friend std::unique_ptr<DatabaseConnection>::deleter_type;
+	friend class DataSource<MariaDBConnection>;
+	friend std::unique_ptr<MariaDBConnection>::deleter_type;
 
 public:
 
@@ -55,8 +56,8 @@ public:
 	std::tuple<std::string, std::string> loadCustomer(unsigned long id) override;
 
 protected:
-	DatabaseConnection();
-	~DatabaseConnection() override;
+	MariaDBConnection();
+	~MariaDBConnection() override;
 
 private:
 	/// @brief Cast functions
@@ -93,3 +94,4 @@ private:
 };
 
 #endif //HAR_DATABASE_H
+#endif

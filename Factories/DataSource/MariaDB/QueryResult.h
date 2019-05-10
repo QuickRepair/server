@@ -1,7 +1,7 @@
 //
 // Created by gaojian on 18-12-31.
 //
-
+#if 0
 #ifndef HAR_QUERYRESULT_H
 #define HAR_QUERYRESULT_H
 
@@ -26,3 +26,4 @@ private:
 };
 
 #endif //HAR_QUERYRESULT_H
+#endif

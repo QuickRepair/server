@@ -7,9 +7,9 @@
 
 /// @brief The DATA_SOURCE_FROM marco define which data source is used
 #ifdef ENV_TEST
-#define DATA_SOURCE_FROM DataSource<SimulateDatabase>
+	#define DATA_SOURCE_FROM DataSource<SimulateDatabase>
 #else
-#define DATA_SOURCE_FROM DataSource<DatabaseConnection>
+	#define DATA_SOURCE_FROM DataSource<PostgresConnection>
 #endif
 
 #include <memory>
@@ -60,9 +60,8 @@ public:
 	/// 		committer id,
 	/// 		receiver id,
 	/// 		appliance type,
-	/// 		detail,
-	/// 		current state id
-	virtual std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>>
+	/// 		detail
+	virtual std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>>
 	queryOrderByAccountId(unsigned long id) = 0;
 
 	/// @brief Query order state according to the order id
@@ -79,10 +78,15 @@ public:
 	/// @param account: the account to be verified, @note: not account id
 	/// @param password: the input password of account
 	/// @return id of account
-	virtual unsigned long checkMerchantPasswordAndGetId(std::string account, std::string password) = 0;
-	virtual unsigned long checkCustomerPasswordAndGetId(std::string account, std::string password) = 0;
+	virtual unsigned long checkPasswordAndGetId(std::string account, std::string password) = 0;
 
-	virtual std::vector<std::tuple<>> queryContactInfoByUserId(unsigned long userId) = 0;
+	/// @brief Get account contact information
+	/// @param userId: the account id
+	/// @return return the contact information in strings
+	/// @returns:
+	///			a string of address
+	///			a string of telephone
+	virtual std::vector<std::tuple<std::string, std::string>> queryContactInfoByUserId(unsigned long userId) = 0;
 
 	/// @brief create a new account
 	/// @param account: account of the new account
@@ -92,9 +96,9 @@ public:
 
 	/// @brief update password of an account
 	/// @param account: specific the account needs to be updated
-	/// @param password: new password for account
-	virtual void updateMerchantAccountPassword(std::string account, std::string password) = 0;
-	virtual void updateCustomerAccountPassword(std::string account, std::string password) = 0;
+	/// @param oldPassword: old password for account
+	/// @param newPassword: new password for account
+	virtual void updateAccountPassword(std::string account, std::string newPassword) = 0;
 
 	/// @brief Query merchant service type by merchant id
 	/// @param id: the merchant id
@@ -103,7 +107,7 @@ public:
 	///	@returns:
 	/// 		a list of string for support appliances,
 	/// 		max repair distance
-	virtual std::tuple<std::list<std::string>, int> queryMerchantServiceType(unsigned long id) = 0;
+	virtual std::tuple<std::list<std::string>, double> queryMerchantServiceType(unsigned long id) = 0;
 
 	/// @brief Get account information about the id
 	/// @param id: the account id
@@ -111,8 +115,7 @@ public:
 	/// @returns:
 	///			account,
 	///			password
-	virtual std::tuple<std::string, std::string> loadMerchant(unsigned long id) = 0;
-	virtual std::tuple<std::string, std::string> loadCustomer(unsigned long id) = 0;
+	virtual std::tuple<std::string, std::string> loadAccount(unsigned long id) = 0;
 
 protected:
 	DataSource() = default;

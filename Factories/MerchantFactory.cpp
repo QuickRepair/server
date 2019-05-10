@@ -4,7 +4,7 @@
 
 #include "MerchantFactory.h"
 #include "Factories/DataSource/DataSource.hpp"
-#include "Factories/DataSource/MariaDB/DatabaseConnection.h"
+#include "Factories/DataSource/Postgres/PostgresConnection.h"
 #include "Factories/DataSource/SimulateDatabase/SimulateDatabase.h"
 #include "Account/MerchantAccount.h"
 #include "Account/MerchantServiceType.h"
@@ -14,14 +14,14 @@ using std::string;						using std::get;
 
 std::shared_ptr<Account> MerchantFactory::loadAccount(unsigned long id)
 {
-	auto accountInfo = DATA_SOURCE_FROM::getInstance().loadMerchant(id);
+	auto accountInfo = DATA_SOURCE_FROM::getInstance().loadAccount(id);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, get<0>(accountInfo), get<1>(accountInfo));
 	return merchant;
 }
 
 std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string account, std::string password)
 {
-	unsigned long id = DATA_SOURCE_FROM::getInstance().checkMerchantPasswordAndGetId(account, password);
+	unsigned long id = DATA_SOURCE_FROM::getInstance().checkPasswordAndGetId(account, password);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, account, password);
 
 	// load service types
@@ -40,5 +40,5 @@ void MerchantFactory::createAccountSpecific(std::string account, std::string pas
 
 void MerchantFactory::updateAccountSpecific(std::string account, std::string password)
 {
-	DATA_SOURCE_FROM::getInstance().updateMerchantAccountPassword(account, password);
+	DATA_SOURCE_FROM::getInstance().updateAccountPassword(account, password);
 }

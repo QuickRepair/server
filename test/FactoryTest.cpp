@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include <list>
-#include "Factories/DataSource/MariaDB/DatabaseConnection.h"
+#include "Factories/DataSource/MariaDB/MariaDBConnection.h"
 #include "Factories/MerchantFactory.h"
 #include "Factories/CustomerFactory.h"
 #include "Factories/OrderFactory.h"

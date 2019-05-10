@@ -2,9 +2,8 @@
 #define ADDRESSINFORMATION_H
 
 #include <string>
-#include <vector>
 
-/// @brief save all contact information about an account
+/// @brief save contact information about an account
 class ContactInformation
 {
 public:
@@ -13,7 +12,7 @@ public:
 
 private:
 	std::string m_address;
-	std::vector<std::string> m_tel;
+	std::string m_tel;
 };
 
 #endif // ADDRESSINFORMATION_H

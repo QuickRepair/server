@@ -68,13 +68,13 @@ unsigned long SimulateDatabase::createOrder(unsigned long committerId, unsigned 
 	return get<0>(m_orders.back()) + 1;
 }
 
-std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string, unsigned long>> SimulateDatabase::queryOrderByAccountId(unsigned long id)
+std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>> SimulateDatabase::queryOrderByAccountId(unsigned long id)
 {
-	list<tuple<unsigned long, unsigned long, unsigned long, string, string, unsigned long>> orders;
+	list<tuple<unsigned long, unsigned long, unsigned long, string, string>> orders;
 	for(auto &t : m_orders)
 	{
 		if(get<1>(t) == id || get<2>(t) == id)
-			orders.push_back(t);
+			orders.push_back(make_tuple(get<0>(t), get<1>(t), get<2>(t), get<3>(t), get<4>(t)));
 	}
 	return orders;
 }
@@ -122,13 +122,13 @@ SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 	return states;
 }
 
-unsigned long SimulateDatabase::checkMerchantPasswordAndGetId(std::string account, std::string password)
+unsigned long SimulateDatabase::checkPasswordAndGetId(std::string account, std::string password)
 {
 	for(auto &t : m_account)
 	{
 		if(get<1>(t) == account)
 		{
-			if(get<2>(t) == password && get<3>(t) == "merchant")
+			if(get<2>(t) == password)
 				return get<0>(t);
 			else
 				throw PasswordNotRightError("Check merchant password and get id");
@@ -137,25 +137,10 @@ unsigned long SimulateDatabase::checkMerchantPasswordAndGetId(std::string accoun
 	throw NoSuchAnAccountError("Check merchant password and get id");
 }
 
-unsigned long SimulateDatabase::checkCustomerPasswordAndGetId(std::string account, std::string password)
-{
-	for(auto &t : m_account)
-	{
-		if(get<1>(t) == account)
-		{
-			if(get<2>(t) == password && get<3>(t) == "customer")
-				return get<0>(t);
-			else
-				throw PasswordNotRightError("Check customer password and get id");
-		}
-	}
-	throw NoSuchAnAccountError("Check customer password and get id");
-}
-
-std::vector<std::tuple<>> SimulateDatabase::queryContactInfoByUserId(unsigned long userId)
+std::vector<std::tuple<std::string, std::string>> SimulateDatabase::queryContactInfoByUserId(unsigned long userId)
 {
 	//TODO
-	return vector<tuple<>>();
+	return vector<tuple<string, string>>();
 }
 
 void SimulateDatabase::createMerchantAccount(std::string account, std::string password)
@@ -180,27 +165,17 @@ void SimulateDatabase::createCustomerAccount(std::string account, std::string pa
 	m_account.push_back(customer);
 }
 
-void SimulateDatabase::updateMerchantAccountPassword(std::string account, std::string password)
+void SimulateDatabase::updateAccountPassword(std::string account, std::string newPassword)
 {
 	for(auto &t : m_account)
 	{
-		if(get<1>(t) == account && get<3>(t) == "merchant")
-			get<2>(t) = password;
+		if(get<1>(t) == account)
+			get<2>(t) = newPassword;
 	}
 	throw NoSuchAnAccountError("Update merchant account password");
 }
 
-void SimulateDatabase::updateCustomerAccountPassword(std::string account, std::string password)
-{
-	for(auto &t : m_account)
-	{
-		if(get<1>(t) == account && get<3>(t) == "customer")
-			get<2>(t) = password;
-	}
-	throw NoSuchAnAccountError("Update customer account password");
-}
-
-std::tuple<std::list<std::string>, int> SimulateDatabase::queryMerchantServiceType(unsigned long id)
+std::tuple<std::list<std::string>, double> SimulateDatabase::queryMerchantServiceType(unsigned long id)
 {
 	list<string> types;
 	for(auto &t : m_serviceType)
@@ -216,11 +191,11 @@ std::tuple<std::list<std::string>, int> SimulateDatabase::queryMerchantServiceTy
 	return make_tuple<list<string>, int>(std::move(types), std::move(max_service_distance));
 }
 
-std::tuple<std::string, std::string> SimulateDatabase::loadMerchant(unsigned long id)
+std::tuple<std::string, std::string> SimulateDatabase::loadAccount(unsigned long id)
 {
 	for(auto &t : m_account)
 	{
-		if(get<0>(t) == id && get<3>(t) == "merchant")
+		if(get<0>(t) == id)
 		{
 			string account = get<1>(t);
 			string password = get<2>(t);
@@ -228,20 +203,6 @@ std::tuple<std::string, std::string> SimulateDatabase::loadMerchant(unsigned lon
 		}
 	}
 	throw QueryResultEmptyError("Load merchant");
-}
-
-std::tuple<std::string, std::string> SimulateDatabase::loadCustomer(unsigned long id)
-{
-	for(auto &t : m_account)
-	{
-		if(get<0>(t) == id && get<3>(t) == "customer")
-		{
-			string account = get<1>(t);
-			string password = get<2>(t);
-			return make_tuple<string, string>(std::move(account), std::move(password));
-		}
-	}
-	throw QueryResultEmptyError("Load customer");
 }
 
 std::shared_ptr<OrderStateAbstractFactory> SimulateDatabase::findFactory(std::string orderState)

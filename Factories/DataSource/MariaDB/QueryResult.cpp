@@ -1,3 +1,4 @@
+#if 0
 #include "QueryResult.h"
 
 using std::vector;				using std::string;
@@ -41,3 +42,4 @@ std::vector<std::string> QueryResult::fetchAllRows()
 	}
 	return ret;
 }
+#endif
