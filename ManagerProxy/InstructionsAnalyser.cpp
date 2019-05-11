@@ -10,8 +10,7 @@
 #include "Account/CustomerAccount.h"
 #include "Account/ContactInformation.h"
 #include "Errors/DatabaseInternalError.hpp"
-#include "Errors/NoSuchAnAccountError.hpp"
-#include "Errors/PasswordNotRightError.hpp"
+#include "Errors/NoSuchAnAccountOrPasswordNotRightError.hpp"
 #include "Order/OrderStates/AcceptableOrderPriceRange.h"
 #include "Order/Order.h"
 #include "Errors/OrderNotAtRightState.hpp"
@@ -102,11 +101,11 @@ utility::string_t InstructionsAnalyser::doLogin(web::json::object &object)
 		}
 		retJson[U("login_result")] = web::json::value(U("success"));
 	}
-	catch (NoSuchAnAccountError &e)
+	catch (NoSuchAnAccountOrPasswordNotRightError &e)
 	{
 		retJson[U("login_result")] = web::json::value(U("no such an account"));
 	}
-	catch (PasswordNotRightError &e)
+	catch (NoSuchAnAccountOrPasswordNotRightError &e)
 	{
 		retJson[U("login_result")] = web::json::value(U("wrong password"));
 	}

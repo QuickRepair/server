@@ -8,6 +8,7 @@
 class MerchantServiceType
 {
 public:
+	MerchantServiceType() : mMaxRepairDistance{0} {};
     MerchantServiceType(std::list<std::string> supportList, int maxDistance);
 
     /// @brief Setters and getters

@@ -37,7 +37,7 @@ add_executable(HARserver main.cpp
         Factories/OrderStateFactories/OrderStateAbstractFactory.h Factories/DataSource/OrderStateParameters.h Factories/OrderStateFactories/OrderUnreceivedStateFactory.cpp Factories/OrderStateFactories/OrderUnreceivedStateFactory.h Factories/OrderStateFactories/OrderReceivedStateFactory.cpp Factories/OrderStateFactories/OrderReceivedStateFactory.h Factories/OrderStateFactories/OrderStartRepairStateFactory.cpp Factories/OrderStateFactories/OrderStartRepairStateFactory.h Factories/OrderStateFactories/OrderEndRepairStateFactory.cpp Factories/OrderStateFactories/OrderEndRepairStateFactory.h Factories/OrderStateFactories/OrderFinishedStateFactory.cpp Factories/OrderStateFactories/OrderFinishedStateFactory.h Factories/AccountFactory.h
         Factories/OrderStateFactories/OrderStateAbstractFactory.cpp Factories/MerchantFactory.cpp Factories/MerchantFactory.h Factories/AccountFactory.cpp Factories/CustomerFactory.cpp Factories/DataSource/DataSource.hpp Factories/DataSource/SimulateDatabase/SimulateDatabase.cpp Factories/DataSource/SimulateDatabase/SimulateDatabase.h
 
-        Errors/DatabaseInternalError.hpp Errors/QueryResultEmptyError.hpp Errors/PasswordNotRightError.hpp Errors/NoSuchAnAccountError.hpp Errors/AccountAlreadyExistError.hpp Factories/CustomerFactory.h Errors/OrderNotAtRightState.hpp Errors/NoAuthenticationCarrierFound.hpp
+        Errors/DatabaseInternalError.hpp Errors/QueryResultEmptyError.hpp Errors/NoSuchAnAccountOrPasswordNotRightError.hpp Errors/AccountAlreadyExistError.hpp Factories/CustomerFactory.h Errors/OrderNotAtRightState.hpp Errors/NoAuthenticationCarrierFound.hpp
 
         Configuration/Configure.cpp Configuration/Configure.h
 

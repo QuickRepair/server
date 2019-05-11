@@ -5,11 +5,13 @@
 #include <algorithm>
 
 using std::weak_ptr;					using std::list;
-using std::shared_ptr;
+using std::shared_ptr;					using std::make_shared;
 
 MerchantAccount::MerchantAccount(unsigned long id, std::string account, std::string password)
     :CustomerAccount{id, std::move(account), std::move(password)}
-{}
+{
+	m_serviceType = make_shared<MerchantServiceType>();
+}
 
 void MerchantAccount::orderWaitToBeAccept(std::shared_ptr<Order> order)
 {

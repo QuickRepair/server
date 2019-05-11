@@ -13,6 +13,8 @@
 #include "Factories/OrderStateFactories/OrderEndRepairStateFactory.h"
 #include "Factories/OrderStateFactories/OrderFinishedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderRejectedStateFactory.h"
+#include "Errors/NoSuchAnAccountOrPasswordNotRightError.hpp"
+#include "Errors/AccountAlreadyExistError.hpp"
 #include <chrono>
 #include <ctime>
 
@@ -29,14 +31,14 @@ PostgresConnection::PostgresConnection()
 			+ " user=" + configure.databaseUserName()
 			+ " password=" + configure.databasePassword()
 			+ " hostaddr=" + configure.databaseIp()
-			+ " port=" + configure.databasePassword();
+			+ " port=" + to_string(configure.databasePort());
 	m_connection = make_unique<pqxx::connection>(connectConfig);
 }
 
 unsigned long PostgresConnection::createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail)
 {
 	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("insert into orders(committer, acceptor, appliance_type, detail_description, order_state_history)\n"
+	pqxx::result result = work.exec("insert into orders(committer, acceptor, appliance_type, detail_description, order_state_history)"
 									"values(" + to_string(committerId) + ", "
 									"       " + to_string(acceptorId) + ", "
 									"       '" + applianceType + "', "
@@ -142,7 +144,7 @@ unsigned long PostgresConnection::checkPasswordAndGetId(std::string account, std
 
 	unsigned long id;
 	if(result.empty())
-		throw QueryResultEmptyError("Can not find account or password wrong");
+		throw NoSuchAnAccountOrPasswordNotRightError("Can not find account or password wrong");
 	else
 		id = result[0]["id"].as<unsigned long>();
 
@@ -174,16 +176,32 @@ std::vector<std::tuple<std::string, std::string>> PostgresConnection::queryConta
 
 void PostgresConnection::createMerchantAccount(std::string account, std::string password)
 {
-	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("insert into merchant_account(account_name, password) values('" + account + "', '" + password + "');");
-	work.commit();
+	try
+	{
+		pqxx::work work(*m_connection);
+		pqxx::result result = work.exec(
+				"insert into merchant_account(account_name, password) values('" + account + "', '" + password + "');"
+		);
+		work.commit();
+	}
+	catch(pqxx::sql_error &e)
+	{
+		throw AccountAlreadyExistError("Account for " + account + " already exist");
+	}
 }
 
 void PostgresConnection::createCustomerAccount(std::string account, std::string password)
 {
-	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("insert into customer_account(account_name, password) values('" + account + "', '" + password + "');");
-	work.commit();
+	try
+	{
+		pqxx::work work(*m_connection);
+		pqxx::result result = work.exec("insert into customer_account(account_name, password) values('" + account + "', '" + password + "');");
+		work.commit();
+	}
+	catch(pqxx::sql_error &e)
+	{
+		throw AccountAlreadyExistError("Account for " + account + " already exist");
+	}
 }
 
 void PostgresConnection::updateAccountPassword(std::string account, std::string newPassword)
@@ -196,7 +214,7 @@ void PostgresConnection::updateAccountPassword(std::string account, std::string 
 std::tuple<std::list<std::string>, double> PostgresConnection::queryMerchantServiceType(unsigned long id)
 {
 	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("select max_repair_distance, appliance_types from merchant_account where id=" + to_string(id) + ";");
+	pqxx::result result = work.exec("select max_repair_distance, support_appliance_types from merchant_account where id=" + to_string(id) + ";");
 	work.commit();
 
 	double max_repair_distance;
@@ -205,7 +223,11 @@ std::tuple<std::list<std::string>, double> PostgresConnection::queryMerchantServ
 		throw QueryResultEmptyError("Find empty result for merchant(" + to_string(id) + ") service type");
 	else
 	{
+		if(result[0]["max_repair_distance"].is_null())
+			throw QueryResultEmptyError("Find empty result for merchant(" + to_string(id) + ") service type");
 		max_repair_distance = result[0]["max_repair_distance"].as<double>();
+		if(result[0]["appliance_types"].is_null())
+			throw QueryResultEmptyError("Find empty result for merchant(" + to_string(id) + ") service type");
 		auto supportedTypeArray = result[0]["appliance_types"].as_array();
 		for(auto nextType = supportedTypeArray.get_next(); nextType.first == pqxx::array_parser::juncture::string_value; nextType = supportedTypeArray.get_next())
 			appliance_types.emplace_back(nextType.second);

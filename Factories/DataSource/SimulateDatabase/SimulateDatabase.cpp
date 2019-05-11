@@ -4,10 +4,9 @@
 
 #include "SimulateDatabase.h"
 #include "Factories/DataSource/OrderStateParameters.h"
-#include "Errors/PasswordNotRightError.hpp"
 #include "Errors/QueryResultEmptyError.hpp"
 #include "Errors/AccountAlreadyExistError.hpp"
-#include "Errors/NoSuchAnAccountError.hpp"
+#include "Errors/NoSuchAnAccountOrPasswordNotRightError.hpp"
 #include "Factories/OrderStateFactories/OrderUnreceivedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderReceivedStateFactory.h"
 #include "Factories/OrderStateFactories/OrderEndRepairStateFactory.h"
@@ -131,10 +130,10 @@ unsigned long SimulateDatabase::checkPasswordAndGetId(std::string account, std::
 			if(get<2>(t) == password)
 				return get<0>(t);
 			else
-				throw PasswordNotRightError("Check merchant password and get id");
+				throw NoSuchAnAccountOrPasswordNotRightError("Check merchant password and get id");
 		}
 	}
-	throw NoSuchAnAccountError("Check merchant password and get id");
+	throw NoSuchAnAccountOrPasswordNotRightError("Check merchant password and get id");
 }
 
 std::vector<std::tuple<std::string, std::string>> SimulateDatabase::queryContactInfoByUserId(unsigned long userId)
@@ -172,7 +171,7 @@ void SimulateDatabase::updateAccountPassword(std::string account, std::string ne
 		if(get<1>(t) == account)
 			get<2>(t) = newPassword;
 	}
-	throw NoSuchAnAccountError("Update merchant account password");
+	throw NoSuchAnAccountOrPasswordNotRightError("Update merchant account password");
 }
 
 std::tuple<std::list<std::string>, double> SimulateDatabase::queryMerchantServiceType(unsigned long id)

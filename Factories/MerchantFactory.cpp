@@ -8,6 +8,7 @@
 #include "Factories/DataSource/SimulateDatabase/SimulateDatabase.h"
 #include "Account/MerchantAccount.h"
 #include "Account/MerchantServiceType.h"
+#include "Errors/QueryResultEmptyError.hpp"
 
 using std::shared_ptr;					using std::make_shared;
 using std::string;						using std::get;
@@ -25,9 +26,15 @@ std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string accoun
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, account, password);
 
 	// load service types
-	auto serviceTypeDetail = DATA_SOURCE_FROM::getInstance().queryMerchantServiceType(id);
-	shared_ptr<MerchantServiceType> serviceType = make_shared<MerchantServiceType>(get<0>(serviceTypeDetail), get<1>(serviceTypeDetail));
-	merchant->loadServiceType(serviceType);
+	try
+	{
+		auto serviceTypeDetail = DATA_SOURCE_FROM::getInstance().queryMerchantServiceType(id);
+		shared_ptr<MerchantServiceType> serviceType = make_shared<MerchantServiceType>(get<0>(serviceTypeDetail),
+																					   get<1>(serviceTypeDetail));
+		merchant->loadServiceType(serviceType);
+	}
+	catch (QueryResultEmptyError&)
+	{}
 
 	//TODO: load contact info
 	return merchant;

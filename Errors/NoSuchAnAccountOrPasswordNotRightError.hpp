@@ -8,14 +8,14 @@
 #include <exception>
 #include <string>
 
-/// @brief Throw this when Database did not find the account
-class NoSuchAnAccountError : public std::exception {
+/// @brief Throw this when Database did not find the account with password
+class NoSuchAnAccountOrPasswordNotRightError : public std::exception {
 public:
-    explicit NoSuchAnAccountError(std::string error)
+    explicit NoSuchAnAccountOrPasswordNotRightError(std::string error)
 			: m_msg{std::move(error)}
 	{}
 
-    ~NoSuchAnAccountError() override = default;
+    ~NoSuchAnAccountOrPasswordNotRightError() override = default;
 
     const char* what() const noexcept override {
 		return m_msg.data();

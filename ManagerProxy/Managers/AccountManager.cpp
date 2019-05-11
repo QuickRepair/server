@@ -41,7 +41,7 @@ std::list<std::weak_ptr<MerchantAccount>> AccountManager::getMerchantList()
 	return ret;
 }
 
-std::weak_ptr<MerchantAccount> AccountManager::getMerchant(const unsigned long id)
+std::weak_ptr<MerchantAccount> AccountManager::getMerchant(unsigned long id)
 {
 	auto it = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
 					  [&id](shared_ptr<MerchantAccount> merchant) { return merchant->id() == id; });
@@ -55,7 +55,7 @@ std::weak_ptr<MerchantAccount> AccountManager::getMerchant(const std::string &ac
 	return it == m_merchantAccountList.end() ? nullptr : *it;
 }
 
-std::weak_ptr<CustomerAccount> AccountManager::getCustomer(const unsigned long id)
+std::weak_ptr<CustomerAccount> AccountManager::getCustomer(unsigned long id)
 {
 	auto it = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
 			[&id](shared_ptr<CustomerAccount> customer) { return customer->id() == id; });
@@ -105,11 +105,15 @@ std::weak_ptr<MerchantAccount> AccountManager::merchantAuthentication(std::strin
 		return (*it);
 	else
 	{
-		//TODO check in memory
-		shared_ptr<MerchantAccount> merchant =
-				dynamic_pointer_cast<MerchantAccount>(m_merchantFactory->readAccount(account, password));
-		m_merchantAccountList.push_back(merchant);
-		return merchant;
+		if(isLoaded(account))
+			return getMerchant(account);
+		else
+		{
+			shared_ptr<MerchantAccount> merchant =
+					dynamic_pointer_cast<MerchantAccount>(m_merchantFactory->readAccount(account, password));
+			m_merchantAccountList.push_back(merchant);
+			return merchant;
+		}
 	}
 }
 
@@ -121,11 +125,15 @@ std::weak_ptr<CustomerAccount> AccountManager::customerAuthentication(std::strin
 		return *it;
 	else
 	{
-		//TODO check in memory
-		shared_ptr<CustomerAccount> customer =
-				dynamic_pointer_cast<CustomerAccount>(m_customerFactory->readAccount(account, password));
-		m_customerAccountList.push_back(customer);
-		return customer;
+		if(isLoaded(account))
+			return getCustomer(account);
+		else
+		{
+			shared_ptr<CustomerAccount> customer =
+					dynamic_pointer_cast<CustomerAccount>(m_customerFactory->readAccount(account, password));
+			m_customerAccountList.push_back(customer);
+			return customer;
+		}
 	}
 }
 
@@ -149,4 +157,16 @@ std::weak_ptr<CustomerAccount> AccountManager::getOrLoadCustomer(unsigned long i
 		m_customerAccountList.push_back(customer);
 	}
 	return customer;
+}
+
+bool AccountManager::isLoaded(std::string &account)
+{
+	bool loaded{false};
+	loaded = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
+			[&account](shared_ptr<Account> customer){ return customer->account() == account; }) != m_customerAccountList.end();
+	if(loaded)
+		return loaded;
+	loaded = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
+			[&account](shared_ptr<Account> customer){ return customer->account() == account; }) != m_merchantAccountList.end();
+	return loaded;
 }

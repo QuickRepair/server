@@ -10,6 +10,7 @@
 #include <string>
 #include "ManagerProxy/Subjects/AccountManagerSubject.h"
 
+class Account;
 class MerchantAccount;
 class CustomerAccount;
 class AccountFactory;
@@ -31,9 +32,9 @@ public:
 
 	/// @override
 	std::list<std::weak_ptr<MerchantAccount>> getMerchantList() override;
-	std::weak_ptr<MerchantAccount> getMerchant(const unsigned long id) override;
+	std::weak_ptr<MerchantAccount> getMerchant(unsigned long id) override;
 	std::weak_ptr<MerchantAccount> getMerchant(const std::string &account) override;
-	std::weak_ptr<CustomerAccount> getCustomer(const unsigned long id) override;
+	std::weak_ptr<CustomerAccount> getCustomer(unsigned long id) override;
 	std::weak_ptr<CustomerAccount> getCustomer(const std::string &account) override;
 
 	/// @override
@@ -48,6 +49,8 @@ public:
 
 private:
 	AccountManager();
+
+	bool isLoaded(std::string &account);
 
 	std::shared_ptr<AccountFactory> m_merchantFactory;
 	std::shared_ptr<AccountFactory> m_customerFactory;
