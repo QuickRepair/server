@@ -12,13 +12,15 @@
 #include "Factories/OrderStateFactories/OrderStartRepairStateFactory.h"
 #include "Factories/OrderStateFactories/OrderEndRepairStateFactory.h"
 #include "Factories/OrderStateFactories/OrderFinishedStateFactory.h"
+#include "Factories/OrderStateFactories/OrderRejectedStateFactory.h"
 #include <chrono>
+#include <ctime>
 
 using std::make_unique;				using std::string;
 using std::vector;					using std::tuple;
 using std::make_tuple;				using std::to_string;
 using std::list;					using std::shared_ptr;
-using std::make_shared;
+using std::make_shared;				using std::chrono::system_clock;
 
 PostgresConnection::PostgresConnection()
 {
@@ -64,7 +66,7 @@ PostgresConnection::queryOrderByAccountId(unsigned long id)
 	work.commit();
 
 	list<tuple<unsigned long, unsigned long, unsigned long, string, string>> orders;
-	for(auto row : result)
+	for(const auto &row : result)
 	{
 		orders.emplace_back(make_tuple(
 				row["id"].as<unsigned long>(),
@@ -88,41 +90,44 @@ PostgresConnection::queryOrderStateByOrderId(unsigned long orderId)
 
 	vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> statesOfOneOrder;
 	string stateType;
-	for(auto row : result)
+	for(const auto &row : result)
 	{
 		OrderStateParameters stateParameters;
 		shared_ptr<OrderStateAbstractFactory> factory;
 		stateType = row["state_type"].as<string>();
-		// TODO: set date
 		if(stateType == "unreceived")
 		{
-			//stateParameters.date = row["state_change_date"].as<std::chrono::system_clock::time_point>();
+			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
 			stateParameters.range = AcceptableOrderPriceRange(row["price_range_lower"].as<double>(), row["price_range_higher"].as<double>());
 			factory = make_shared<OrderUnreceivedStateFactory>();
 		}
 		else if(stateType == "received")
 		{
-			//stateParameters.date = row["state_change_date"].as<std::chrono::system_clock::time_point>();
+			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
 			factory = make_shared<OrderReceivedStateFactory>();
 		}
 		else if(stateType == "startRepair")
 		{
-			//stateParameters.date = row["state_change_date"].as<std::chrono::system_clock::time_point>();
+			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
 			factory = make_shared<OrderStartRepairStateFactory>();
 		}
 		else if(stateType == "endRepair")
 		{
-			//stateParameters.date = row["state_change_date"].as<std::chrono::system_clock::time_point>();
+			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
 			stateParameters.transactionPrice = row["transaction_price"].as<double>();
 			factory = make_shared<OrderEndRepairStateFactory>();
 		}
 		else if(stateType == "finished")
 		{
-			//stateParameters.date = row["state_change_date"].as<std::chrono::system_clock::time_point>();
+			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
 			//TODO stateParameters.evaluate = OrderEvaluate(row["evaluate_text"].as<string>());
 			factory = make_shared<OrderFinishedStateFactory>();
 		}
-		// TODO: rejected factory
+		else if(stateType == "rejected")
+		{
+			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			factory = make_shared<OrderRejectedStateFactory>();
+		}
 		statesOfOneOrder.emplace_back(make_tuple(factory, stateParameters));
 	}
 
@@ -157,7 +162,7 @@ std::vector<std::tuple<std::string, std::string>> PostgresConnection::queryConta
 		throw QueryResultEmptyError("Can not find account or password wrong");
 	else
 	{
-		for(auto row : result)
+		for(const auto &row : result)
 		{
 			address = row["province"].as<string>() + row["city"].as<string>() + row["detail_address"].as<string>();
 			tel = row["telephone"].as<string>();

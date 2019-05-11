@@ -8,7 +8,7 @@ class ContactInformation
 {
 public:
 	ContactInformation() = default;
-    explicit ContactInformation(std::string address);
+    explicit ContactInformation(std::string address, std::string telephone);
 
 private:
 	std::string m_address;

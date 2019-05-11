@@ -49,10 +49,6 @@ add_executable(HARserver main.cpp
         ManagerProxy/AccountManagerProxy.cpp ManagerProxy/AccountManagerProxy.h ManagerProxy/OrderManagerProxy.cpp ManagerProxy/OrderManagerProxy.h
         ManagerProxy/Managers/AccountManager.cpp ManagerProxy/Managers/AccountManager.h ManagerProxy/Managers/OrderManager.cpp ManagerProxy/Managers/OrderManager.h
         ManagerProxy/InstructionsAnalyser.cpp ManagerProxy/InstructionsAnalyser.h
-        ManagerProxy/AuthenticationCarrier/AuthenticationSaver.cpp ManagerProxy/AuthenticationCarrier/AuthenticationSaver.h ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.cpp ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.h ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.cpp ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.h Factories/DataSource/Postgres/PostgresConnection.cpp Factories/DataSource/Postgres/PostgresConnection.h)
+        ManagerProxy/AuthenticationCarrier/AuthenticationSaver.cpp ManagerProxy/AuthenticationCarrier/AuthenticationSaver.h ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.cpp ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.h ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.cpp ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.h Factories/DataSource/Postgres/PostgresConnection.cpp Factories/DataSource/Postgres/PostgresConnection.h Factories/OrderStateFactories/OrderRejectedStateFactory.cpp Factories/OrderStateFactories/OrderRejectedStateFactory.h)
 
-if(WINDOWS)
-    target_link_libraries(HARserver libpqxx cpprestsdk::cpprest)
-elseif(LINUX)
-    target_link_libraries(HARserver pqxx cpprestsdk::cpprest)
-endif()
+target_link_libraries(HARserver pqxx cpprestsdk::cpprest)

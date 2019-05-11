@@ -22,6 +22,7 @@ using std::endl;							using std::list;
 using std::weak_ptr;						using std::istringstream;
 using std::cout;							using utility::conversions::to_utf8string;
 using utility::conversions::to_string_t;	using std::make_shared;
+using std::ctime;
 
 InstructionsAnalyser::InstructionsAnalyser()
 {
@@ -288,7 +289,7 @@ utility::string_t InstructionsAnalyser::doSubmitOrder(web::json::object &object)
 		auto merchant = accountManagerProxy->getMerchant(merchantAccount);
 		if (customer.lock() != nullptr && merchant.lock() != nullptr)
 		{
-			ContactInformation tmp(address);
+			ContactInformation tmp(address, "");
 			AcceptableOrderPriceRange range;
 			orderManagerProxy->publishOrder(customer, merchant,
 													 appliance, tmp, detailDescription,
