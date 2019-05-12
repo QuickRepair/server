@@ -2,7 +2,7 @@
 // Created by gaojian on 19-4-25.
 //
 
-#include "ManagerProxy/Managers/OrderManager.h"
+#include "Subjects/Managers/OrderManager.h"
 #include "OrderManagerProxy.h"
 
 std::weak_ptr<Order> OrderManagerProxy::publishOrder(std::weak_ptr<CustomerAccount> &committer,

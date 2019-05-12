@@ -15,6 +15,8 @@ class AcceptableOrderPriceRange;
 class AccountManagerProxy;
 
 class OrderManager : public OrderManagerSubject {
+	friend class OrderManagerProxy;
+
 public:
 	static OrderManager &getInstance();
 
@@ -27,14 +29,17 @@ public:
 	void orderEndRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order, double transaction) override;
 	void orderPayed(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<Order> &order) override;
 
-	/// @override
-	void loadAllOrderForAccount(std::weak_ptr<Account> account) override;
 
 	/// @override
 	std::weak_ptr<Order> getOrder(unsigned long id) override;
 
 private:
 	OrderManager();
+
+	/// @override
+	void loadAllOrderForAccount(std::weak_ptr<Account> account) override;
+
+	/// @brief Check if the order is already loaded in account
 	bool isTheOrderAlreadyLoaded(std::weak_ptr<Order> order, std::weak_ptr<Account> account);
 
 	std::list<std::shared_ptr<Order>> m_orderList;

@@ -10,6 +10,7 @@
 #include "Factories/CustomerFactory.h"
 #include "Errors/NoAuthenticationCarrierFound.hpp"
 #include "ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.h"
+#include "ManagerProxy/OrderManagerProxy.h"
 #include <algorithm>
 
 using std::shared_ptr;						using std::find_if;
@@ -20,6 +21,7 @@ AccountManager::AccountManager()
 {
 	m_merchantFactory = make_shared<MerchantFactory>();
 	m_customerFactory = make_shared<CustomerFactory>();
+	m_orderManagerProxy = make_shared<OrderManagerProxy>();
 }
 
 AccountManager &AccountManager::getInstance()
@@ -99,41 +101,29 @@ void AccountManager::customerRequestForVerificationCode(const std::string &codeS
 
 std::weak_ptr<MerchantAccount> AccountManager::merchantAuthentication(std::string &account, std::string &password)
 {
-	auto it = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
-			[&account](shared_ptr<MerchantAccount> merchant){ return merchant->account() == account; });
-	if(it != m_merchantAccountList.end())
-		return (*it);
+	if(isLoaded(account))
+		return getMerchant(account);
 	else
 	{
-		if(isLoaded(account))
-			return getMerchant(account);
-		else
-		{
-			shared_ptr<MerchantAccount> merchant =
-					dynamic_pointer_cast<MerchantAccount>(m_merchantFactory->readAccount(account, password));
-			m_merchantAccountList.push_back(merchant);
-			return merchant;
-		}
+		shared_ptr<MerchantAccount> merchant =
+				dynamic_pointer_cast<MerchantAccount>(m_merchantFactory->readAccount(account, password));
+		m_merchantAccountList.push_back(merchant);
+		m_orderManagerProxy->loadAllOrderForAccount(merchant);
+		return merchant;
 	}
 }
 
 std::weak_ptr<CustomerAccount> AccountManager::customerAuthentication(std::string &account, std::string &password)
 {
-	auto it = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
-					  [&account](shared_ptr<CustomerAccount> customer){ return customer->account() == account; });
-	if(it != m_customerAccountList.end())
-		return *it;
+	if(isLoaded(account))
+		return getCustomer(account);
 	else
 	{
-		if(isLoaded(account))
-			return getCustomer(account);
-		else
-		{
-			shared_ptr<CustomerAccount> customer =
-					dynamic_pointer_cast<CustomerAccount>(m_customerFactory->readAccount(account, password));
-			m_customerAccountList.push_back(customer);
-			return customer;
-		}
+		shared_ptr<CustomerAccount> customer =
+				dynamic_pointer_cast<CustomerAccount>(m_customerFactory->readAccount(account, password));
+		m_customerAccountList.push_back(customer);
+		m_orderManagerProxy->loadAllOrderForAccount(customer);
+		return customer;
 	}
 }
 

@@ -47,7 +47,7 @@ add_executable(HARserver main.cpp
 
         ManagerProxy/Subjects/AccountManagerSubject.cpp ManagerProxy/Subjects/AccountManagerSubject.h ManagerProxy/Subjects/OrderManagerSubject.cpp ManagerProxy/Subjects/OrderManagerSubject.h
         ManagerProxy/AccountManagerProxy.cpp ManagerProxy/AccountManagerProxy.h ManagerProxy/OrderManagerProxy.cpp ManagerProxy/OrderManagerProxy.h
-        ManagerProxy/Managers/AccountManager.cpp ManagerProxy/Managers/AccountManager.h ManagerProxy/Managers/OrderManager.cpp ManagerProxy/Managers/OrderManager.h
+        ManagerProxy/Subjects/Managers/AccountManager.cpp ManagerProxy/Subjects/Managers/AccountManager.h ManagerProxy/Subjects/Managers/OrderManager.cpp ManagerProxy/Subjects/Managers/OrderManager.h
         ManagerProxy/InstructionsAnalyser.cpp ManagerProxy/InstructionsAnalyser.h
         ManagerProxy/AuthenticationCarrier/AuthenticationSaver.cpp ManagerProxy/AuthenticationCarrier/AuthenticationSaver.h ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.cpp ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.h ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.cpp ManagerProxy/AuthenticationCarrier/AuthenticationToScreen.h Factories/DataSource/Postgres/PostgresConnection.cpp Factories/DataSource/Postgres/PostgresConnection.h Factories/OrderStateFactories/OrderRejectedStateFactory.cpp Factories/OrderStateFactories/OrderRejectedStateFactory.h)
 

@@ -16,6 +16,7 @@ class CustomerAccount;
 class AccountFactory;
 class AuthenticationCarrier;
 class Order;
+class OrderManagerProxy;
 
 /// @brief The singleton who actually holds accounts
 /// @note: do NOT use this class, use AccountManagerProxy instead
@@ -54,6 +55,7 @@ private:
 
 	std::shared_ptr<AccountFactory> m_merchantFactory;
 	std::shared_ptr<AccountFactory> m_customerFactory;
+	std::shared_ptr<OrderManagerProxy> m_orderManagerProxy;
 
 	std::list<std::shared_ptr<MerchantAccount>> m_merchantAccountList;
 	std::list<std::shared_ptr<CustomerAccount>> m_customerAccountList;

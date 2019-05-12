@@ -90,15 +90,9 @@ utility::string_t InstructionsAnalyser::doLogin(web::json::object &object)
 		string password = to_utf8string(object.at(U("password")).as_string());
 		string accountType = to_utf8string(object.at(U("account_type")).as_string());
 		if(accountType == "merchant")
-		{
 			auto merchant = accountManagerProxy->merchantAuthentication(account, password);
-			orderManagerProxy->loadAllOrderForAccount(merchant);
-		}
 		else if(accountType == "customer")
-		{
 			auto customer = accountManagerProxy->customerAuthentication(account, password);
-			orderManagerProxy->loadAllOrderForAccount(customer);
-		}
 		retJson[U("login_result")] = web::json::value(U("success"));
 	}
 	catch (NoSuchAnAccountOrPasswordNotRightError &e)

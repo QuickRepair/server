@@ -3,7 +3,15 @@
 //
 
 #include "AccountManagerProxy.h"
-#include "Managers/AccountManager.h"
+#include "Subjects/Managers/AccountManager.h"
+#include "OrderManagerProxy.h"
+
+using std::make_shared;
+
+AccountManagerProxy::AccountManagerProxy()
+{
+	m_orderManagerProxy = make_shared<OrderManagerProxy>();
+}
 
 void AccountManagerProxy::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
 {

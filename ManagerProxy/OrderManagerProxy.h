@@ -7,7 +7,10 @@
 
 #include "ManagerProxy/Subjects/OrderManagerSubject.h"
 
+class AccountManager;
+
 class OrderManagerProxy : public OrderManagerSubject {
+	friend class AccountManager;
 public:
 	/// @override
 	std::weak_ptr<Order> publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
@@ -19,10 +22,11 @@ public:
 	void orderPayed(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<Order> &order) override;
 
 	/// @override
-	void loadAllOrderForAccount(std::weak_ptr<Account> account) override;
-
-	/// @override
 	std::weak_ptr<Order> getOrder(unsigned long id) override;
+
+protected:
+	/// @override
+	void loadAllOrderForAccount(std::weak_ptr<Account> account) override;
 };
 
 

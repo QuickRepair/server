@@ -7,9 +7,12 @@
 
 #include "ManagerProxy/Subjects/AccountManagerSubject.h"
 
+class OrderManagerProxy;
+
 /// @brief Proxy for singleton AccountManager
 class AccountManagerProxy : public AccountManagerSubject {
 public:
+	AccountManagerProxy();
 	~AccountManagerProxy() override = default;
 
 	/// @override
@@ -31,6 +34,9 @@ public:
 	std::weak_ptr<CustomerAccount> customerAuthentication(std::string &account, std::string &password) override;
 	std::weak_ptr<MerchantAccount> getOrLoadMerchant(unsigned long id) override;
 	std::weak_ptr<CustomerAccount> getOrLoadCustomer(unsigned long id) override;
+
+private:
+	std::shared_ptr<OrderManagerProxy> m_orderManagerProxy;
 };
 
 
