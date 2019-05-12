@@ -92,22 +92,18 @@ utility::string_t InstructionsAnalyser::doLogin(web::json::object &object)
 		if(accountType == "merchant")
 		{
 			auto merchant = accountManagerProxy->merchantAuthentication(account, password);
-			// orderManagerProxy->loadOrderForAccount(merchant);
+			orderManagerProxy->loadAllOrderForAccount(merchant);
 		}
 		else if(accountType == "customer")
 		{
 			auto customer = accountManagerProxy->customerAuthentication(account, password);
-			// orderManagerProxy->loadOrderForAccount(customer);
+			orderManagerProxy->loadAllOrderForAccount(customer);
 		}
 		retJson[U("login_result")] = web::json::value(U("success"));
 	}
 	catch (NoSuchAnAccountOrPasswordNotRightError &e)
 	{
-		retJson[U("login_result")] = web::json::value(U("no such an account"));
-	}
-	catch (NoSuchAnAccountOrPasswordNotRightError &e)
-	{
-		retJson[U("login_result")] = web::json::value(U("wrong password"));
+		retJson[U("login_result")] = web::json::value(U("no such an account or wrong password"));
 	}
 	catch (DatabaseInternalError &e)
 	{
@@ -144,7 +140,7 @@ utility::string_t InstructionsAnalyser::doGetList(std::map<utility::string_t, ut
 	else if(getListType == "unreceived_order")	// get unreceived order list
 	{
 		weak_ptr<MerchantAccount> account = accountManagerProxy->getMerchant(to_utf8string(instruction[U("account"])));
-		ret = getUnreceivedOrderForCustomer(account);
+		ret = getUnreceivedOrderForMerchant(account);
 	}
 
 	return ret;
@@ -248,7 +244,7 @@ utility::string_t InstructionsAnalyser::getOrderList(std::weak_ptr<Account> &acc
 	return retJson.serialize();
 }
 
-utility::string_t InstructionsAnalyser::getUnreceivedOrderForCustomer(std::weak_ptr<MerchantAccount> &account)
+utility::string_t InstructionsAnalyser::getUnreceivedOrderForMerchant(std::weak_ptr<MerchantAccount> &account)
 {
 	web::json::value retJson;
 

@@ -35,6 +35,7 @@ public:
 
 private:
 	OrderManager();
+	bool isTheOrderAlreadyLoaded(std::weak_ptr<Order> order, std::weak_ptr<Account> account);
 
 	std::list<std::shared_ptr<Order>> m_orderList;
 	std::shared_ptr<OrderFactory> m_factory;

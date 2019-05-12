@@ -13,7 +13,7 @@
 #include "Factories/MerchantFactory.h"
 #include "Factories/CustomerFactory.h"
 #include "Factories/OrderFactory.h"
-#include "Errors/PasswordNotRightError.hpp"
+#include "Errors/NoSuchAnAccountOrPasswordNotRightError.hpp"
 #include "Errors/QueryResultEmptyError.hpp"
 #include "Errors/OrderNotAtRightState.hpp"
 #include "Account/MerchantAccount.h"
@@ -54,7 +54,7 @@ TEST_F(FactoryTest, merchantFactory)
 	// read an customer account
 	string account = "1";
 	string password = "1";
-	EXPECT_THROW(merchantFactory->readAccount(account, password), PasswordNotRightError);
+	EXPECT_THROW(merchantFactory->readAccount(account, password), NoSuchAnAccountOrPasswordNotRightError);
 
 	// read merchant account
 	account = "1234";
@@ -66,7 +66,7 @@ TEST_F(FactoryTest, merchantFactory)
 
 	// read merchant account with wrong password
 	string wrongPassword = "";
-	EXPECT_THROW(merchantFactory->readAccount(account, wrongPassword), PasswordNotRightError);
+	EXPECT_THROW(merchantFactory->readAccount(account, wrongPassword), NoSuchAnAccountOrPasswordNotRightError);
 
 	// read merchant account with id not exist
 	unsigned long id = 0;
@@ -94,7 +94,7 @@ TEST_F(FactoryTest, customerFactory)
 	// read an merchant account
 	string account = "1234";
 	string password = "1234";
-	EXPECT_THROW(customerFactory->readAccount(account, password), PasswordNotRightError);
+	EXPECT_THROW(customerFactory->readAccount(account, password), NoSuchAnAccountOrPasswordNotRightError);
 
 	// read customer account
 	account = "1";

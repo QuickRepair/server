@@ -37,6 +37,9 @@ protected:
 
 TEST_F(OrderProcessWithAccount, publishOrder)
 {
+	// before publish
+	EXPECT_FALSE(customer->isMyOrder(order));
+
 	// publish an order
 	customer->iAmPublishAnOrder(order);
 	EXPECT_EQ(1, customer->myOrdersList().size());

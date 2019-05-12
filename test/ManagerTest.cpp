@@ -11,7 +11,7 @@
 #include <Order/OrderStates/OrderState.h>
 #include "ManagerProxy/AccountManagerProxy.h"
 #include "ManagerProxy/AuthenticationCarrier/AuthenticationSaver.h"
-#include "Errors/NoSuchAnAccountError.hpp"
+#include "Errors/NoSuchAnAccountOrPasswordNotRightError.hpp"
 #include "Errors/QueryResultEmptyError.hpp"
 #include "Account/MerchantAccount.h"
 #include "Account/CustomerAccount.h"
@@ -78,7 +78,7 @@ TEST_F(ManagerTest, AccountManagerForMerchantTest)
 	// login not exist merchant
 	account = "123483274023";
 	password = "9237410324712034";
-	EXPECT_THROW(accountProxy->merchantAuthentication(account, password), NoSuchAnAccountError);
+	EXPECT_THROW(accountProxy->merchantAuthentication(account, password), NoSuchAnAccountOrPasswordNotRightError);
 
 	// get or load merchant not exist
 	EXPECT_THROW(accountProxy->getOrLoadMerchant(12341), QueryResultEmptyError);
@@ -106,7 +106,7 @@ TEST_F(ManagerTest, AccountManagerForCustomerTest)
 	// login not exist customer
 	account = "123483274023";
 	password = "9237410324712034";
-	EXPECT_THROW(accountProxy->customerAuthentication(account, password), NoSuchAnAccountError);
+	EXPECT_THROW(accountProxy->customerAuthentication(account, password), NoSuchAnAccountOrPasswordNotRightError);
 
 	// get or load custome not exist
 	EXPECT_THROW(accountProxy->getOrLoadCustomer(12341), QueryResultEmptyError);

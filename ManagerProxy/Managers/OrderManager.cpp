@@ -70,9 +70,12 @@ void OrderManager::loadAllOrderForAccount(std::weak_ptr<Account> account)
 		auto customer = m_accountManagerProxy->getOrLoadCustomer(order->committerId());
 		auto merchant = m_accountManagerProxy->getOrLoadMerchant(order->acceptorId());
 
-		customer.lock()->loadOrder(order);
-		merchant.lock()->loadOrder(order);
-		m_orderList.push_back(order);
+		if(!isTheOrderAlreadyLoaded(order, customer) && !isTheOrderAlreadyLoaded(order, merchant))
+			m_orderList.push_back(order);
+		if(!isTheOrderAlreadyLoaded(order, customer))
+			customer.lock()->loadOrder(order);
+		if(!isTheOrderAlreadyLoaded(order, merchant))
+			merchant.lock()->loadOrder(order);
 	}
 }
 
@@ -81,4 +84,9 @@ std::weak_ptr<Order> OrderManager::getOrder(unsigned long id)
 	auto it = find_if(m_orderList.begin(), m_orderList.end(),
 			[&id](shared_ptr<Order> order){ return order->id() == id; });
 	return it == m_orderList.end() ? nullptr : *it;
+}
+
+bool OrderManager::isTheOrderAlreadyLoaded(std::weak_ptr<Order> order, std::weak_ptr<Account> account)
+{
+	return account.lock()->isMyOrder(order);
 }

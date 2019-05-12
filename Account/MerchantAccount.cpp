@@ -51,16 +51,16 @@ void MerchantAccount::rejectOrder(std::weak_ptr<Order> order)
 	}
 }
 
-bool MerchantAccount::isMyUnreceivedOrder(std::weak_ptr<Order> order)
+bool MerchantAccount::isMyUnreceivedOrder(std::weak_ptr<Order> order) const
 {
 	return m_unreceivedOrders.end() != std::find_if(m_unreceivedOrders.begin(), m_unreceivedOrders.end(),
-			[&order](shared_ptr<Order> a){ return a == order.lock(); });
+			[&order](shared_ptr<Order> a){ return a->id() == order.lock()->id(); });
 }
 
 bool MerchantAccount::isMyOrder(std::weak_ptr<Order> order) const
 {
-	return CustomerAccount::isMyOrder(order) || m_processedOrders.end() != std::find_if(m_processedOrders.begin(), m_processedOrders.end(),
-			[&order](shared_ptr<Order> a){ return a == order.lock(); });
+	return isMySubmittedOrder(order) || isMyUnreceivedOrder(order) || m_processedOrders.end() != std::find_if(m_processedOrders.begin(), m_processedOrders.end(),
+			[&order](shared_ptr<Order> a){ return a->id() == order.lock()->id(); });
 }
 
 bool MerchantAccount::isMySubmittedOrder(std::weak_ptr<Order> order) const
@@ -71,7 +71,7 @@ bool MerchantAccount::isMySubmittedOrder(std::weak_ptr<Order> order) const
 bool MerchantAccount::isMyProcessedOrder(std::weak_ptr<Order> order) const
 {
 	return m_processedOrders.end() != std::find_if(m_processedOrders.begin(), m_processedOrders.end(),
-			[&order](shared_ptr<Order> a){ return a == order.lock(); });
+			[&order](shared_ptr<Order> a){ return a->id() == order.lock()->id(); });
 }
 
 std::list<std::weak_ptr<Order>> MerchantAccount::myUnreceivedOrderList() const
@@ -112,10 +112,15 @@ void MerchantAccount::loadContactInformation(std::list<std::shared_ptr<ContactIn
 
 void MerchantAccount::loadOrder(std::shared_ptr<Order> order)
 {
-	if(order->currentState() == OrderState::unreceivedState)
-		m_unreceivedOrders.push_back(order);
-	else
-		m_processedOrders.push_back(order);
+	if(!isMyOrder(order))
+	{
+		if (order->currentState() == OrderState::unreceivedState)
+			m_unreceivedOrders.push_back(order);
+		else if(order->acceptorId() == id())
+			m_processedOrders.push_back(order);
+		else
+			CustomerAccount::loadOrder(order);
+	}
 }
 
 void MerchantAccount::loadServiceType(std::shared_ptr<MerchantServiceType> service)

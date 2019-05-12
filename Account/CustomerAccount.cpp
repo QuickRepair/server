@@ -39,7 +39,7 @@ void CustomerAccount::payTheOrder(std::weak_ptr<Order> order)
 bool CustomerAccount::isMyOrder(std::weak_ptr<Order> order) const
 {
 	return m_publishedOrders.end() != std::find_if(m_publishedOrders.begin(), m_publishedOrders.end(),
-			[&order](weak_ptr<Order> a){ return a.lock() == order.lock(); });
+			[&order](weak_ptr<Order> a){ return a.lock()->id() == order.lock()->id(); });
 }
 
 std::list<std::weak_ptr<Order>> CustomerAccount::myOrdersList() const
@@ -59,5 +59,6 @@ void CustomerAccount::loadContactInformation(std::list<std::shared_ptr<ContactIn
 
 void CustomerAccount::loadOrder(std::shared_ptr<Order> order)
 {
-	m_publishedOrders.push_back(order);
+	if(!isMyOrder(order))
+		m_publishedOrders.push_back(order);
 }

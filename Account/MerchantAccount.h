@@ -42,7 +42,7 @@ public:
 	/// @return true if the order is in the list, false on the contrary
 	bool isMySubmittedOrder(std::weak_ptr<Order> order) const;
 	bool isMyProcessedOrder(std::weak_ptr<Order> order) const;
-	bool isMyUnreceivedOrder(std::weak_ptr<Order> order);
+	bool isMyUnreceivedOrder(std::weak_ptr<Order> order) const;
 
 	/// @brief Get all unreceived orders
 	/// @return a list of weak_ptr to unreceived orders

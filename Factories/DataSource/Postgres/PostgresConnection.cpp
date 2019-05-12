@@ -38,22 +38,22 @@ PostgresConnection::PostgresConnection()
 unsigned long PostgresConnection::createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail)
 {
 	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("insert into orders(committer, acceptor, appliance_type, detail_description, order_state_history)"
+	pqxx::result result = work.exec("insert into orders(committer, acceptor, appliance_type, detail_description)"
 									"values(" + to_string(committerId) + ", "
 									"       " + to_string(acceptorId) + ", "
 									"       '" + applianceType + "', "
-									"       '" + detail + "', "
-									"       array['unreceived', now(), 0, 0, null, null])"
-									"returning id;");
-
+									"       '" + detail + "'"
+									") returning id;"
+									);
 	unsigned long orderId;
 	if(result.empty())
 		throw QueryResultEmptyError("Can not create id for new order");
 	else
 		orderId = result[0][0].as<unsigned long>();
 
+	work.exec("insert into order_state values(" + to_string(orderId) + ", 'unreceived', now(), 0, 0, 0, null, null);");
 	work.exec("update customer_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(committerId) + ";");
-	work.exec("update merchant_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(committerId) + ";");
+	work.exec("update merchant_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(acceptorId) + ";");
 	work.commit();
 
 	return orderId;
@@ -63,7 +63,7 @@ std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, s
 PostgresConnection::queryOrderByAccountId(unsigned long id)
 {
 	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("select id, committer, acceptor, appliance_type, detail_description"
+	pqxx::result result = work.exec("select id, committer, acceptor, appliance_type, detail_description "
 									"from orders where id in (select unnest(orders_id) from customer_account where id=" + to_string(id) + ");");
 	work.commit();
 
@@ -86,7 +86,7 @@ std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStatePar
 PostgresConnection::queryOrderStateByOrderId(unsigned long orderId)
 {
 	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("select state_type, state_change_date, price_range_lower, price_range_higher, transaction_price, evaluate_text"
+	pqxx::result result = work.exec("select state_type, extract(epoch from state_change_date)::bigint as date, price_range_lower, price_range_higher, transaction_price, evaluate_text "
 									"from order_state where order_id=" + to_string(orderId) + " order by state_id desc;");
 	work.commit();
 
@@ -99,35 +99,35 @@ PostgresConnection::queryOrderStateByOrderId(unsigned long orderId)
 		stateType = row["state_type"].as<string>();
 		if(stateType == "unreceived")
 		{
-			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
 			stateParameters.range = AcceptableOrderPriceRange(row["price_range_lower"].as<double>(), row["price_range_higher"].as<double>());
 			factory = make_shared<OrderUnreceivedStateFactory>();
 		}
 		else if(stateType == "received")
 		{
-			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
 			factory = make_shared<OrderReceivedStateFactory>();
 		}
 		else if(stateType == "startRepair")
 		{
-			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
 			factory = make_shared<OrderStartRepairStateFactory>();
 		}
 		else if(stateType == "endRepair")
 		{
-			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
 			stateParameters.transactionPrice = row["transaction_price"].as<double>();
 			factory = make_shared<OrderEndRepairStateFactory>();
 		}
 		else if(stateType == "finished")
 		{
-			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
 			//TODO stateParameters.evaluate = OrderEvaluate(row["evaluate_text"].as<string>());
 			factory = make_shared<OrderFinishedStateFactory>();
 		}
 		else if(stateType == "rejected")
 		{
-			stateParameters.date = system_clock::from_time_t(row["state_change_date"].as<time_t>());
+			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
 			factory = make_shared<OrderRejectedStateFactory>();
 		}
 		statesOfOneOrder.emplace_back(make_tuple(factory, stateParameters));
