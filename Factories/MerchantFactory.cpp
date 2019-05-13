@@ -20,6 +20,11 @@ std::shared_ptr<Account> MerchantFactory::loadAccount(unsigned long id)
 	return merchant;
 }
 
+void MerchantFactory::persistenceSupportedServices(std::weak_ptr<MerchantAccount> merchant)
+{
+	DATA_SOURCE_FROM::getInstance().updateSupportedServices(merchant.lock()->id(), merchant.lock()->supportedServiceType().lock()->supportApplianceType(), merchant.lock()->supportedServiceType().lock()->maxRepairDistance());
+}
+
 std::shared_ptr<Account> MerchantFactory::loadAccountSpecific(std::string account, std::string password)
 {
 	unsigned long id = DATA_SOURCE_FROM::getInstance().checkPasswordAndGetId(account, password);

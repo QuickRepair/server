@@ -13,7 +13,8 @@
 class Account;
 class MerchantAccount;
 class CustomerAccount;
-class AccountFactory;
+class MerchantFactory;
+class CustomerFactory;
 class AuthenticationCarrier;
 class Order;
 class OrderManagerProxy;
@@ -48,13 +49,16 @@ public:
 	std::weak_ptr<MerchantAccount> getOrLoadMerchant(unsigned long id) override;
 	std::weak_ptr<CustomerAccount> getOrLoadCustomer(unsigned long id) override;
 
+	/// @override
+	void updateServiceTypeFor(std::string account, std::list<std::string> applianceTypes, double maxDistanc) override;
+
 private:
 	AccountManager();
 
 	bool isLoaded(std::string &account);
 
-	std::shared_ptr<AccountFactory> m_merchantFactory;
-	std::shared_ptr<AccountFactory> m_customerFactory;
+	std::shared_ptr<MerchantFactory> m_merchantFactory;
+	std::shared_ptr<CustomerFactory> m_customerFactory;
 	std::shared_ptr<OrderManagerProxy> m_orderManagerProxy;
 
 	std::list<std::shared_ptr<MerchantAccount>> m_merchantAccountList;

@@ -59,7 +59,7 @@ public:
 	/// @brief Update the merchant service type
 	/// @param appliancType: a list of supported appliance type
 	/// @param maxDistance: the merchant max service distance
-	void updateSupportedService(std::list<std::string> appliancType, int maxDistance);
+	void updateSupportedService(std::list<std::string> appliancType, double maxDistance);
 
 protected:
     /// @override

@@ -12,6 +12,7 @@ class AuthenticationCarrier;
 class MerchantAccount;
 class CustomerAccount;
 class Order;
+class MerchantServiceType;
 
 /// @brief The interface of AccountManager
 /// @note: use subclass AccountManagerProxy instead of AccountManager
@@ -56,6 +57,8 @@ public:
 	/// @return a weak_prt to account whose loaded
 	virtual std::weak_ptr<MerchantAccount> getOrLoadMerchant(unsigned long id) = 0;
 	virtual std::weak_ptr<CustomerAccount> getOrLoadCustomer(unsigned long id) = 0;
+
+	virtual void updateServiceTypeFor(std::string merchant, std::list<std::string> applianceTypes, double maxDistance) = 0;
 };
 
 

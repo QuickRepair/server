@@ -43,6 +43,9 @@ public:
 	/// @override
 	std::tuple<std::string, std::string> loadAccount(unsigned long id) override;
 
+	/// @override
+	void updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance) override;
+
 protected:
 	PostgresConnection();
 	~PostgresConnection() override = default;

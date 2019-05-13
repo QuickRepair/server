@@ -3,7 +3,7 @@
 
 using std::find_if;					using std::string;
 
-MerchantServiceType::MerchantServiceType(std::list<std::string> supportList, int maxDistance)
+MerchantServiceType::MerchantServiceType(std::list<std::string> supportList, double maxDistance)
 	: mSupportApplianceTypes{std::move(supportList)}, mMaxRepairDistance{maxDistance}
 {}
 
@@ -17,12 +17,12 @@ void MerchantServiceType::setSupportApplianceType(std::list<std::string> types)
 	mSupportApplianceTypes = std::move(types);
 }
 
-int MerchantServiceType::maxRepairDistance() const
+double MerchantServiceType::maxRepairDistance() const
 {
 	return mMaxRepairDistance;
 }
 
-void MerchantServiceType::setMaxRepairDistance(int distance)
+void MerchantServiceType::setMaxRepairDistance(double distance)
 {
 	mMaxRepairDistance = distance;
 }

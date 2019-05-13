@@ -7,12 +7,18 @@
 
 #include "AccountFactory.h"
 
+class MerchantAccount;
+
 class MerchantFactory : public AccountFactory {
 public:
 	~MerchantFactory() override = default;
 
 	/// @override
 	std::shared_ptr<Account> loadAccount(unsigned long id) override;
+
+	/// @brief Call this function to persistence merchant service types
+	/// @param merchant: a weak_ptr to related merchant
+	void persistenceSupportedServices(std::weak_ptr<MerchantAccount> merchant);
 
 protected:
 	/// @override

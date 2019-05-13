@@ -47,7 +47,6 @@ void RestHandler::handleGet(web::http::http_request msg)
 
 void RestHandler::handlePut(web::http::http_request msg)
 {
-	//TODO
 	std::cout << to_utf8string(msg.to_string()) << std::endl;
 }
 
@@ -66,6 +65,5 @@ void RestHandler::handlePost(web::http::http_request msg)
 
 void RestHandler::handleDelete(web::http::http_request msg)
 {
-	//TODO
 	std::cout <<to_utf8string(msg.to_string()) << std::endl;
 }

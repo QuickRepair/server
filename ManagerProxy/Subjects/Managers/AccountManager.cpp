@@ -149,6 +149,13 @@ std::weak_ptr<CustomerAccount> AccountManager::getOrLoadCustomer(unsigned long i
 	return customer;
 }
 
+void AccountManager::updateServiceTypeFor(std::string account, std::list<std::string> applianceTypes, double maxDistanc)
+{
+	auto merchant = getMerchant(account);
+	merchant.lock()->updateSupportedService(applianceTypes, maxDistanc);
+	m_merchantFactory->persistenceSupportedServices(merchant.lock());
+}
+
 bool AccountManager::isLoaded(std::string &account)
 {
 	bool loaded{false};

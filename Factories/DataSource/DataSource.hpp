@@ -117,6 +117,12 @@ public:
 	///			password
 	virtual std::tuple<std::string, std::string> loadAccount(unsigned long id) = 0;
 
+	/// @brief Update supported services into database
+	/// @param id: the id for merchant
+	/// @param types: supported types
+	/// @param maxDistance: supported max repair distance
+	virtual void updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance) = 0;
+
 protected:
 	DataSource() = default;
 	virtual ~DataSource() = default;

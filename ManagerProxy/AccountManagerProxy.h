@@ -35,6 +35,9 @@ public:
 	std::weak_ptr<MerchantAccount> getOrLoadMerchant(unsigned long id) override;
 	std::weak_ptr<CustomerAccount> getOrLoadCustomer(unsigned long id) override;
 
+	/// @override
+	void updateServiceTypeFor(std::string merchant, std::list<std::string> applianceTypes, double maxDistanc) override;
+
 private:
 	std::shared_ptr<OrderManagerProxy> m_orderManagerProxy;
 };

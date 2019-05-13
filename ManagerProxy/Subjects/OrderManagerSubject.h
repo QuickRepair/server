@@ -25,7 +25,7 @@ public:
 	/// @param committer: a weak_ptr to customer
 	/// @param acceptor: a weak_ptr to merchant
 	/// @param applianceType: the type or appliance in string
-	/// @param contactWay: how to contact todo: should be a pointer or move away from order
+	/// @param contactWay: how to contact
 	/// @param detail: detail description for order
 	/// @param range: acceptable price range for the order
 	/// @return new order just published

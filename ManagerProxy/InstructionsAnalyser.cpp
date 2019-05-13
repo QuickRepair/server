@@ -198,17 +198,13 @@ utility::string_t InstructionsAnalyser::doUpdateServiceType(web::json::object &o
 	web::json::value retJson;
 
 	string account = to_utf8string(object[U("account")].as_string());
-	int maxDistance = object[U("max_distance")].as_integer();
+	double maxDistance = object[U("max_distance")].as_double();
 	web::json::array supportAppliances = object[U("support_appliance")].as_array();
 	list<string> supportAppliancesList;
 	for(auto &s : supportAppliances)
 		supportAppliancesList.push_back(to_utf8string(s.as_string()));
 
-	auto merchant = accountManagerProxy->getMerchant(account);
-	if(merchant.lock() != nullptr)
-		merchant.lock()->updateSupportedService(supportAppliancesList, maxDistance);
-	else
-		retJson[U("result")] = web::json::value(U("empty"));
+	accountManagerProxy->updateServiceTypeFor(account, supportAppliancesList, maxDistance);
 
 	return retJson.serialize();
 }

@@ -252,3 +252,16 @@ std::tuple<std::string, std::string> PostgresConnection::loadAccount(unsigned lo
 	}
 	return make_tuple(account, password);
 }
+
+void PostgresConnection::updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance)
+{
+	string typesList = "{";
+	for(auto &s : types)
+		typesList += "'" + s + "',";
+	typesList.back() = ' ';
+	pqxx::work work(*m_connection);
+	pqxx::result result = work.exec("update merchant_account set "
+								 "max_repair_distance=" + to_string(maxDistance) + ", support_appliance_types=array[" + typesList + "] "
+														   "where id=" + to_string(id) + ";");
+	work.commit();
+}

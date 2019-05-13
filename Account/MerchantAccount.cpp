@@ -97,7 +97,7 @@ std::weak_ptr<MerchantServiceType> MerchantAccount::supportedServiceType()
 	return m_serviceType;
 }
 
-void MerchantAccount::updateSupportedService(std::list<std::string> appliancType, int maxDistance)
+void MerchantAccount::updateSupportedService(std::list<std::string> appliancType, double maxDistance)
 {
 	m_serviceType->setMaxRepairDistance(maxDistance);
 	m_serviceType->setSupportApplianceType(appliancType);

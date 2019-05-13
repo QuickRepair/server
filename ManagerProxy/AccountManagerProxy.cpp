@@ -72,3 +72,8 @@ std::weak_ptr<CustomerAccount> AccountManagerProxy::getOrLoadCustomer(unsigned l
 {
 	return AccountManager::getInstance().getOrLoadCustomer(id);
 }
+
+void AccountManagerProxy::updateServiceTypeFor(std::string merchant, std::list<std::string> applianceTypes, double maxDistanc)
+{
+	return AccountManager::getInstance().updateServiceTypeFor(merchant, applianceTypes, maxDistanc);
+}
