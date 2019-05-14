@@ -33,6 +33,10 @@ public:
 	std::shared_ptr<Order> createOrder(std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
 									   std::string applianceType, ContactInformation contactWay, std::string detail, AcceptableOrderPriceRange range);
 
+	/// @brief Persistence last order state
+	/// @param order: a weak_ptr to order
+	void persistenceOrderState(std::weak_ptr<Order> &order);
+
 private:
 	/// @brief Make states for order
 	/// @param order: make for the order

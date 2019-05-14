@@ -11,5 +11,5 @@ using std::make_shared;
 std::shared_ptr<OrderState> OrderRejectedStateFactory::makeStateForOrder(std::weak_ptr<Order> order,
 																		 OrderStateParameters &parameters)
 {
-	return make_shared<OrderRejectedState>(order, parameters.lastState, parameters.date);
+	return make_shared<OrderRejectedState>(order, parameters.lastState, parameters.reject_date);
 }

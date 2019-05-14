@@ -17,6 +17,18 @@ std::shared_ptr<Account> MerchantFactory::loadAccount(unsigned long id)
 {
 	auto accountInfo = DATA_SOURCE_FROM::getInstance().loadAccount(id);
 	shared_ptr<MerchantAccount> merchant = make_shared<MerchantAccount>(id, get<0>(accountInfo), get<1>(accountInfo));
+
+	// load service types
+	try
+	{
+		auto serviceTypeDetail = DATA_SOURCE_FROM::getInstance().queryMerchantServiceType(id);
+		shared_ptr<MerchantServiceType> serviceType = make_shared<MerchantServiceType>(get<0>(serviceTypeDetail),
+																					   get<1>(serviceTypeDetail));
+		merchant->loadServiceType(serviceType);
+	}
+	catch (QueryResultEmptyError&)
+	{}
+
 	return merchant;
 }
 

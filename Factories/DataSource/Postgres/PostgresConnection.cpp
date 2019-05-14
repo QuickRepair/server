@@ -51,7 +51,7 @@ unsigned long PostgresConnection::createOrder(unsigned long committerId, unsigne
 	else
 		orderId = result[0][0].as<unsigned long>();
 
-	work.exec("insert into order_state values(" + to_string(orderId) + ", 'unreceived', now(), 0, 0, 0, null, null);");
+	work.exec("insert into order_state values(" + to_string(orderId) + ", array['unreceived'], now(), null, null, null, null, null, 0, 0, null, null);");
 	work.exec("update customer_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(committerId) + ";");
 	work.exec("update merchant_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(acceptorId) + ";");
 	work.commit();
@@ -82,58 +82,70 @@ PostgresConnection::queryOrderByAccountId(unsigned long id)
 	return orders;
 }
 
-std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+std::tuple<std::vector<std::shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters>
 PostgresConnection::queryOrderStateByOrderId(unsigned long orderId)
 {
 	pqxx::work work(*m_connection);
-	pqxx::result result = work.exec("select state_type, extract(epoch from state_change_date)::bigint as date, price_range_lower, price_range_higher, transaction_price, evaluate_text "
-									"from order_state where order_id=" + to_string(orderId) + " order by state_id desc;");
+	pqxx::result result = work.exec("select state_type,"
+									"       extract(epoch from create_date)::bigint as create_date, "
+									"       extract(epoch from received_date)::bigint as received_date, "
+									"       extract(epoch from start_repair_date)::bigint as start_repair_date, "
+									"       extract(epoch from end_repair_date)::bigint as end_repair_date, "
+									"       extract(epoch from finish_date)::bigint as finish_date, "
+									"       extract(epoch from reject_date)::bigint as reject_date, "
+									"       price_range_lower, price_range_higher, transaction_price, evaluate_text "
+									"from order_state "
+									"where order_id=" + to_string(orderId) + ";");
 	work.commit();
 
-	vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> statesOfOneOrder;
-	string stateType;
+	tuple<vector<shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters> statesOfOneOrder;
+	vector<shared_ptr<OrderStateAbstractFactory>> stateFactories;
+	OrderStateParameters stateParameters;
 	for(const auto &row : result)
 	{
-		OrderStateParameters stateParameters;
 		shared_ptr<OrderStateAbstractFactory> factory;
-		stateType = row["state_type"].as<string>();
-		if(stateType == "unreceived")
-		{
-			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
-			stateParameters.range = AcceptableOrderPriceRange(row["price_range_lower"].as<double>(), row["price_range_higher"].as<double>());
-			factory = make_shared<OrderUnreceivedStateFactory>();
-		}
-		else if(stateType == "received")
-		{
-			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
-			factory = make_shared<OrderReceivedStateFactory>();
-		}
-		else if(stateType == "startRepair")
-		{
-			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
-			factory = make_shared<OrderStartRepairStateFactory>();
-		}
-		else if(stateType == "endRepair")
-		{
-			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
-			stateParameters.transactionPrice = row["transaction_price"].as<double>();
-			factory = make_shared<OrderEndRepairStateFactory>();
-		}
-		else if(stateType == "finished")
-		{
-			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
-			//TODO stateParameters.evaluate = OrderEvaluate(row["evaluate_text"].as<string>());
-			factory = make_shared<OrderFinishedStateFactory>();
-		}
-		else if(stateType == "rejected")
-		{
-			stateParameters.date = system_clock::from_time_t(row["date"].as<time_t>());
-			factory = make_shared<OrderRejectedStateFactory>();
-		}
-		statesOfOneOrder.emplace_back(make_tuple(factory, stateParameters));
+		auto stateTypesArray = row["state_type"].as_array();
+		for(auto nextType = stateTypesArray.get_next(); nextType.first != pqxx::array_parser::juncture::done; nextType = stateTypesArray.get_next())
+			if(nextType.first == pqxx::array_parser::juncture::string_value)
+			{
+				if(nextType.second == "unreceived")
+				{
+					stateParameters.create_date = system_clock::from_time_t(row["create_date"].as<time_t>());
+					stateParameters.range = AcceptableOrderPriceRange(row["price_range_lower"].as<double>(), row["price_range_higher"].as<double>());
+					factory = make_shared<OrderUnreceivedStateFactory>();
+				}
+				else if(nextType.second == "received")
+				{
+					stateParameters.received_date = system_clock::from_time_t(row["received_date"].as<time_t>());
+					factory = make_shared<OrderReceivedStateFactory>();
+				}
+				else if(nextType.second == "start_repair")
+				{
+					stateParameters.start_repair_date = system_clock::from_time_t(row["start_repair_date"].as<time_t>());
+					factory = make_shared<OrderStartRepairStateFactory>();
+				}
+				else if(nextType.second == "end_repair")
+				{
+					stateParameters.end_repair_date = system_clock::from_time_t(row["end_repair_date"].as<time_t>());
+					stateParameters.transactionPrice = row["transaction_price"].as<double>();
+					factory = make_shared<OrderEndRepairStateFactory>();
+				}
+				else if(nextType.second == "finished")
+				{
+					stateParameters.finish_date = system_clock::from_time_t(row["finish_date"].as<time_t>());
+					//TODO stateParameters.evaluate = OrderEvaluate(row["evaluate_text"].as<string>());
+					factory = make_shared<OrderFinishedStateFactory>();
+				}
+				else if(nextType.second == "rejected")
+				{
+					stateParameters.reject_date = system_clock::from_time_t(row["reject_date"].as<time_t>());
+					factory = make_shared<OrderRejectedStateFactory>();
+				}
+				stateFactories.emplace_back(factory);
+			}
 	}
 
-	return statesOfOneOrder;
+	return make_tuple(stateFactories, stateParameters);
 }
 
 unsigned long PostgresConnection::checkPasswordAndGetId(std::string account, std::string password)
@@ -226,11 +238,12 @@ std::tuple<std::list<std::string>, double> PostgresConnection::queryMerchantServ
 		if(result[0]["max_repair_distance"].is_null())
 			throw QueryResultEmptyError("Find empty result for merchant(" + to_string(id) + ") service type");
 		max_repair_distance = result[0]["max_repair_distance"].as<double>();
-		if(result[0]["appliance_types"].is_null())
+		if(result[0]["support_appliance_types"].is_null())
 			throw QueryResultEmptyError("Find empty result for merchant(" + to_string(id) + ") service type");
-		auto supportedTypeArray = result[0]["appliance_types"].as_array();
-		for(auto nextType = supportedTypeArray.get_next(); nextType.first == pqxx::array_parser::juncture::string_value; nextType = supportedTypeArray.get_next())
-			appliance_types.emplace_back(nextType.second);
+		auto supportedTypeArray = result[0]["support_appliance_types"].as_array();
+		for(auto nextType = supportedTypeArray.get_next(); nextType.first != pqxx::array_parser::juncture::done; nextType = supportedTypeArray.get_next())
+			if(nextType.first == pqxx::array_parser::juncture::string_value)
+				appliance_types.emplace_back(nextType.second);
 	}
 	return make_tuple(appliance_types, max_repair_distance);
 }
@@ -255,7 +268,7 @@ std::tuple<std::string, std::string> PostgresConnection::loadAccount(unsigned lo
 
 void PostgresConnection::updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance)
 {
-	string typesList = "{";
+	string typesList = "";
 	for(auto &s : types)
 		typesList += "'" + s + "',";
 	typesList.back() = ' ';
@@ -263,5 +276,50 @@ void PostgresConnection::updateSupportedServices(unsigned long id, std::list<std
 	pqxx::result result = work.exec("update merchant_account set "
 								 "max_repair_distance=" + to_string(maxDistance) + ", support_appliance_types=array[" + typesList + "] "
 														   "where id=" + to_string(id) + ";");
+	work.commit();
+}
+
+void PostgresConnection::orderReceived(unsigned long id)
+{
+	pqxx::work work(*m_connection);
+	pqxx::result result = work.exec("update order_state "
+									"set state_type=state_type||('received')::state_enums, received_date=now() "
+									"where order_id=" + to_string(id) + ";");
+	work.commit();
+}
+
+void PostgresConnection::orderRepairing(unsigned long id)
+{
+	pqxx::work work(*m_connection);
+	pqxx::result result = work.exec("update order_state "
+									"set state_type=state_type||('start_repair')::state_enums, start_repair_date=now() "
+									"where order_id=" + to_string(id) + ";");
+	work.commit();
+}
+
+void PostgresConnection::orderEndRepair(unsigned long id, double price)
+{
+	pqxx::work work(*m_connection);
+	pqxx::result result = work.exec("update order_state "
+									"set state_type=state_type||('end_repair')::state_enums, end_repair_date=now(), transaction_price=" + to_string(price) + " "
+									"where order_id=" + to_string(id) + ";");
+	work.commit();
+}
+
+void PostgresConnection::orderFinished(unsigned long id)
+{
+	pqxx::work work(*m_connection);
+	pqxx::result result = work.exec("update order_state "
+									"set state_type=state_type||('finished')::state_enums, finish_date=now() "
+									"where order_id=" + to_string(id) + ";");
+	work.commit();
+}
+
+void PostgresConnection::orderRejected(unsigned long id)
+{
+	pqxx::work work(*m_connection);
+	pqxx::result result = work.exec("update order_state "
+									"set state_type=state_type||('rejected')::state_enums, reject_date=now() "
+									"where order_id=" + to_string(id) + ";");
 	work.commit();
 }

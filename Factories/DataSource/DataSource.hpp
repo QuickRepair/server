@@ -71,7 +71,7 @@ public:
 	///	@returns:
 	/// 		a shared_prt to OrderStateAbstractFactory,
 	/// 		the state details
-	virtual std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	virtual std::tuple<std::vector<std::shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters>
 	queryOrderStateByOrderId(unsigned long orderId) = 0;
 
 	/// @brief check password of account and get account id
@@ -122,6 +122,15 @@ public:
 	/// @param types: supported types
 	/// @param maxDistance: supported max repair distance
 	virtual void updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance) = 0;
+
+	/// @brief Update order state
+	/// @param id: the id for order
+	virtual void orderReceived(unsigned long id) = 0;
+	virtual void orderRepairing(unsigned long id) = 0;
+	/// @param price: price for the order
+	virtual void orderEndRepair(unsigned long id, double price) = 0;
+	virtual void orderFinished(unsigned long id) = 0;
+	virtual void orderRejected(unsigned long id) = 0;
 
 protected:
 	DataSource() = default;

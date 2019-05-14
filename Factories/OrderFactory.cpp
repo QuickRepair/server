@@ -51,23 +51,43 @@ std::shared_ptr<OrderState> OrderFactory::getStates(shared_ptr<Order> &order)
 {
 	try
 	{
-		vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> stateInfo;
+		tuple<vector<shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters> stateInfo;
 		stateInfo = DATA_SOURCE_FROM::getInstance().queryOrderStateByOrderId(order->id());
 
-		shared_ptr<OrderStateAbstractFactory> stateFactory;
-		OrderStateParameters parameters;
+		vector<shared_ptr<OrderStateAbstractFactory>> stateFactories = get<0>(stateInfo);
+		OrderStateParameters parameters = get<1>(stateInfo);
 
-		for(auto state = stateInfo.rbegin(); state != stateInfo.rend(); ++state)
-		{
-			stateFactory = get<0>(*state);
-			parameters = get<1>(*state);
-			parameters.lastState = stateFactory->makeStateForOrder(order, parameters);
-		}
+		for(auto factory : stateFactories)
+			parameters.lastState = factory->makeStateForOrder(order, parameters);
 
 		return parameters.lastState;
 	}
 	catch (QueryResultEmptyError &e)
 	{
 		return nullptr;
+	}
+}
+
+void OrderFactory::persistenceOrderState(std::weak_ptr<Order> &order)
+{
+	switch (order.lock()->currentState())
+	{
+		case OrderState::unreceivedState:
+			break;
+		case OrderState::receivedState:
+			DATA_SOURCE_FROM::getInstance().orderReceived(order.lock()->id());
+			break;
+		case OrderState::startRepairState:
+			DATA_SOURCE_FROM::getInstance().orderRepairing(order.lock()->id());
+			break;
+		case OrderState::endRepairState:
+			DATA_SOURCE_FROM::getInstance().orderEndRepair(order.lock()->id(), order.lock()->transaction());
+			break;
+		case OrderState::finishedState:
+			DATA_SOURCE_FROM::getInstance().orderFinished(order.lock()->id());
+			break;
+		case OrderState::rejectState:
+			DATA_SOURCE_FROM::getInstance().orderRejected(order.lock()->id());
+			break;
 	}
 }

@@ -38,27 +38,32 @@ std::weak_ptr<Order> OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &
 void OrderManager::orderAccepted(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order)
 {
 	acceptor.lock()->acceptOrder(order);
+	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderRejected(std::weak_ptr<MerchantAccount> &account, std::weak_ptr<Order> &order)
 {
 	account.lock()->rejectOrder(order);
+	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderStartRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order)
 {
 	acceptor.lock()->startRepair(order);
+	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderEndRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order,
 								  double transaction)
 {
 	acceptor.lock()->endRepair(order, transaction);
+	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderPayed(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<Order> &order)
 {
 	committer.lock()->payTheOrder(order);
+	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::loadAllOrderForAccount(std::weak_ptr<Account> account)

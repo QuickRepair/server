@@ -8,6 +8,6 @@ using std::make_shared;
 std::shared_ptr<OrderState> OrderFinishedStateFactory::makeStateForOrder(std::weak_ptr<Order> order,
 																		 OrderStateParameters &parameters)
 {
-	auto finished = make_shared<OrderFinishedState>(order, parameters.lastState, parameters.evaluate, parameters.date);
+	auto finished = make_shared<OrderFinishedState>(order, parameters.lastState, parameters.evaluate, parameters.finish_date);
 	return finished;
 }

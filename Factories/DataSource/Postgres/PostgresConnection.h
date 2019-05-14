@@ -23,7 +23,7 @@ public:
 	std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>> queryOrderByAccountId(unsigned long id) override;
 
 	/// @override
-	std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	std::tuple<std::vector<std::shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters>
 	queryOrderStateByOrderId(unsigned long orderId) override;
 
 	/// @override
@@ -45,6 +45,13 @@ public:
 
 	/// @override
 	void updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance) override;
+
+	/// @override
+	void orderReceived(unsigned long id) override;
+	void orderRepairing(unsigned long id) override;
+	void orderEndRepair(unsigned long id, double price) override;
+	void orderFinished(unsigned long id) override;
+	void orderRejected(unsigned long id) override;
 
 protected:
 	PostgresConnection();

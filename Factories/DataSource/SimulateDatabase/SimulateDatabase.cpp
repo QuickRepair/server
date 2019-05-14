@@ -78,7 +78,7 @@ std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, s
 	return orders;
 }
 
-std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+std::tuple<std::vector<std::shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters>
 SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 {
 	vector<tuple<shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>> states;
@@ -100,7 +100,7 @@ SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 						string stateType = get<5>(state);
 						OrderStateParameters parameters;
 
-						parameters.date = get<3>(state);
+						/*parameters.date = get<3>(state);
 						parameters.range = AcceptableOrderPriceRange();
 						parameters.transactionPrice = get<4>(state);
 						parameters.currentStateId = get<1>(state);
@@ -111,14 +111,14 @@ SimulateDatabase::queryOrderStateByOrderId(unsigned long orderId)
 								)
 						);
 						// update last state
-						lastState = get<2>(state);
+						lastState = get<2>(state);*/
 					}
 				}
 			}
 			break;
 		}
 	}
-	return states;
+	//return states;
 }
 
 unsigned long SimulateDatabase::checkPasswordAndGetId(std::string account, std::string password)

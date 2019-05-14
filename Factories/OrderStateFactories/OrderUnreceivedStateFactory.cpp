@@ -8,6 +8,6 @@ using std::make_shared;
 std::shared_ptr<OrderState> OrderUnreceivedStateFactory::makeStateForOrder(std::weak_ptr<Order> order,
 																		   OrderStateParameters &parameters)
 {
-	auto unreceived = make_shared<OrderUnreceivedState>(order, parameters.range, parameters.date);
+	auto unreceived = make_shared<OrderUnreceivedState>(order, parameters.range, parameters.create_date);
 	return unreceived;
 }

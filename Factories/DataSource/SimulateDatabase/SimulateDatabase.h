@@ -21,7 +21,7 @@ public:
 	std::list<std::tuple<unsigned long, unsigned long, unsigned long, std::string, std::string>> queryOrderByAccountId(unsigned long id) override;
 
 	/// @override
-	std::vector<std::tuple<std::shared_ptr<OrderStateAbstractFactory>, OrderStateParameters>>
+	std::tuple<std::vector<std::shared_ptr<OrderStateAbstractFactory>>, OrderStateParameters>
 	queryOrderStateByOrderId(unsigned long orderId) override;
 
 	/// @override
