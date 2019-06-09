@@ -220,13 +220,10 @@ utility::string_t InstructionsAnalyser::getOrderList(std::weak_ptr<Account> &acc
 	{
 		web::json::value orderDetail;
 		std::time_t t = std::chrono::system_clock::to_time_t((*it).lock()->createDate());
-		string date = ctime(&t);
-		string type = (*it).lock()->applianceType();
-		string detail = (*it).lock()->detail();
-		unsigned long id = (*it).lock()->id();
-		orderDetail[U("create_date")] = web::json::value(to_string_t(date));
-		orderDetail[U("appliance_type")] = web::json::value(to_string_t(type));
-		orderDetail[U("id")] = web::json::value::number(static_cast<uint64_t>(id));
+		orderDetail[U("create_date")] = web::json::value(to_string_t(ctime(&t)));
+		orderDetail[U("appliance_type")] = web::json::value(to_string_t((*it).lock()->applianceType()));
+		orderDetail[U("id")] = web::json::value::number(static_cast<uint64_t>((*it).lock()->id()));
+		orderDetail[U("current_state")] = web::json::value(to_string_t(getOrderStateString((*it).lock()->currentState())));
 		array[i] = orderDetail;
 	}
 	retJson[U("order_list")] = array;
@@ -328,21 +325,20 @@ utility::string_t InstructionsAnalyser::doGetOrderDetail(std::map<utility::strin
 			retJson[U("id")] = web::json::value(static_cast<uint64_t>(order.lock()->id()));
 			retJson[U("appliance_type")] = web::json::value(to_string_t(order.lock()->applianceType()));
 			retJson[U("detail")] = web::json::value(to_string_t(order.lock()->detail()));
-			OrderState::States currentState = order.lock()->currentState();
-			retJson[U("state")] = web::json::value(to_string_t(getOrderStateString(currentState)));
+			retJson[U("state")] = web::json::value(to_string_t(getOrderStateString(order.lock()->currentState())));
 
 			std::time_t time = std::chrono::system_clock::to_time_t(order.lock()->createDate());
-			retJson[U("create_date")] = web::json::value(ctime(&time));
+			retJson[U("create_date")] = web::json::value(to_string_t(ctime(&time)));
 			time = std::chrono::system_clock::to_time_t(order.lock()->receiveDate());
-			retJson[U("received_date")] = web::json::value(ctime(&time));
+			retJson[U("received_date")] = web::json::value(to_string_t(ctime(&time)));
 			time = std::chrono::system_clock::to_time_t(order.lock()->startRepairDate());
-			retJson[U("start_repair_date")] = web::json::value(ctime(&time));
+			retJson[U("start_repair_date")] = web::json::value(to_string_t(ctime(&time)));
 			time = std::chrono::system_clock::to_time_t(order.lock()->endRepairDate());
-			retJson[U("end_repair_date")] = web::json::value(ctime(&time));
+			retJson[U("end_repair_date")] = web::json::value(to_string_t(ctime(&time)));
 			time = std::chrono::system_clock::to_time_t(order.lock()->finishDate());
-			retJson[U("finish_date")] = web::json::value(ctime(&time));
+			retJson[U("finish_date")] = web::json::value(to_string_t(ctime(&time)));
 			time = std::chrono::system_clock::to_time_t(order.lock()->rejectDate());
-			retJson[U("reject_date")] = web::json::value(ctime(&time));
+			retJson[U("reject_date")] = web::json::value(to_string_t(ctime(&time)));
 		}
 	}
 	catch (OrderNotAtRightState &e)
@@ -353,7 +349,7 @@ utility::string_t InstructionsAnalyser::doGetOrderDetail(std::map<utility::strin
 	return retJson.serialize();
 }
 
-utility::string_t InstructionsAnalyser::getOrderStateString(OrderState::States &state)
+utility::string_t InstructionsAnalyser::getOrderStateString(OrderState::States &&state)
 {
 	utility::string_t stateString;
 	switch (state)

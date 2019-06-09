@@ -51,7 +51,8 @@ unsigned long PostgresConnection::createOrder(unsigned long committerId, unsigne
 	else
 		orderId = result[0][0].as<unsigned long>();
 
-	work.exec("insert into order_state values(" + to_string(orderId) + ", array['unreceived'], now(), null, null, null, null, null, 0, 0, null, null);");
+	//work.exec("insert into order_state values(" + to_string(orderId) + ", array['unreceived'], now(), null, null, null, null, null, 0, 0, null, null);");
+	work.exec("insert into order_state values(" + to_string(orderId) + ", array[('unreceived')::state_enums], now(), null, null, null, null, null, 0, 0, null, null);");
 	work.exec("update customer_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(committerId) + ";");
 	work.exec("update merchant_account set orders_id=array_append(orders_id, " + to_string(orderId) + ") where id=" + to_string(acceptorId) + ";");
 	work.commit();
@@ -268,7 +269,7 @@ std::tuple<std::string, std::string> PostgresConnection::loadAccount(unsigned lo
 
 void PostgresConnection::updateSupportedServices(unsigned long id, std::list<std::string> types, double maxDistance)
 {
-	string typesList = "";
+	string typesList;
 	for(auto &s : types)
 		typesList += "'" + s + "',";
 	typesList.back() = ' ';
