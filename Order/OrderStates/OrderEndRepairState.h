@@ -5,18 +5,17 @@
 
 class Order;
 
-class OrderEndRepairState : public OrderState, public std::enable_shared_from_this<OrderEndRepairState> {
+class OrderEndRepairState : public OrderState {
 public:
-	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice);
-	OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, std::chrono::system_clock::time_point date);
+	OrderEndRepairState(std::weak_ptr<Order> order, std::unique_ptr<OrderState> &&lastState);
 	~OrderEndRepairState() override = default;
 
-	void reject() override;
-	void receivedBy(std::weak_ptr<MerchantAccount> receiver) override;
-	void startRepair() override;
-	void endRepair(double transactionPrice) override;
-	void payTheOrder() override;
-	void orderFinished() override;
+	std::unique_ptr<OrderState> reject() override;
+	std::unique_ptr<OrderState> receive() override;
+	std::unique_ptr<OrderState> startRepair() override;
+	std::unique_ptr<OrderState> endRepair(double transactionPrice) override;
+	std::unique_ptr<OrderState> payTheOrder() override;
+	std::unique_ptr<OrderState> orderFinished() override;
 
 	AcceptableOrderPriceRange priceRange() const override;
 	double transaction() const override;
@@ -29,10 +28,6 @@ public:
 	std::chrono::system_clock::time_point startRepairDate() const override;
 	std::chrono::system_clock::time_point endRepairDate() const override;
 	std::chrono::system_clock::time_point finishDate() const override;
-
-private:
-	std::shared_ptr<OrderState> m_lastState;
-	double m_transaction;
 };
 
 #endif //HAR_ENDREPAIRORDERSTATE_H

@@ -2,45 +2,47 @@
 #include "OrderFinishedState.h"
 #include "Order/Order.h"
 #include "Errors/OrderNotAtRightState.hpp"
+#include "DataSource/DataSource.hpp"
 
-using std::chrono::system_clock;					using std::make_shared;
+using std::chrono::system_clock;					using std::make_unique;
 
-OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice)
-		: OrderState(std::move(order), system_clock::now()), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}
+OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::unique_ptr<OrderState> &&lastState)
+		: OrderState(std::move(order), std::move(lastState))
 {}
 
-OrderEndRepairState::OrderEndRepairState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, double transactionPrice, std::chrono::system_clock::time_point date)
-	: OrderState(std::move(order), date), m_transaction{transactionPrice}, m_lastState{std::move(lastState)}
-{}
-
-void OrderEndRepairState::reject()
+std::unique_ptr<OrderState> OrderEndRepairState::reject()
 {
 	throw OrderNotAtRightState("At end repair state, can not reject");
 }
 
-void OrderEndRepairState::receivedBy(std::weak_ptr<MerchantAccount> receiver)
+std::unique_ptr<OrderState> OrderEndRepairState::receive()
 {
 	throw OrderNotAtRightState("At end repair state, can not receive");
 }
 
-void OrderEndRepairState::startRepair()
+std::unique_ptr<OrderState> OrderEndRepairState::startRepair()
 {
 	throw OrderNotAtRightState("At end repair state, can not receive");
 }
 
-void OrderEndRepairState::endRepair(double transactionPrice)
+std::unique_ptr<OrderState> OrderEndRepairState::endRepair([[maybe_unused]] double transactionPrice)
 {
 	throw OrderNotAtRightState("At end repair state, can not end repair");
 }
 
-void OrderEndRepairState::payTheOrder()
+std::unique_ptr<OrderState> OrderEndRepairState::payTheOrder()
 {
-	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
+	DataSource::getDataAccessInstance()->orderPayed(m_order.lock()->id());
+	return make_unique<OrderFinishedState>(m_order,
+										   [this]{ std::unique_ptr<OrderEndRepairState> ownershipTransfer; ownershipTransfer.reset(this); return ownershipTransfer; }()
+	);
 }
 
-void OrderEndRepairState::orderFinished()
+std::unique_ptr<OrderState> OrderEndRepairState::orderFinished()
 {
-	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
+	return make_unique<OrderFinishedState>(m_order,
+			[this]{ std::unique_ptr<OrderEndRepairState> ownershipTransfer; ownershipTransfer.reset(this); return ownershipTransfer; }()
+	);
 }
 
 AcceptableOrderPriceRange OrderEndRepairState::priceRange() const
@@ -50,7 +52,7 @@ AcceptableOrderPriceRange OrderEndRepairState::priceRange() const
 
 double OrderEndRepairState::transaction() const
 {
-	return m_transaction;
+	return DataSource::getDataAccessInstance()->getOrderTransaction(m_order.lock()->id());
 }
 
 void OrderEndRepairState::setEvaluate(OrderEvaluate &evaluate)
@@ -90,7 +92,7 @@ std::chrono::system_clock::time_point OrderEndRepairState::startRepairDate() con
 
 std::chrono::system_clock::time_point OrderEndRepairState::endRepairDate() const
 {
-	return m_stateChangeDate;
+	return DataSource::getDataAccessInstance()->getOrderEndRepairDate(m_order.lock()->id());
 }
 
 std::chrono::system_clock::time_point OrderEndRepairState::finishDate() const

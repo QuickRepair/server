@@ -1,12 +1,8 @@
 //
-// Created by gaojian on 19-3-3.
+// Created by 17271 on 2019/9/29.
 //
 
 #include "OrderState.h"
-
-OrderState::OrderState(std::weak_ptr<Order> order, std::chrono::system_clock::time_point timePoint)
-	: m_order{order}, m_stateChangeDate{timePoint}
-{}
 
 OrderState::~OrderState()
 {}

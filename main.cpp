@@ -25,8 +25,6 @@ int main()
 	try
 	{
 		Configure configure;
-		AccountManagerProxy accountProxy;
-		accountProxy.registerAuthenticationCarrier(make_shared<AuthenticationToScreen>());
 		RestHandler handler(configure.listenOn());
 		while (true)
 			continue;

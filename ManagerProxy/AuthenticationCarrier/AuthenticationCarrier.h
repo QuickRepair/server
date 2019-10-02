@@ -18,5 +18,4 @@ public:
 	virtual unsigned sendVerificationCode(std::string sendTo) = 0;
 };
 
-
 #endif //HARSERVER_AUTHENTICATIONCARRIER_H

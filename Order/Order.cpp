@@ -1,69 +1,57 @@
 #include "Order.h"
 #include "OrderStates/OrderUnreceivedState.h"
-#include "Factories/OrderStateFactories/OrderStateAbstractFactory.h"
 #include "Account/CustomerAccount.h"
 #include "Account/MerchantAccount.h"
+#include "DataSource/DataAccess.h"
+#include "DataSource/DataSource.hpp"
 #include <stdexcept>
 
-using std::make_shared;				using std::runtime_error;
+using std::make_unique;				using std::runtime_error;
 
-Order::Order(unsigned long int id, std::weak_ptr<CustomerAccount> committer, std::weak_ptr<MerchantAccount> acceptor,
-			 std::string applianceType, ContactInformation &contactWay, std::string detail)
-	: m_applianceType{applianceType},
-	m_contactWay{contactWay},
-	m_detail{detail},
-	m_id{id},
-	m_committer{committer},
-	m_committerId{committer.lock()->id()},
-	m_acceptor{acceptor},
-	m_acceptorId{acceptor.lock()->id()}
+Order::Order(unsigned long int id, CustomerAccount *committer, MerchantAccount *acceptor)
+	: m_id{id}, m_committer{committer}, m_acceptor{acceptor}
 {}
 
-Order::Order(unsigned long int id, unsigned long committerId, unsigned long acceptorId,
-		std::string applianceType, ContactInformation &contactWay, std::string detail)
-		: m_applianceType{applianceType},
-		  m_contactWay{contactWay},
-		  m_detail{detail},
-		  m_id{id},
-		  m_committerId{committerId},
-		  m_acceptorId{acceptorId}
-{}
+//Order::Order(unsigned long int id)
+//	: m_id{id}
+//{}
 
-void Order::initOrderState(AcceptableOrderPriceRange &range)
+/*void Order::initOrderState()
 {
 	if(!m_currentState)
-		m_currentState = make_shared<OrderUnreceivedState>(weak_from_this(), range);
+		m_currentState = make_unique<OrderUnreceivedState>(weak_from_this(), nullptr);
+}*/
+
+void Order::reject(MerchantAccount *receiver)
+{
+	if(receiver == m_acceptor)
+		m_currentState = m_currentState->reject();
 }
 
-void Order::reject()
+void Order::receive(MerchantAccount *receiver)
 {
-	m_currentState->reject();
+	if(receiver == m_acceptor)
+		m_currentState = m_currentState->receive();
 }
 
-void Order::receivedBy(std::weak_ptr<MerchantAccount> receiver)
+void Order::startRepair(MerchantAccount *receiver)
 {
-	m_currentState->receivedBy(receiver);
-	m_acceptorId = receiver.lock()->id();
+	m_currentState = m_currentState->startRepair();
 }
 
-void Order::startRepair()
+void Order::endRepair(MerchantAccount *receiver, double transactionPrice)
 {
-	m_currentState->startRepair();
+	m_currentState = m_currentState->endRepair(transactionPrice);
 }
 
-void Order::endRepair(double transactionPrice)
+void Order::pay(CustomerAccount *committer)
 {
-	m_currentState->endRepair(transactionPrice);
-}
-
-void Order::pay()
-{
-	m_currentState->payTheOrder();
+	m_currentState = m_currentState->payTheOrder();
 }
 
 void Order::finished()
 {
-	m_currentState->orderFinished();
+	m_currentState = m_currentState->orderFinished();
 }
 
 AcceptableOrderPriceRange Order::priceRange()
@@ -118,12 +106,12 @@ std::chrono::system_clock::time_point Order::finishDate() const
 
 std::string Order::applianceType() const
 {
-	return m_applianceType;
+	return DataSource::getDataAccessInstance()->getOrderApplianceTypeFor(m_id);
 }
 
 std::string Order::detail() const
 {
-	return m_detail;
+	return DataSource::getDataAccessInstance()->getOrderDetailFor(m_id);
 }
 
 unsigned long int Order::id() const
@@ -136,22 +124,17 @@ OrderState::States Order::currentState() const
 	return m_currentState->atState();
 }
 
-bool Order::isNotReceived() const
+/*bool Order::isNotReceived() const
 {
-	return currentState() == OrderState::unreceivedState;
-}
+	return currentState() == OrderState::States::unreceivedState;
+}*/
 
-unsigned long Order::committerId() const
+/*unsigned long Order::committerId() const
 {
-	return m_committerId;
-}
+	return m_committer.lock()->id();
+}*/
 
-unsigned long Order::acceptorId() const
+unsigned long Order::receiverId() const
 {
-	return m_acceptorId;
-}
-
-void Order::setState(std::shared_ptr<OrderState> state)
-{
-	m_currentState = state;
+	return m_acceptor->id();
 }

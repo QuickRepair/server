@@ -6,23 +6,10 @@
 #include "Account/Account.h"
 #include "Account/MerchantAccount.h"
 #include "Account/CustomerAccount.h"
-#include "Factories/MerchantFactory.h"
-#include "Factories/CustomerFactory.h"
-#include "Errors/NoAuthenticationCarrierFound.hpp"
-#include "ManagerProxy/AuthenticationCarrier/AuthenticationCarrier.h"
-#include "ManagerProxy/OrderManagerProxy.h"
+#include "DataSource/DataSource.hpp"
 #include <algorithm>
 
-using std::shared_ptr;						using std::find_if;
-using std::dynamic_pointer_cast;			using std::list;
-using std::weak_ptr;						using std::make_shared;
-
-AccountManager::AccountManager()
-{
-	m_merchantFactory = make_shared<MerchantFactory>();
-	m_customerFactory = make_shared<CustomerFactory>();
-	m_orderManagerProxy = make_shared<OrderManagerProxy>();
-}
+using std::make_unique;					using std::list;
 
 AccountManager &AccountManager::getInstance()
 {
@@ -30,48 +17,78 @@ AccountManager &AccountManager::getInstance()
 	return instance;
 }
 
-void AccountManager::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
+Account *AccountManager::loadAccount(Account::Type type, unsigned long id)
 {
-	m_authenticationCarrier = std::move(carrier);
+	switch(type)
+	{
+		case Account::Type::Merchant:
+			m_merchantAccounts[id] = make_unique<MerchantAccount>(id);
+			return m_merchantAccounts[id].get();
+		case Account::Type::Customer:
+			m_customerAccounts[id] = make_unique<CustomerAccount>(id);
+			return m_customerAccounts[id].get();
+	}
+	// silent warning
+	return nullptr;
 }
 
-std::list<std::weak_ptr<MerchantAccount>> AccountManager::getMerchantList()
+/*void AccountManager::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
 {
-	list<weak_ptr<MerchantAccount>> ret;
-	for(weak_ptr<MerchantAccount> accounts : m_merchantAccountList)
-		ret.push_back(accounts);
+	m_authenticationCarrier = std::move(carrier);
+}*/
+
+std::list<MerchantAccount *> AccountManager::getMerchantList()
+{
+	// TODO: should limit distance
+	list<MerchantAccount *> ret;
+	for(auto &accounts : m_merchantAccounts)
+		ret.push_back(accounts.second.get());
 	return ret;
 }
 
-std::weak_ptr<MerchantAccount> AccountManager::getMerchant(unsigned long id)
+MerchantAccount *AccountManager::getMerchant(unsigned long id)
 {
-	auto it = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
-					  [&id](shared_ptr<MerchantAccount> merchant) { return merchant->id() == id; });
-	return it == m_merchantAccountList.end() ? nullptr : *it;
+	return m_merchantAccounts[id].get();
 }
 
-std::weak_ptr<MerchantAccount> AccountManager::getMerchant(const std::string &account)
+/*std::weak_ptr<MerchantAccount> AccountManager::getMerchant(const std::string &account)
 {
 	auto it = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
 			[&account](shared_ptr<MerchantAccount> merchant) { return merchant->account() == account; });
 	return it == m_merchantAccountList.end() ? nullptr : *it;
-}
+}*/
 
-std::weak_ptr<CustomerAccount> AccountManager::getCustomer(unsigned long id)
+CustomerAccount *AccountManager::getCustomer(unsigned long id)
 {
-	auto it = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
-			[&id](shared_ptr<CustomerAccount> customer) { return customer->id() == id; });
-	return it == m_customerAccountList.end() ? nullptr : *it;
+	return m_customerAccounts[id].get();
 }
 
-std::weak_ptr<CustomerAccount> AccountManager::getCustomer(const std::string &account)
+void AccountManager::createOrUpdatePasswordForAccount(Account::Type type, std::string account, std::string password)
+{
+	switch(type)
+	{
+		case Account::Type::Merchant:
+			DataSource::getDataAccessInstance()->createOrUpdatePasswordForMerchantAccount(account, password);
+			break;
+		case Account::Type::Customer:
+			DataSource::getDataAccessInstance()->createOrUpdatePasswordForCustomerAccount(account, password);
+			break;
+	}
+}
+
+unsigned long AccountManager::getAccountIdIfPasswordRight(std::string account, std::string password)
+{
+	return DataSource::getDataAccessInstance()->checkPasswordAndGetId(account, password);
+}
+
+/*std::weak_ptr<CustomerAccount> AccountManager::getCustomer(const std::string &account)
 {
 	auto it = find_if(m_customerAccountList.begin(), m_customerAccountList.end(),
 			[&account](shared_ptr<CustomerAccount> customer) { return customer->account() == account; });
 	return it == m_customerAccountList.end() ? nullptr : *it;
-}
+}*/
 
-void AccountManager::merchantRequestForVerificationCode(const std::string &codeSendToWhere)
+/*void AccountManager::merchantRequestForVerificationCode(const std::string &codeSendToWhere)
 {
 	// get verification code
 	if(!m_authenticationCarrier)
@@ -147,13 +164,13 @@ std::weak_ptr<CustomerAccount> AccountManager::getOrLoadCustomer(unsigned long i
 		m_customerAccountList.push_back(customer);
 	}
 	return customer;
-}
+}*/
 
+/*
 void AccountManager::updateServiceTypeFor(std::string account, std::list<std::string> applianceTypes, double maxDistanc)
 {
 	auto merchant = getMerchant(account);
 	merchant.lock()->updateSupportedService(applianceTypes, maxDistanc);
-	m_merchantFactory->persistenceSupportedServices(merchant.lock());
 }
 
 bool AccountManager::isLoaded(std::string &account)
@@ -166,4 +183,4 @@ bool AccountManager::isLoaded(std::string &account)
 	loaded = find_if(m_merchantAccountList.begin(), m_merchantAccountList.end(),
 			[&account](shared_ptr<Account> customer){ return customer->account() == account; }) != m_merchantAccountList.end();
 	return loaded;
-}
+}*/

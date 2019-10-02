@@ -4,51 +4,57 @@
 #include "OrderFinishedState.h"
 #include "Errors/OrderNotAtRightState.hpp"
 #include "OrderRejectedState.h"
+#include "DataSource/DataSource.hpp"
+#include "Account/MerchantAccount.h"
 
-using std::make_shared;						using std::chrono::system_clock;
+using std::make_unique;						using std::chrono::system_clock;
 
-OrderUnreceivedState::OrderUnreceivedState(std::weak_ptr<Order> order, AcceptableOrderPriceRange &range)
-	: OrderState(std::move(order), system_clock::now()), m_range{range}
+OrderUnreceivedState::OrderUnreceivedState(std::weak_ptr<Order> order, std::unique_ptr<OrderState> &&lastState)
+	: OrderState(std::move(order), std::move(lastState))
 {}
 
-OrderUnreceivedState::OrderUnreceivedState(std::weak_ptr<Order> order, AcceptableOrderPriceRange &range, std::chrono::system_clock::time_point date)
-	: OrderState(std::move(order), date), m_range{range}
-{}
-
-void OrderUnreceivedState::receivedBy(std::weak_ptr<MerchantAccount> receiver)
+std::unique_ptr<OrderState> OrderUnreceivedState::receive()
 {
-	m_order.lock()->m_acceptor = receiver;
-	m_order.lock()->setState(make_shared<OrderReceivedState>(m_order, shared_from_this(), receiver));
+	DataSource::getDataAccessInstance()->orderReceived(m_order.lock()->id());
+	return make_unique<OrderReceivedState>(m_order,
+										   [this]{ std::unique_ptr<OrderUnreceivedState> ownershipTransfer; ownershipTransfer.reset(this); return ownershipTransfer; }()
+	);
 }
 
-void OrderUnreceivedState::reject()
+std::unique_ptr<OrderState> OrderUnreceivedState::reject()
 {
-	m_order.lock()->setState(make_shared<OrderRejectedState>(m_order, shared_from_this()));
+	DataSource::getDataAccessInstance()->orderRejected(m_order.lock()->id());
+	return make_unique<OrderRejectedState>(m_order,
+										   [this]{ std::unique_ptr<OrderUnreceivedState> ownershipTransfer; ownershipTransfer.reset(this); return ownershipTransfer; }()
+	);
 }
 
-void OrderUnreceivedState::startRepair()
+std::unique_ptr<OrderState> OrderUnreceivedState::startRepair()
 {
 	throw OrderNotAtRightState("At unreceived state, can not switch to start repair state");
 }
 
-void OrderUnreceivedState::endRepair(double transactionPrice)
+std::unique_ptr<OrderState> OrderUnreceivedState::endRepair([[maybe_unused]] double transactionPrice)
 {
 	throw OrderNotAtRightState("At unreceived state, can not switch to end repair state");
 }
 
-void OrderUnreceivedState::payTheOrder()
+std::unique_ptr<OrderState> OrderUnreceivedState::payTheOrder()
 {
 	throw OrderNotAtRightState("At unreceived state, can not pay");
 }
 
-void OrderUnreceivedState::orderFinished()
+std::unique_ptr<OrderState> OrderUnreceivedState::orderFinished()
 {
-	m_order.lock()->setState(make_shared<OrderFinishedState>(m_order, shared_from_this()));
+	DataSource::getDataAccessInstance()->orderFinished(m_order.lock()->id());
+	return make_unique<OrderFinishedState>(m_order,
+										   [this]{ std::unique_ptr<OrderUnreceivedState> ownershipTransfer; ownershipTransfer.reset(this); return ownershipTransfer; }()
+	);
 }
 
 AcceptableOrderPriceRange OrderUnreceivedState::priceRange() const
 {
-	return m_range;
+	return DataSource::getDataAccessInstance()->getAcceptablePriceRange(m_order.lock()->id());
 }
 
 double OrderUnreceivedState::transaction() const
@@ -73,7 +79,7 @@ OrderState::States OrderUnreceivedState::atState() const
 
 std::chrono::system_clock::time_point OrderUnreceivedState::createDate() const
 {
-	return m_stateChangeDate;
+	return DataSource::getDataAccessInstance()->getOrderCreateDate(m_order.lock()->id());
 }
 
 std::chrono::system_clock::time_point OrderUnreceivedState::rejectDate() const

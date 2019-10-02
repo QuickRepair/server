@@ -1,25 +1,21 @@
 #include "MerchantAccount.h"
-#include "ContactInformation.h"
-#include "MerchantServiceType.h"
 #include "Order/Order.h"
-#include <algorithm>
 
 using std::weak_ptr;					using std::list;
-using std::shared_ptr;					using std::make_shared;
+using std::shared_ptr;					using std::make_unique;
 
-MerchantAccount::MerchantAccount(unsigned long id, std::string account, std::string password)
-    :CustomerAccount{id, std::move(account), std::move(password)}
+MerchantAccount::MerchantAccount(unsigned long id)
+    :CustomerAccount{id}
 {
-	m_serviceType = make_shared<MerchantServiceType>();
+	m_serviceType = make_unique<MerchantService>(this);
 }
 
-void MerchantAccount::orderWaitToBeAccept(std::shared_ptr<Order> order)
+void MerchantAccount::orderWaitToBeAccept(std::weak_ptr<Order> order)
 {
-	if(!isMyUnreceivedOrder(order))
-		m_unreceivedOrders.push_back(order);
+	m_orders[order.lock()->id()] = order.lock();
 }
 
-void MerchantAccount::acceptOrder(std::weak_ptr<Order> order)
+/*void MerchantAccount::acceptOrder(std::weak_ptr<Order> order)
 {
 	if(isMyUnreceivedOrder(order) && order.lock()->isNotReceived())
 	{
@@ -90,13 +86,14 @@ std::list<std::weak_ptr<Order>> MerchantAccount::myOrdersList() const
 	for(auto &order : m_unreceivedOrders)
 		orderList.push_back(order);
 	return orderList;
-}
+}*/
 
-std::weak_ptr<MerchantServiceType> MerchantAccount::supportedServiceType()
+MerchantService *MerchantAccount::getService()
 {
-	return m_serviceType;
+	return m_serviceType.get();
 }
 
+/*
 void MerchantAccount::updateSupportedService(std::list<std::string> appliancType, double maxDistance)
 {
 	m_serviceType->setMaxRepairDistance(maxDistance);
@@ -114,7 +111,7 @@ void MerchantAccount::loadOrder(std::shared_ptr<Order> order)
 {
 	if(!isMyOrder(order))
 	{
-		if (order->currentState() == OrderState::unreceivedState)
+		if (order->currentState() == OrderState::States::unreceivedState)
 			m_unreceivedOrders.push_back(order);
 		else if(order->acceptorId() == id())
 			m_processedOrders.push_back(order);
@@ -123,7 +120,7 @@ void MerchantAccount::loadOrder(std::shared_ptr<Order> order)
 	}
 }
 
-void MerchantAccount::loadServiceType(std::shared_ptr<MerchantServiceType> service)
+void MerchantAccount::loadServiceType(std::unique_ptr<MerchantService> &&service)
 {
 	m_serviceType = std::move(service);
-}
+}*/

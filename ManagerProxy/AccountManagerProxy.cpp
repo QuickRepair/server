@@ -4,46 +4,53 @@
 
 #include "AccountManagerProxy.h"
 #include "Subjects/Managers/AccountManager.h"
-#include "OrderManagerProxy.h"
 
-using std::make_shared;
-
-AccountManagerProxy::AccountManagerProxy()
+Account *AccountManagerProxy::loadAccount(Account::Type type, unsigned long id)
 {
-	m_orderManagerProxy = make_shared<OrderManagerProxy>();
+	return AccountManager::getInstance().loadAccount(type, id);
 }
 
-void AccountManagerProxy::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
-{
-	AccountManager::getInstance().registerAuthenticationCarrier(carrier);
-}
+//void AccountManagerProxy::registerAuthenticationCarrier(std::shared_ptr<AuthenticationCarrier> carrier)
+//{
+//	AccountManager::getInstance().registerAuthenticationCarrier(carrier);
+//}
 
-std::list<std::weak_ptr<MerchantAccount>> AccountManagerProxy::getMerchantList()
+std::list<MerchantAccount *> AccountManagerProxy::getMerchantList()
 {
 	return AccountManager::getInstance().getMerchantList();
 }
 
-std::weak_ptr<MerchantAccount> AccountManagerProxy::getMerchant(const unsigned long id)
+MerchantAccount *AccountManagerProxy::getMerchant(const unsigned long id)
 {
 	return AccountManager::getInstance().getMerchant(id);
 }
 
-std::weak_ptr<MerchantAccount> AccountManagerProxy::getMerchant(const std::string &account)
-{
-	return AccountManager::getInstance().getMerchant(account);
-}
+//std::weak_ptr<MerchantAccount> AccountManagerProxy::getMerchant(const std::string &account)
+//{
+//	return AccountManager::getInstance().getMerchant(account);
+//}
 
-std::weak_ptr<CustomerAccount> AccountManagerProxy::getCustomer(const unsigned long id)
+CustomerAccount *AccountManagerProxy::getCustomer(const unsigned long id)
 {
 	return AccountManager::getInstance().getCustomer(id);
 }
 
-std::weak_ptr<CustomerAccount> AccountManagerProxy::getCustomer(const std::string &account)
+void AccountManagerProxy::createOrUpdatePasswordForAccount(Account::Type type, std::string account, std::string password)
 {
-	return AccountManager::getInstance().getCustomer(account);
+	return AccountManager::getInstance().createOrUpdatePasswordForAccount(type, account, password);
 }
 
-void AccountManagerProxy::merchantRequestForVerificationCode(const std::string &codeSendToWhere)
+unsigned long AccountManagerProxy::getAccountIdIfPasswordRight(std::string account, std::string password)
+{
+	return AccountManager::getInstance().getAccountIdIfPasswordRight(account, password);
+}
+
+//std::weak_ptr<CustomerAccount> AccountManagerProxy::getCustomer(const std::string &account)
+//{
+//	return AccountManager::getInstance().getCustomer(account);
+//}
+
+/*void AccountManagerProxy::merchantRequestForVerificationCode(const std::string &codeSendToWhere)
 {
 	AccountManager::getInstance().merchantRequestForVerificationCode(codeSendToWhere);
 }
@@ -76,4 +83,4 @@ std::weak_ptr<CustomerAccount> AccountManagerProxy::getOrLoadCustomer(unsigned l
 void AccountManagerProxy::updateServiceTypeFor(std::string merchant, std::list<std::string> applianceTypes, double maxDistanc)
 {
 	return AccountManager::getInstance().updateServiceTypeFor(merchant, applianceTypes, maxDistanc);
-}
+}*/

@@ -11,7 +11,7 @@
 class Configure {
 public:
 	/// @param configureFilePath: the path to config file
-	explicit Configure(std::string configureFilePath = "har.json");
+	explicit Configure(std::string configureFilePath = "qr.json");
 
 	/// @brief Getters
 	std::string ip() const;

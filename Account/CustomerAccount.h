@@ -2,13 +2,11 @@
 #define CUSTOMERACCOUNT_H
 
 #include "Account.h"
+#include <unordered_map>
 #include <list>
 #include <memory>
 
-class ContactInformation;
 class Order;
-class AcceptableOrderPriceRange;
-class OrderEvaluate;
 
 /// @brief a subclass of Account, represent a customer who is using the system
 class CustomerAccount : public Account
@@ -18,7 +16,11 @@ class CustomerAccount : public Account
 	friend class OrderManager;
 
 public:
-    CustomerAccount(unsigned long id, std::string account, std::string password);
+	explicit CustomerAccount(unsigned long id);
+
+	/// @brief Get order list of the account
+	/// @return return the order list belong to the account
+	virtual std::list<std::weak_ptr<Order>> getOrderList() const;
 
     /// @brief CustomerAccount specific operation, publish a new order to system
     /// @param order: a weak_ptr to the new order
@@ -27,28 +29,28 @@ public:
 	/// @brief CustomerAccount specific operation, cancel a order belong to the customer
 	/// @param order: a weak_ptr to the order
 	// TODO: add some cancelable limit here
-    void cancelOrder(std::weak_ptr<Order> order);
+//    void cancelOrder(std::weak_ptr<Order> order);
 
     /// @brief CustomerAccount specific operation, evaluate the order after finish repair
     /// @param order: a weak_ptr to the order
     /// @param evaluate: the evaluate add to order
-    void evaluateTheOrder(std::weak_ptr<Order> order, OrderEvaluate evaluate);
+//    void evaluateTheOrder(std::weak_ptr<Order> order, OrderEvaluate evaluate);
 
     /// @brief CustomerAccount specific operation, pay for the order after finish repair
     /// @param order: a weak_ptr to the order
-    void payTheOrder(std::weak_ptr<Order> order);
+//    void payTheOrder(std::weak_ptr<Order> order);
 
     ///@override
-    bool isMyOrder(std::weak_ptr<Order> order) const override;
-	std::list<std::weak_ptr<Order>> myOrdersList() const override;
+//    bool isMyOrder(std::weak_ptr<Order> order) const override;
+//	std::list<std::weak_ptr<Order>> myOrdersList() const override;
 
 protected:
     ///@override
-	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
-	void loadOrder(std::shared_ptr<Order> order) override;
+//	void loadContactInformation(std::list<std::shared_ptr<ContactInformation>> info) override;
+//	void loadOrder(std::shared_ptr<Order> order) override;
 
-    std::list<std::shared_ptr<ContactInformation>> m_contactInfo;
-    std::list<std::shared_ptr<Order>> m_publishedOrders;
+//    std::list<std::shared_ptr<ContactInformation>> m_contactInfo;
+	std::unordered_map<unsigned long, std::shared_ptr<Order>> m_orders;
 };
 
 #endif // CUSTOMERACCOUNT_H

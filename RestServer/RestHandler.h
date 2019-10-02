@@ -7,7 +7,11 @@
 
 #include <cpprest/http_listener.h>
 
-class InstructionsAnalyser;
+class RequestInterpreter;
+
+enum class HTTPRequest {
+	GET, PUT, POST, DELETE
+};
 
 class RestHandler {
 public:
@@ -23,7 +27,22 @@ private:
 
     web::http::experimental::listener::http_listener m_listener;
 
-    std::shared_ptr<InstructionsAnalyser> m_analyser;
+    std::unique_ptr<RequestInterpreter> m_analyser;
+};
+
+class Respond {
+public:
+	Respond() = default;
+	Respond(web::http::status_code statusCode);
+	Respond(web::json::value &&json);
+	Respond(web::http::status_code statusCode, web::json::value &&json);
+
+	const web::json::value &json() const;
+	web::http::status_code statusCode() const;
+
+private:
+	web::json::value m_json;
+	web::http::status_code m_statusCode;
 };
 
 #endif //HARSERVER_RESTHANDLER_H

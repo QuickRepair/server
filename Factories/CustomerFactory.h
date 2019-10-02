@@ -10,16 +10,11 @@
 class CustomerFactory : public AccountFactory {
 public:
 	~CustomerFactory() override = default;
-
 	/// @override
-	std::shared_ptr<Account> loadAccount(unsigned long id) override;
-
-protected:
+	std::shared_ptr<Account> readAccount(std::string account, std::string password) override;
+	std::shared_ptr<Account> createOrUpdateAccount(std::string account, std::string password) override;
 	/// @override
-	std::shared_ptr<Account> loadAccountSpecific(std::string account, std::string password) override;
-	void createAccountSpecific(std::string account, std::string password) override;
-	void updateAccountSpecific(std::string accout, std::string password) override;
+//	std::shared_ptr<Account> loadAccount(unsigned long id) override;
 };
-
 
 #endif //HARSERVER_CUSTOMERFACTORY_H

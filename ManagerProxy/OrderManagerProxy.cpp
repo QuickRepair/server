@@ -5,7 +5,19 @@
 #include "Subjects/Managers/OrderManager.h"
 #include "OrderManagerProxy.h"
 
-std::weak_ptr<Order> OrderManagerProxy::publishOrder(std::weak_ptr<CustomerAccount> &committer,
+std::shared_ptr<Order>
+OrderManagerProxy::createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType,
+							   std::string detail)
+{
+	return OrderManager::getInstance().createOrder(committerId, acceptorId, applianceType, detail);
+}
+
+std::weak_ptr<Order> OrderManagerProxy::getOrder(unsigned long id)
+{
+	return OrderManager::getInstance().getOrder(id);
+}
+
+/*std::weak_ptr<Order> OrderManagerProxy::publishOrder(std::weak_ptr<CustomerAccount> &committer,
 									 std::weak_ptr<MerchantAccount> &acceptor, std::string &applianceType,
 									 ContactInformation &contactWay, std::string &detail,
 									 AcceptableOrderPriceRange &range)
@@ -42,9 +54,4 @@ void OrderManagerProxy::orderPayed(std::weak_ptr<CustomerAccount> &committer, st
 void OrderManagerProxy::loadAllOrderForAccount(std::weak_ptr<Account> account)
 {
 	OrderManager::getInstance().loadAllOrderForAccount(account);
-}
-
-std::weak_ptr<Order> OrderManagerProxy::getOrder(unsigned long id)
-{
-	return OrderManager::getInstance().getOrder(id);
-}
+}*/

@@ -10,12 +10,7 @@
 AccountFactory::~AccountFactory()
 {}
 
-std::shared_ptr<Account> AccountFactory::readAccount(std::string account, std::string password)
-{
-	return loadAccountSpecific(account, password);
-}
-
-std::shared_ptr<Account> AccountFactory::createOrUpdateAccount(std::string account, std::string password)
+/*std::shared_ptr<Account> AccountFactory::createOrUpdateAccount(std::string account, std::string password)
 {
 	// create or update
 	try {
@@ -26,4 +21,4 @@ std::shared_ptr<Account> AccountFactory::createOrUpdateAccount(std::string accou
 
 	// load user
 	return readAccount(account, password);
-}
+}*/

@@ -1,42 +1,40 @@
 #include "OrderFinishedState.h"
 #include "Errors/OrderNotAtRightState.hpp"
+#include "DataSource/DataSource.hpp"
+#include "Order/Order.h"
 
 using std::chrono::system_clock;				using std::make_shared;
 
-OrderFinishedState::OrderFinishedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState)
-		: OrderState(order, system_clock::now()), m_lastState{lastState}
+OrderFinishedState::OrderFinishedState(std::weak_ptr<Order> order, std::unique_ptr<OrderState> &&lastState)
+		: OrderState(std::move(order), std::move(lastState))
 {}
 
-OrderFinishedState::OrderFinishedState(std::weak_ptr<Order> order, std::shared_ptr<OrderState> lastState, OrderEvaluate evaluate, std::chrono::system_clock::time_point date)
-		: OrderState(order, date), m_lastState{lastState}, m_evaluate{evaluate}
-{}
-
-void OrderFinishedState::reject()
+std::unique_ptr<OrderState> OrderFinishedState::reject()
 {
 	throw OrderNotAtRightState("At finish state, can not reject");
 }
 
-void OrderFinishedState::receivedBy(std::weak_ptr<MerchantAccount> receiver)
+std::unique_ptr<OrderState> OrderFinishedState::receive()
 {
 	throw OrderNotAtRightState("At finish state, can not receive");
 }
 
-void OrderFinishedState::startRepair()
+std::unique_ptr<OrderState> OrderFinishedState::startRepair()
 {
 	throw OrderNotAtRightState("At finish state, can not receive");
 }
 
-void OrderFinishedState::endRepair(double transactionPrice)
+std::unique_ptr<OrderState> OrderFinishedState::endRepair([[maybe_unused]] double transactionPrice)
 {
 	throw OrderNotAtRightState("At finish state, can not end repair");
 }
 
-void OrderFinishedState::payTheOrder()
+std::unique_ptr<OrderState> OrderFinishedState::payTheOrder()
 {
 	throw OrderNotAtRightState("At finish state, can not pay");
 }
 
-void OrderFinishedState::orderFinished()
+std::unique_ptr<OrderState> OrderFinishedState::orderFinished()
 {
 	throw OrderNotAtRightState("At finish state, can not finish");
 }
@@ -53,12 +51,12 @@ double OrderFinishedState::transaction() const
 
 void OrderFinishedState::setEvaluate(OrderEvaluate &evaluate)
 {
-	m_evaluate = evaluate;
+	DataSource::getDataAccessInstance()->setOrderEvaluate(evaluate);
 }
 
 OrderEvaluate OrderFinishedState::evaluate() const
 {
-	return m_evaluate;
+	return DataSource::getDataAccessInstance()->getOrderEvaluate(m_order.lock()->id());
 }
 
 OrderState::States OrderFinishedState::atState() const
@@ -93,5 +91,5 @@ std::chrono::system_clock::time_point OrderFinishedState::endRepairDate() const
 
 std::chrono::system_clock::time_point OrderFinishedState::finishDate() const
 {
-	return m_stateChangeDate;
+	return DataSource::getDataAccessInstance()->getOrderFinishDate(m_order.lock()->id());
 }

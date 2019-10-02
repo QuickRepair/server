@@ -1,31 +1,33 @@
 #include "Account.h"
+#include "DataSource/DataAccess.h"
+#include "DataSource/DataSource.hpp"
 
 using std::string;
 
-Account::Account(unsigned long id, std::string account, std::string password)
-    : m_id{id}, m_account{std::move(account)}, m_password{std::move(password)}
+Account::Account(unsigned long id)
+    : m_id{id}/*, m_account{std::move(account)}, m_password{std::move(password)}*/
 {}
 
 unsigned long Account::id() const {
     return m_id;
 }
 
-void Account::setId(unsigned long id) {
-    m_id = id;
-}
-
-const string &Account::password() const {
-    return m_password;
+const string Account::password() const {
+//    return m_password;
+	return DataSource::getDataAccessInstance()->getPasswordFor(m_id);
 }
 
 void Account::setPassword(const string &password) {
-    m_password = password;
+	DataSource::getDataAccessInstance()->setPasswordFor(m_id, password);
+//    m_password = password;
 }
 
-const string &Account::account() const {
-    return m_account;
+const string Account::account() const {
+	return DataSource::getDataAccessInstance()->getAccountFor(m_id);
+//    return m_account;
 }
 
 void Account::setAccount(const string &userName) {
-    m_account = userName;
+	DataSource::getDataAccessInstance()->setAccountFor(m_id, userName);
+//    m_account = userName;
 }

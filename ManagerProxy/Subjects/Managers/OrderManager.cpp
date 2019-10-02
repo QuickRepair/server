@@ -1,17 +1,8 @@
 #include "OrderManager.h"
-#include "Factories/OrderFactory.h"
-#include "Account/CustomerAccount.h"
-#include "Account/MerchantAccount.h"
-#include "Account/ContactInformation.h"
-#include "Order/OrderStates/AcceptableOrderPriceRange.h"
-#include "Order/Order.h"
-#include "AccountManager.h"
-#include "ManagerProxy/AccountManagerProxy.h"
-#include <algorithm>
+#include "Factories/OrderFactory.hpp"
+#include "DataSource/DataSource.hpp"
 
-using std::make_shared;			using std::shared_ptr;
-using std::string;				using std::find_if;
-using std::list;
+using std::make_unique;
 
 OrderManager &OrderManager::getInstance()
 {
@@ -21,11 +12,22 @@ OrderManager &OrderManager::getInstance()
 
 OrderManager::OrderManager()
 {
-	m_factory = make_shared<OrderFactory>();
-	m_accountManagerProxy = make_shared<AccountManagerProxy>();
+	m_factory = make_unique<OrderFactory>();
+//	m_accountManagerProxy = make_shared<AccountManagerProxy>();
 }
 
-std::weak_ptr<Order> OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
+std::shared_ptr<Order> OrderManager::createOrder(unsigned long committerId, unsigned long acceptorId, std::string applianceType, std::string detail)
+{
+	unsigned long orderId = DataSource::getDataAccessInstance()->createOrder(committerId, acceptorId, applianceType, detail);
+	return m_factory->loadOrder(orderId);
+}
+
+std::weak_ptr<Order> OrderManager::getOrder(unsigned long id)
+{
+	return m_orders[id];
+}
+
+/*std::weak_ptr<Order> OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<MerchantAccount> &acceptor,
 								std::string &applianceType, ContactInformation &contactWay, std::string &detail, AcceptableOrderPriceRange &range)
 {
 	shared_ptr<Order> newOrder = m_factory->createOrder(committer, acceptor, applianceType, contactWay, detail, range);
@@ -38,32 +40,27 @@ std::weak_ptr<Order> OrderManager::publishOrder(std::weak_ptr<CustomerAccount> &
 void OrderManager::orderAccepted(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order)
 {
 	acceptor.lock()->acceptOrder(order);
-	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderRejected(std::weak_ptr<MerchantAccount> &account, std::weak_ptr<Order> &order)
 {
 	account.lock()->rejectOrder(order);
-	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderStartRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order)
 {
 	acceptor.lock()->startRepair(order);
-	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderEndRepair(std::weak_ptr<MerchantAccount> &acceptor, std::weak_ptr<Order> &order,
 								  double transaction)
 {
 	acceptor.lock()->endRepair(order, transaction);
-	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::orderPayed(std::weak_ptr<CustomerAccount> &committer, std::weak_ptr<Order> &order)
 {
 	committer.lock()->payTheOrder(order);
-	m_factory->persistenceOrderState(order);
 }
 
 void OrderManager::loadAllOrderForAccount(std::weak_ptr<Account> account)
@@ -94,4 +91,4 @@ std::weak_ptr<Order> OrderManager::getOrder(unsigned long id)
 bool OrderManager::isTheOrderAlreadyLoaded(std::weak_ptr<Order> order, std::weak_ptr<Account> account)
 {
 	return account.lock()->isMyOrder(order);
-}
+}*/
