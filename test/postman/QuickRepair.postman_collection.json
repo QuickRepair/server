@@ -1,0 +1,1278 @@
+{
+	"info": {
+		"_postman_id": "380a8341-da5b-4049-915a-2dff3e0a8b4f",
+		"name": "QuickRepair",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "顾客",
+			"item": [
+				{
+					"name": "登录",
+					"item": [
+						{
+							"name": "注册或更新密码",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6e83c914-8614-4aff-91b7-6150f1b6f823",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{QuickRepairURL}}/verification/{{accountType}}/{{account}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"verification",
+										"{{accountType}}",
+										"{{account}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TestEnvOnlyGetPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d6ccd7e1-ded4-48b9-9307-3ab5f96c2ab2",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Contains password\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"password\");",
+											"});",
+											"var data = JSON.parse(pm.response.json());",
+											"pm.environment.set(\"password\", data.password);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{DBAccessURL}}/password/{{account}}",
+									"host": [
+										"{{DBAccessURL}}"
+									],
+									"path": [
+										"password",
+										"{{account}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "获取令牌",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "16bcc376-875a-4062-af38-2c0e868a39b9",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Contains token in hearder\", function () {",
+											"    pm.expect(pm.response).to.have.header(\"token\");",
+											"});",
+											"pm.test(\"Contains id in body\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    for(var key in jsonData) {",
+											"        pm.expect(key).to.eql(\"id\")",
+											"        break;",
+											"    }",
+											"})",
+											"pm.environment.set(\"token\", pm.response.headers.get(\"token\"));",
+											"pm.environment.set(\"id\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "cc933803-ff10-4dfc-875e-6df7f34128ee",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "password",
+										"value": "{{password}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{QuickRepairURL}}/token/{{accountType}}/{{account}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"token",
+										"{{accountType}}",
+										"{{account}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "订单",
+					"item": [
+						{
+							"name": "获得订单列表",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f01680d8-16b1-4433-bd5a-7aa18658f5f8",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Body contains service\", function () {",
+											"    var data = pm.response.json();",
+											"    for (var key in data) {",
+											"        pm.expect(key).to.eql(\"order_list\");",
+											"        break;",
+											"    }",
+											"});",
+											"var data = pm.response.json();",
+											"pm.environment.set(\"order\", data.order_list[Math.floor(Math.random() * (data.order_list.length))].id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{QuickRepairURL}}/order_list/{{accountType}}/{{id}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order_list",
+										"{{accountType}}",
+										"{{id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "获取订单详情",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "46f1d6ba-fbda-47b6-a25d-3a07fa75f766",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"order\": {{order}}\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "创建订单",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "108849e3-d964-43c9-9f34-ec4b311cb6be",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "edcf5e63-7acd-4d13-acd9-e18df2284f13",
+										"exec": [
+											"pm.environment.set(\"orderPublishToMerchant\", \"1\");",
+											"pm.environment.set(\"description\", \"\\\"de\\\"\");",
+											"pm.environment.set(\"appliance\", \"\\\"app\\\"\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"receiver\": {{targetMerchant}},\n\t\"committer\": {{id}},\n\t\"description\": {{description}},\n\t\"appliance\": {{appliance}}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "支付订单",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account\": {{id}},\n\t\"state\": \"pay\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "获取商家列表",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "489c68d2-892a-4ace-ad59-95ac2e27e0fc",
+								"exec": [
+									"pm.environment.set(\"longitude\", Math.random() * 180);",
+									"pm.environment.set(\"latitude\", Math.random() * 180);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ee6a119a-9e06-47e2-ad30-481ab4ce6afc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body contains merchant list\", function () {",
+									"    var data = pm.response.json();",
+									"    for (var key in data) {",
+									"        pm.expect(key).to.eql(\"merchants\");",
+									"        break;",
+									"    }",
+									"});",
+									"var data = pm.response.json();",
+									"pm.environment.set(\"targetMerchant\", data.merchants[Math.floor(Math.random() * (data.merchants.length-1))]);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{QuickRepairURL}}/merchant_list/{{longitude}}/{{latitude}}",
+							"host": [
+								"{{QuickRepairURL}}"
+							],
+							"path": [
+								"merchant_list",
+								"{{longitude}}",
+								"{{latitude}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获得允许服务内容",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "96070d6d-ddca-45ca-8288-d107421bea22",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body contains services list\", function () {",
+									"    var data = pm.response.json();",
+									"    for (var key in data) {",
+									"        pm.expect(key).to.eql(\"allowed_services\");",
+									"        break;",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{QuickRepairURL}}/allowed_service",
+							"host": [
+								"{{QuickRepairURL}}"
+							],
+							"path": [
+								"allowed_service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获得商家支付的服务列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bbdfb81c-c83d-43d2-bf35-efa09a018f8c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body contains service\", function () {",
+									"    var data = pm.response.json();",
+									"    var i = 1;",
+									"    for(var key in data)",
+									"    {",
+									"        switch(i) {",
+									"            case 1:",
+									"                pm.expect(key).to.eql(\"max_distance\");",
+									"                break;",
+									"            case 2:",
+									"                pm.expect(key).to.eql(\"supported_appliance\");",
+									"                break;",
+									"        }",
+									"        i++;",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{QuickRepairURL}}/supported_service/{{targetMerchant}}",
+							"host": [
+								"{{QuickRepairURL}}"
+							],
+							"path": [
+								"supported_service",
+								"{{targetMerchant}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5d0396b9-4475-494a-9f1f-b19c280d5a62",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"account\", 12345678901);",
+							"pm.environment.set(\"accountType\", \"customer\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "791d773a-c280-422a-aeb7-0862cf377bab",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "商家",
+			"item": [
+				{
+					"name": "登录",
+					"item": [
+						{
+							"name": "注册或更新密码",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6e83c914-8614-4aff-91b7-6150f1b6f823",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{QuickRepairURL}}/verification/{{accountType}}/{{account}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"verification",
+										"{{accountType}}",
+										"{{account}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TestEnvOnlyGetPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d6ccd7e1-ded4-48b9-9307-3ab5f96c2ab2",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Contains password\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"password\");",
+											"});",
+											"var data = JSON.parse(pm.response.json());",
+											"pm.environment.set(\"password\", data.password);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{DBAccessURL}}/password/{{account}}",
+									"host": [
+										"{{DBAccessURL}}"
+									],
+									"path": [
+										"password",
+										"{{account}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "获取令牌",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "16bcc376-875a-4062-af38-2c0e868a39b9",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Contains token in hearder\", function () {",
+											"    pm.expect(pm.response).to.have.header(\"token\");",
+											"});",
+											"pm.test(\"Contains id in body\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    for(var key in jsonData) {",
+											"        pm.expect(key).to.eql(\"id\")",
+											"        break;",
+											"    }",
+											"})",
+											"pm.environment.set(\"token\", pm.response.headers.get(\"token\"));",
+											"pm.environment.set(\"id\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "cc933803-ff10-4dfc-875e-6df7f34128ee",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "password",
+										"value": "{{password}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{QuickRepairURL}}/token/{{accountType}}/{{account}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"token",
+										"{{accountType}}",
+										"{{account}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "订单",
+					"item": [
+						{
+							"name": "获得订单列表",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e6a98183-b97a-4ed6-a2ae-2d904246c24c",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Body contains service\", function () {",
+											"    var data = pm.response.json();",
+											"    for (var key in data) {",
+											"        pm.expect(key).to.eql(\"order_list\");",
+											"        break;",
+											"    }",
+											"});",
+											"var data = pm.response.json();",
+											"pm.environment.set(\"order\", data.order_list[Math.floor(Math.random() * (data.order_list.length))].id);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{QuickRepairURL}}/order_list/{{accountType}}/{{id}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order_list",
+										"{{accountType}}",
+										"{{id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "获取订单详情",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "46f1d6ba-fbda-47b6-a25d-3a07fa75f766",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"order\": {{order}}\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "创建订单",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "108849e3-d964-43c9-9f34-ec4b311cb6be",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"receiver\": {{targetMerchant}},\n\t\"committer\": {{id}},\n\t\"description\": {{description}},\n\t\"appliance\": {{appliance}}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "接受订单",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account\": {{id}},\n\t\"state\": \"receive\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "开始维修",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account\": {{id}},\n\t\"state\": \"start_repair\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "完成维修",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account\": {{id}},\n\t\"state\": \"end_repair\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "拒绝订单",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account\": {{id}},\n\t\"state\": \"reject\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "支付订单",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account\": {{id}},\n\t\"state\": \"pay\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/order/{{order}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"order",
+										"{{order}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "商家特有",
+					"item": [
+						{
+							"name": "更新支持服务内容",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "228fdd59-a2fc-48c2-ba78-52df78a34529",
+										"exec": [
+											"pm.environment.set(\"support_distance\", 10);",
+											"pm.environment.set(\"support_appliances\", \"\\\"a\\\",\\\"b\\\"\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"max_distance\": {{support_distance}},\n\t\"support_appliances\": [ {{support_appliances}} ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{QuickRepairURL}}/supported_service/{{id}}",
+									"host": [
+										"{{QuickRepairURL}}"
+									],
+									"path": [
+										"supported_service",
+										"{{id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "获取商家列表",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "489c68d2-892a-4ace-ad59-95ac2e27e0fc",
+								"exec": [
+									"pm.environment.set(\"longitude\", Math.random() * 180);",
+									"pm.environment.set(\"latitude\", Math.random() * 180);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ee6a119a-9e06-47e2-ad30-481ab4ce6afc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body contains merchant list\", function () {",
+									"    var data = pm.response.json();",
+									"    for (var key in data) {",
+									"        pm.expect(key).to.eql(\"merchants\");",
+									"        break;",
+									"    }",
+									"});",
+									"var data = pm.response.json();",
+									"pm.environment.set(\"targetMerchant\", data.merchants[Math.floor(Math.random() * (data.merchants.length-1))]);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{QuickRepairURL}}/merchant_list/{{longitude}}/{{latitude}}",
+							"host": [
+								"{{QuickRepairURL}}"
+							],
+							"path": [
+								"merchant_list",
+								"{{longitude}}",
+								"{{latitude}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获得允许服务内容",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "96070d6d-ddca-45ca-8288-d107421bea22",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body contains services list\", function () {",
+									"    var data = pm.response.json();",
+									"    for (var key in data) {",
+									"        pm.expect(key).to.eql(\"allowed_services\");",
+									"        break;",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{QuickRepairURL}}/allowed_service",
+							"host": [
+								"{{QuickRepairURL}}"
+							],
+							"path": [
+								"allowed_service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获得商家支付的服务列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bbdfb81c-c83d-43d2-bf35-efa09a018f8c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body contains service\", function () {",
+									"    var data = pm.response.json();",
+									"    var i = 1;",
+									"    for(var key in data)",
+									"    {",
+									"        switch(i) {",
+									"            case 1:",
+									"                pm.expect(key).to.eql(\"max_distance\");",
+									"                break;",
+									"            case 2:",
+									"                pm.expect(key).to.eql(\"supported_appliance\");",
+									"                break;",
+									"        }",
+									"        i++;",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{QuickRepairURL}}/supported_service/{{targetMerchant}}",
+							"host": [
+								"{{QuickRepairURL}}"
+							],
+							"path": [
+								"supported_service",
+								"{{targetMerchant}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e32b2689-e997-4071-b379-976e5b3be472",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"account\", 12345678902);",
+							"pm.environment.set(\"accountType\", \"merchant\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "92252eb7-d535-4832-a88f-7347fa52cd4d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

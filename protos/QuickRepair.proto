@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package QuickRepair;
+
+service QuickRepairRPC {
+    rpc requestVerification(VerificationRequest) returns (VerificationResponse) {}
+    rpc getToken(GetTokenRequest) returns (GetTokenResponse) {}
+    rpc getMerchantList(GetMerchantListRequest) returns (GetMerchantListResponse) {}
+    rpc getAllowedService(GetAllowedServiceRequest) returns (GetAllowedServiceResponse) {}
+    rpc getMerchantService(GetMerchantServiceRequest) returns (GetMerchantServiceResponse) {}
+    rpc updateMerchantService(UpdateMerchantServiceRequest) returns (UpdateMerchantServiceResponse) {}
+    rpc getOrderList(GetOrderListRequest) returns (GetOrderListResponse) {}
+    rpc getOrderDetail(GetOrderDetailRequest) returns (GetOrderDetailResponse) {}
+    rpc publishOrder(PublishOrderRequest) returns (PublishOrderResponse) {}
+    rpc receiveOrder(ReceiveOrderRequest) returns (ReceiveOrderResponse) {}
+    rpc startRepair(StartRepairRequest) returns (StartRepairResponse) {}
+    rpc endRepair(EndRepairRequest) returns (EndRepairResponse) {}
+    rpc pay(PayRequest) returns (PayResponse) {}
+    rpc rejectOrder(RejectOrderRequest) returns (RejectOrderResponse) {}
+}
+
+enum AccountType {
+    merchant = 0;
+    customer = 1;
+}
+
+enum OrderState {
+    reject = 0;
+    unreceived = 1;
+    received = 2;
+    repairing = 3;
+    done_repair = 4;
+    finished = 5;
+}
+
+// verification
+message VerificationRequest {
+    AccountType type = 1;
+    string account = 2;
+}
+message VerificationResponse {}
+
+// token
+message GetTokenRequest {
+    AccountType type = 1;
+    string account = 2;
+    string password = 3;
+}
+message GetTokenResponse {
+    int64 token = 1;
+    int64 id = 2;
+}
+
+// get merchant list
+message GetMerchantListRequest {
+    double longitude = 1;
+    double latitude = 2;
+}
+message GetMerchantListResponse {
+    repeated MerchantListInfo merchantsList = 1;
+}
+message MerchantListInfo {
+    int64 id = 1;
+}
+
+// get allowed service
+message GetAllowedServiceRequest {}
+message GetAllowedServiceResponse {
+    repeated string appliances = 1;
+}
+
+// get merchant service
+message GetMerchantServiceRequest {
+    int64 id = 1;
+}
+message GetMerchantServiceResponse {
+    double max_distance = 1;
+    repeated string appliances = 2;
+}
+
+// update merchant service
+message UpdateMerchantServiceRequest {
+    int64 merchant = 1;
+    double distance = 2;
+    int64 token = 3;
+    repeated string appliances = 4;
+}
+message UpdateMerchantServiceResponse {}
+
+// get order list
+message GetOrderListRequest {
+    int64 token = 1;
+    AccountType type = 2;
+    int64 account = 3;
+}
+message GetOrderListResponse {
+    repeated OrderListInfo orders = 1;
+}
+message OrderListInfo {
+    google.protobuf.Timestamp create_date = 1;
+    string appliance = 2;
+    int64 id = 3;
+}
+
+// get order detail
+message GetOrderDetailRequest {
+    int64 token = 1;
+    int64 order = 2;
+}
+message GetOrderDetailResponse {
+    int64 id = 1;
+    string appliance = 2;
+    string description = 3;
+    OrderState state = 4;
+    google.protobuf.Timestamp create_date = 5;
+    google.protobuf.Timestamp receive_date = 6;
+    google.protobuf.Timestamp start_repair_date = 7;
+    google.protobuf.Timestamp end_repair_date = 8;
+    google.protobuf.Timestamp finish_date = 9;
+    google.protobuf.Timestamp reject_date = 10;
+}
+
+// publish order
+message PublishOrderRequest {
+    int64 token = 1;
+    int64 receiver = 2;
+    int64 committer = 3;
+    string appliance = 4;
+    string description = 5;
+}
+message PublishOrderResponse {}
+
+// receive order
+message ReceiveOrderRequest {
+    int64 order = 1;
+    int64 token = 2;
+    int64 merchant = 3;
+}
+message ReceiveOrderResponse {}
+
+// start repair
+message StartRepairRequest {
+    int64 order = 1;
+    int64 token = 2;
+    int64 merchant = 3;
+}
+message StartRepairResponse {}
+
+// end repair
+message EndRepairRequest {
+    int64 order = 1;
+    int64 token = 2;
+    int64 merchant = 4;
+    double transaction = 5;
+}
+message EndRepairResponse {}
+
+// pay
+message PayRequest {
+    int64 order = 1;
+    int64 token = 2;
+    int64 customer = 3;
+}
+message PayResponse {}
+
+// reject order
+message RejectOrderRequest {
+    int64 order = 1;
+    int64 token = 2;
+    int64 merchant = 3;
+}
+message RejectOrderResponse {}

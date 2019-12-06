@@ -73,3 +73,6 @@ fabric.properties
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+/src/RestHandler/QuickRepair_pb2_grpc.py
+/src/RestHandler/QuickRepair_pb2.py
+/third_party/
